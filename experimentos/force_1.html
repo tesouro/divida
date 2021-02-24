@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Experimentos : força</title>
+    <style>
+        svg {
+            outline: 1px solid tomato;
+            height: 300px;
+        }
+
+        .svg-container {
+            margin: 0 auto;
+            max-width: 300px;
+        }
+
+        svg {
+            background : #333;
+        }
+
+        rect {
+            fill : lightcoral;
+        }
+
+        rect.bottom {
+            fill : ghostwhite;
+        }
+
+    </style>
+</head>
+
+<body>
+  <button id="inicia">Inicia</button>
+  <button id="reset">Reset</button>
+  <p>É isso. Agora tem que calcular essa relação entre forças para posicionar os elementos de forma precisa.</p>
+  <div class="svg-container">
+    <svg></svg>
+
+  <script src="https://d3js.org/d3.v5.min.js"></script>
+  <script>
+const svg = d3.select("svg");
+
+const elementos = [
+  {
+    name : "b1",
+    y0 : 50
+  },
+  
+  {
+    name : "b2",
+    y0 : 200
+  }
+];
+
+let rects = svg
+  .selectAll("rect")
+  .data(elementos)
+  .join("rect")
+  .attr("x", 140)
+  .attr("y", d => d.y0)
+  .classed("bottom", d => d.y0 == 200)
+  .attr("width", 20)
+  .attr("height", 20);
+
+const f = 0.011;
+
+const atualiza_tick = function() {
+  rects
+    .attr("x", 140) 
+    .attr("y", d => d.y);
+};
+
+const carga = -Math.pow(20, 2.0)*f;
+
+const simulation = d3.forceSimulation()
+  .velocityDecay(0.2)
+  .force('y', d3.forceY().strength(f).y(200))
+  .force('charge', d3.forceManyBody().strength(carga))
+  .on('tick', atualiza_tick);
+
+simulation.stop();
+simulation.nodes(elementos);
+
+elementos.forEach(d => {
+  d.y = d.y0
+  if (d.y == 200) d.fy = 200;
+});
+
+const inicia = d3.select("#inicia");
+
+const reset = d3.select("#reset");
+
+inicia.on("click", function() {
+  simulation.alpha(1).restart();
+});
+
+
+reset.on("click", function() {
+  elementos.forEach(d => {
+    d.y = d.y0
+  })
+  simulation.stop();
+  rects
+    .transition()
+    .duration(1000)
+    .attr("y", d => d.y0);
+});
+
+
+  </script>
+</body>
+</html>
