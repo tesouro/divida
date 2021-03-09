@@ -1,0 +1,29 @@
+* {
+    box-sizing: border-box;
+}
+
+body {
+
+    margin: 0;
+
+}
+
+.inner-container {
+
+    max-width: 32rem;
+    margin: 0 auto;
+    background-color: blanchedalmond;
+
+}
+
+.svg-container {
+
+    outline: 1px solid royalblue;
+
+}
+
+svg {
+
+    background-color: floralwhite;
+    width: 100%;
+}
