@@ -19,11 +19,14 @@ body {
 .svg-container {
 
     outline: 1px solid royalblue;
+    max-width: 100%;
+    margin: 0 auto;
 
 }
 
 svg {
 
-    background-color: floralwhite;
     width: 100%;
+    background-color: floralwhite;
+
 }
