@@ -21,6 +21,7 @@ body {
     outline: 1px solid royalblue;
     max-width: 100%;
     margin: 0 auto;
+    margin-bottom: 10px;
 
 }
 
@@ -28,5 +29,13 @@ svg {
 
     width: 100%;
     background-color: floralwhite;
+
+}
+
+/* vis */
+
+rect.estoque {
+
+    fill: goldenrod;
 
 }
