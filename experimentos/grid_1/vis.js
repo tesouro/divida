@@ -38,6 +38,15 @@ const vis = {
 
     grid : {
 
+        ultima_posicao : {
+
+            x : null,
+            y : null,
+            unidade : null,
+            index : null
+
+        },
+
         calcula : function(valor) {
 
             const qde_unidades = Math.round(valor/vis.params.unidade.valor);
@@ -67,6 +76,15 @@ const vis = {
 
         },
 
+        pega_ultima_posicao : function() {
+
+            this.ultima_posicao.x = ( (vis.dims.qde_unidades - 1) % vis.params.unidade.qde_por_linha ) + 1;
+            this.ultima_posicao.y = Math.floor( (vis.dims.qde_unidades - 1) / vis.params.unidade.qde_por_linha ) + 1;
+            this.ultima_posicao.unidade = vis.dims.qde_unidades;
+            this.ultima_posicao.index = vis.dims.qde_unidades - 1;
+
+        },
+
         cria_dataset : function() {
 
             for (let unidade = 1; unidade <= vis.dims.qde_unidades; unidade++) {
@@ -81,7 +99,7 @@ const vis = {
 
             }
 
-
+            this.pega_ultima_posicao();
 
         },
 
