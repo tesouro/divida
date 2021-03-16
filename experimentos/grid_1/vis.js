@@ -4,7 +4,7 @@ const vis = {
 
         unidade : {
             
-            valor: +1e9,
+            valor: +5e9,
             tamanho: 10,
             margem: 4,
             qde_por_linha : 20
@@ -20,6 +20,12 @@ const vis = {
         svg : "svg",
         container : ".svg-container"
     
+    },
+
+    selections : {
+
+        rects_divida : null
+
     },
 
     dims : {
@@ -103,6 +109,46 @@ const vis = {
 
         },
 
+        registra_pagamento : function(valor, posicao_inicial) {
+
+            const qde_unidades = Math.round(valor/vis.params.unidade.valor);
+
+            console.log("Para este pagamento de ", valor, ", apagaremos ", qde_unidades, " quadradinhos.");
+
+            // acha o index do elemento inicial no dataset
+
+            const index_primeiro = vis.data.divida
+              .map(elemento => elemento.unidade)
+              .indexOf(posicao_inicial)
+            ;
+
+            const elementos_removidos = vis.data.divida.splice(index_primeiro, qde_unidades);
+
+            console.log("Foram removidos, a partir do index ", index_primeiro, ": ", elementos_removidos);
+
+            // atualiza data join
+
+            vis.selections.rects_divida
+              .data(vis.data.divida, d => d.unidade)
+              .exit()
+              .classed("estoque", false) // para a transicao funcionar (estoque define a cor com style)
+              .attr("fill", "goldenrod")  // mesma coisa
+              .attr("opacity", 1)     // mesma coisa
+              .transition()
+              .duration(1000)
+              .attr("fill", "blue")
+              .attr("stroke", "blue")
+              .attr("stroke-width", 3)
+              .transition()
+              .delay(1000)
+              .duration(1000)
+              .attr("opacity", 0)
+              .remove();
+
+        }
+
+
+
     },
 
     draw : {
@@ -115,7 +161,7 @@ const vis = {
 
                     const x = (pos_x - 1)*(vis.params.unidade.tamanho + vis.params.unidade.margem) + vis.params.unidade.margem;
 
-                    console.log(pos_x, x);
+                    //console.log(pos_x, x);
 
                     return x
 
@@ -125,7 +171,7 @@ const vis = {
 
                     const y = vis.dims.altura_necessaria - pos_y*(vis.params.unidade.tamanho + vis.params.unidade.margem);
 
-                    console.log(pos_y, y)
+                    //console.log(pos_y, y)
 
                     return y
 
@@ -140,11 +186,12 @@ const vis = {
 
             const svg = d3.select(vis.refs.svg);
 
-            svg
+            vis.selections.rects_divida = svg
               .selectAll("rect")
-              .data(vis.data.divida)
+              .data(vis.data.divida, d => d.unidade)
               .join("rect")
               .classed("estoque", true)
+              .attr("data-unidade", d => d.unidade)
               .attr("x", d => vis.draw.components.scales.x(d.pos_x))
               .attr("y", d => vis.draw.components.scales.y(d.pos_y))
               .attr("width", vis.params.unidade.tamanho)
