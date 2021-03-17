@@ -151,8 +151,10 @@ const vis = {
 
             // atualiza data join
 
+            vis.selections.rects_divida = vis.selections.rects_divida
+              .data(vis.data.divida, d => d.unidade);
+
             vis.selections.rects_divida
-              .data(vis.data.divida, d => d.unidade)
               .exit()
               .classed("estoque", false) // para a transicao funcionar (estoque define a cor com style)
               .attr("fill", "goldenrod")  // mesma coisa
@@ -169,7 +171,18 @@ const vis = {
               .remove()
             ;
 
-            
+            // desloca
+
+            vis.selections.rects_divida
+              .filter(datum => datum.pos_y >= nro_linha_incompleta)
+              .transition()
+              .delay(2000)
+              .transition(1000)
+              .attr("y", function(d) {
+                  const nova_pos_y = d.pos_y - vetor_deslocamento[d.pos_x - 1];
+                  d.pos_y = nova_pos_y;
+                  return vis.draw.components.scales.y(nova_pos_y)
+              });
 
         }
 
