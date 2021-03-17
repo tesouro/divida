@@ -122,6 +122,29 @@ const vis = {
               .indexOf(posicao_inicial)
             ;
 
+            // linha do primeiro a ser removido
+            const linha_primeiro = vis.data.divida[index_primeiro].pos_y;
+            const qde_linhas_completas = Math.floor(qde_unidades / vis.params.unidade.qde_por_linha);
+            const nro_linha_incompleta = linha_primeiro + qde_linhas_completas;
+            const primeira_posicao_da_linha_incompleta = qde_unidades % vis.params.unidade.qde_por_linha;
+            
+
+            console.log(primeira_posicao_da_linha_incompleta, qde_linhas_completas);
+
+            let vetor_deslocamento = [];
+
+            for (let i = 0; i <= vis.params.unidade.qde_por_linha - 1; i++) {
+
+                if (i >= primeira_posicao_da_linha_incompleta) {
+                    vetor_deslocamento[i] = qde_linhas_completas;
+                } else {
+                    vetor_deslocamento[i] = qde_linhas_completas + 1
+                }
+
+            }
+
+            console.log(vetor_deslocamento);
+
             const elementos_removidos = vis.data.divida.splice(index_primeiro, qde_unidades);
 
             console.log("Foram removidos, a partir do index ", index_primeiro, ": ", elementos_removidos);
@@ -143,7 +166,10 @@ const vis = {
               .delay(1000)
               .duration(1000)
               .attr("opacity", 0)
-              .remove();
+              .remove()
+            ;
+
+            
 
         }
 
