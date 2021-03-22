@@ -109,6 +109,20 @@ const vis = {
 
         },
 
+        registra_emissao : function(valor) {
+
+            const qde_unidades = Math.round(valor/vis.params.unidade.valor);
+            console.log("Para esta emissão de ", valor, ", precisaremos de ", qde_unidades, " quadradinhos.");
+
+            const ultimo_elemento = vis.data.divida.slice(-1)[0];
+
+            console.log("o ultimo elemento está em ", ultimo_elemento.pos_x, ultimo_elemento.pos_y);
+
+
+
+
+        },
+
         registra_pagamento : function(valor, posicao_inicial) {
 
             const qde_unidades = Math.round(valor/vis.params.unidade.valor);
@@ -149,10 +163,13 @@ const vis = {
 
             console.log("Foram removidos, a partir do index ", index_primeiro, ": ", elementos_removidos);
 
+
             // atualiza data join
 
             vis.selections.rects_divida = vis.selections.rects_divida
               .data(vis.data.divida, d => d.unidade);
+
+            // remove rects pagos
 
             vis.selections.rects_divida
               .exit()
@@ -240,6 +257,12 @@ const vis = {
     },
 
     control : {
+
+        state : {
+
+            ultima_linha : null,
+
+        },
 
         init : function() {
 
