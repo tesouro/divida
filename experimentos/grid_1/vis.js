@@ -11,7 +11,9 @@ const vis = {
 
         },
 
-        espaco_inicial: 400
+        espaco_inicial: 400,
+
+        posicoes_linha_completa : []
 
     },
 
@@ -115,9 +117,37 @@ const vis = {
             console.log("Para esta emissão de ", valor, ", precisaremos de ", qde_unidades, " quadradinhos.");
 
             const ultimo_elemento = vis.data.divida.slice(-1)[0];
+            const nro_ultima_linha = ultimo_elemento.pos_y;
 
             console.log("o ultimo elemento está em ", ultimo_elemento.pos_x, ultimo_elemento.pos_y);
 
+            const ultima_linha = vis.data.divida.filter(d => d.pos_y == nro_ultima_linha);
+            const proxima_linha = ultima_linha + 1;
+            const posicoes_ultima_linha = ultima_linha.map(d => d.pos_x);
+
+
+            // avalia o lado por onde começar a completar
+
+            const lado_a_completar = posicoes_ultima_linha.includes(1) ?
+                                     "direita" :
+                                     "esquerda";
+
+
+            console.log("posicoes da ultima linha: ", posicoes_ultima_linha, ", lado a completar: ", lado_a_completar);
+
+            const linha_completa = vis.params.posicoes_linha_completa;
+
+            console.log(linha_completa);
+
+            // faz a diferença da linha completa para a linha que já existe.
+
+            const posicoes_vazias = linha_completa.filter(
+                
+                d => !posicoes_ultima_linha.includes(d)
+
+                );
+
+            console.log(posicoes_vazias);
 
 
 
@@ -256,6 +286,24 @@ const vis = {
         }
     },
 
+    utils : {
+
+        gera_posicoes_linha_completa : function() {
+
+
+            const qde_elementos_linha = vis.params.unidade.qde_por_linha;
+            const pos = vis.params.posicoes_linha_completa;
+
+            for (let i = 1; i <= qde_elementos_linha; i++) {
+
+                pos.push(i);
+
+            }
+
+        }
+
+    },
+
     control : {
 
         state : {
@@ -269,6 +317,7 @@ const vis = {
             vis.grid.calcula(+4.8e12);
             vis.grid.dimensiona_container();
             vis.grid.cria_dataset();
+            vis.utils.gera_posicoes_linha_completa();
             vis.draw.desenhas_rects();
 
         }
