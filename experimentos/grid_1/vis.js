@@ -176,7 +176,7 @@ const vis = {
             vis.selections.rects_divida
               .filter(datum => datum.pos_y >= nro_linha_incompleta)
               .transition()
-              .delay(2000)
+              .delay(2500)
               .transition(1000)
               .attr("y", function(d) {
                   const nova_pos_y = d.pos_y - vetor_deslocamento[d.pos_x - 1];
