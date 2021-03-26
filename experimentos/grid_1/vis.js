@@ -26,7 +26,8 @@ const vis = {
 
     selections : {
 
-        rects_divida : null
+        rects_divida : null,
+        rects_ultima_emissao : null
 
     },
 
@@ -147,7 +148,63 @@ const vis = {
 
                 );
 
-            console.log(posicoes_vazias);
+            const qde_posicoes_vazias = posicoes_vazias.length;
+
+            const linhas_completas = 
+              qde_unidades > qde_posicoes_vazias ?
+              Math.floor((qde_unidades - qde_posicoes_vazias)/vis.params.unidade.qde_por_linha) :
+              0;
+
+            const qde_posicoes_ultima_linha = (qde_unidades - qde_posicoes_vazias) % vis.params.unidade.qde_por_linha;
+
+            console.log("Precisamos de ", linhas_completas, " linhas além da linha incompleta. Posições vazias: ", posicoes_vazias);
+
+            // cálculo dos dados dos quadradinhos da emissão
+
+            function calcula_qde_linhas(dimensao) {
+
+                return Math.floor((dimensao - vis.params.unidade.margem) / (vis.params.unidade.tamanho + vis.params.unidade.margem))
+
+            }
+            // é o contrário da outra funcao. por em .utils?
+
+            const ultima_linha_possivel = calcula_qde_linhas(vis.dims.altura_necessaria)
+
+            const svg = d3.select(vis.refs.svg);
+
+            svg
+              .append("rect")
+              .attr("y", vis.draw.components.scales.y(ultima_linha_possivel))
+              .attr("x", vis.draw.components.scales.x(1))
+              .attr("width", vis.params.unidade.tamanho)
+              .attr("height", vis.params.unidade.tamanho)
+              .attr("fill", "red");
+
+
+
+            let linha = ultima_linha_possivel;
+
+            const dados_emissao = [];
+
+            const ultimo_index = ultimo_elemento.unidade;
+
+            let unidade_atual = ultimo_index + qde_unidades;
+
+            // ultima linha (de baixo para cima)
+
+            // const x_inicial = 
+
+            dados_emissao.push()
+
+            
+
+
+
+
+
+
+
+
 
 
 
