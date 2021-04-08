@@ -116,19 +116,26 @@ const vis = {
 
         registra_emissao : function(valor) {
 
+            const qde_por_linha = vis.params.unidade.qde_por_linha;
+
             const qde_unidades = Math.round(valor/vis.params.unidade.valor);
             console.log("Para esta emissão de ", valor, ", precisaremos de ", qde_unidades, " quadradinhos.");
 
-            const ultimo_elemento = vis.data.divida.slice(-1)[0];
-            const nro_ultima_linha = ultimo_elemento.pos_y;
-            const indice_ultimo_elemento = ultimo_elemento.unidade;
+            // dados da última linha preenchida do estoque
 
-            console.log("o ultimo elemento está em ", ultimo_elemento.pos_x, ultimo_elemento.pos_y);
+            const ultimo_elemento_atual = vis.data.divida.slice(-1)[0];
+            const ultima_linha_atual = ultimo_elemento_atual.pos_y;
+            const indice_ultimo_elemento_estoque = ultimo_elemento_atual.unidade;
 
-            const ultima_linha = vis.data.divida.filter(d => d.pos_y == nro_ultima_linha);
-            const proxima_linha = ultima_linha + 1;
-            const posicoes_ultima_linha = ultima_linha.map(d => d.pos_x);
+            console.log("o ultimo elemento está em ", ultimo_elemento_atual);
 
+            // lista dos elementos dessa última linha atual
+
+            const elementos_da_ultima_linha = vis.data.divida.filter(d => d.pos_y == ultima_linha_atual);
+            const qde_elementos_ultima_linha = elementos_da_ultima_linha.length;
+            const posicoes_ultima_linha = elementos_da_ultima_linha.map(d => d.pos_x);
+
+            console.log("A última linha do estoque atualmente tem ", qde_elementos_ultima_linha);
 
             // avalia o lado por onde começar a completar
 
@@ -136,108 +143,142 @@ const vis = {
                 "esquerda" :
                 "direita"  ;
 
+            const posicoes_linha_completa = vis.params.posicoes_linha_completa;
 
-            console.log("posicoes da ultima linha: ", posicoes_ultima_linha, ", lado a completar: ", lado_a_completar);
-
-            const linha_completa = vis.params.posicoes_linha_completa;
-
-            console.log(linha_completa);
+            console.log(posicoes_linha_completa);
 
             // faz a diferença da linha completa para a última linha
 
-            const posicoes_vazias = linha_completa.filter(
+            const posicoes_vazias_ultima_linha = posicoes_linha_completa.filter(
                 
                 d => !posicoes_ultima_linha.includes(d)
 
-                );
+            );
 
-            const qde_posicoes_vazias = posicoes_vazias.length;
+            const qde_posicoes_vazias = posicoes_vazias_ultima_linha.length;
+            const qde_a_completar = 
+              (qde_unidades > qde_posicoes_vazias) ? 
+              qde_posicoes_vazias : 
+              qde_unidades;
 
-            // quantas linhas serão necessárias
+            // o conjunto de elementos da emissão vai ter, em geral: 
+            // * uma linha com os elementos que faltam ser preenchidos na última linha atual
+            // * n linhas completas
+            // * uma linha incompleta com os elementos remanescentes
 
-            const linhas_completas = 
+            const qde_linhas_completas = 
               qde_unidades > qde_posicoes_vazias ?
-              Math.floor((qde_unidades - qde_posicoes_vazias)/vis.params.unidade.qde_por_linha) :
+              Math.floor((qde_unidades - qde_posicoes_vazias)/qde_por_linha) :
               0;
-            
-            console.log("calculo", qde_unidades, qde_posicoes_vazias, linhas_completas)
 
-            const qde_posicoes_ultima_linha_nova = (qde_unidades - qde_posicoes_vazias) % vis.params.unidade.qde_por_linha;
+            const qde_elementos_remanescentes = (qde_unidades - qde_a_completar) % qde_por_linha;
 
-            console.log("Precisamos de ", linhas_completas, " linhas além da linha incompleta. Posições vazias: ", posicoes_vazias, ". Linha final no topo: ", qde_posicoes_ultima_linha_nova);
+            // resumo da Ópera
 
-            // vamos montar o dataset da emissão, de trás para a frente
+            const tem_posicoes_a_completar = qde_a_completar > 0;
+            const tem_linhas_completas = qde_linhas_completas > 0;
+            const tem_elementos_remanescentes = qde_elementos_remanescentes > 0;
+
+            console.log( "\n",
+                "Tem posicoes a completar? ", tem_posicoes_a_completar, qde_a_completar,"\n",
+                "Tem linhas completas? ", tem_linhas_completas, qde_linhas_completas, "\n",
+                "Tem elementos remanescentes? ", tem_elementos_remanescentes, qde_elementos_remanescentes
+            );
+
+            const qde_linhas_emissao = 
+              tem_posicoes_a_completar + // convertido para 0 ou 1
+              qde_linhas_completas + 
+              tem_elementos_remanescentes; // convertido para 0 ou 1
+
+            console.log("A emissão vai ter ", qde_linhas_emissao, " linhas.")
+
+            // ultima linha possivel no grid
 
             const ultima_linha_possivel_grid = vis.utils.calcula_qde_linhas(vis.dims.altura_necessaria);
 
-            let linha = ultima_linha_possivel_grid;
-            console.log("ultima linha possivel", linha)
-            let unidade_atual = indice_ultimo_elemento + qde_unidades - qde_posicoes_ultima_linha_nova + 1;
-            // seria o primeiro da linha
+            // primeira linha a ser preenchida na emissão, de baixo para cima
 
-            const dados_emissao = [];
-            let posicao_x_atual;
+            const nro_primeira_linha_emissao = ultima_linha_possivel_grid - qde_linhas_emissao + 1;
 
-            // vamos começar pela primeira linha incompleta do alto para baixo
+            // vamos montar o novo dataset
 
-            if (qde_posicoes_ultima_linha_nova > 0) {
+            const dataset_emissao = [];
 
-                const ajuste_lado = 
+            let linha_atual = nro_primeira_linha_emissao;
+            let indice_atual = indice_ultimo_elemento_estoque + 1;
+
+            // primeiro as posições a completar na última linha do estoque
+
+            if (tem_posicoes_a_completar) {
+
+                const ajuste_lado =  
                   lado_a_completar == "esquerda" ?
                   0 : 
-                  vis.params.unidade.qde_por_linha - qde_posicoes_ultima_linha_nova + 1;
+                  qde_por_linha - qde_elementos_ultima_linha;
 
-                for (let i = 1; i<= qde_posicoes_ultima_linha_nova; i++) {
+                for (let i = 1; i <= qde_a_completar; i++) {
 
                     const elem = {
 
+                        unidade : indice_atual,
                         pos_x : i + ajuste_lado,
-                        pos_y : linha,
-                        unidade : unidade_atual,
+                        pos_y : linha_atual,
 
                     }
 
-                    dados_emissao.push(elem);
+                    dataset_emissao.push(elem);
 
-                    unidade_atual++
+                    indice_atual++;
+
                 }
+
+                linha_atual++;
 
             }
 
-            // agora as linhas completas
+            // agora vamos para as linhas completas, se houver
 
-            if (linhas_completas > 0) {
+            if (tem_linhas_completas) {
 
-                const qde_unidade_linhas_completas = linhas_completas * vis.params.unidade.qde_por_linha;
-                const primeira_unidade_linhas_completas = unidade_atual - qde_posicoes_ultima_linha_nova - qde_unidade_linhas_completas;
-                
-                unidade_atual = primeira_unidade_linhas_completas;
-                linha = linha - linhas_completas + 1;
-                const primeira_linha_completa = linha;
-    
-                for (let i = 1; i <= qde_unidade_linhas_completas; i++) {
+                //const ultima_linha_completa = linha_atual + qde_linhas_completas - 1;
+
+                //while (linha_atual <= ultima_linha_completa) {
+
+                //}
+
+                const qde_unidades_em_linhas_completas = qde_linhas_completas * qde_por_linha;
+
+                for (let i = 1; i <= qde_unidades_em_linhas_completas; i++) {
     
                     const elem = {
     
-                        unidade : unidade_atual,
-                        pos_x : ( (i - 1) % vis.params.unidade.qde_por_linha ) + 1,
-                        pos_y : linha
+                        unidade : indice_atual,
+                        pos_x : ( (i - 1) % qde_por_linha ) + 1,
+                        pos_y : linha_atual
     
                     }
     
-                    if ( i % vis.params.unidade.qde_por_linha == 0 ) {
+                    if ( i % qde_por_linha == 0 ) {
     
-                        linha++
+                        linha_atual++
     
                     }
     
-                    unidade_atual ++
+                    indice_atual ++
     
-                    dados_emissao.push(elem);
+                    dataset_emissao.push(elem);
     
-                }
+                }  
 
             }
+
+            // por fim, os elementos remanescentes, se houver
+
+            if (tem_elementos_remanescentes) {
+
+
+            }
+
 
             // e agora a linha que completa a última
 
