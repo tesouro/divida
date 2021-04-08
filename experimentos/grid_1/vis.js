@@ -140,12 +140,12 @@ const vis = {
             // avalia o lado por onde começar a completar
 
             const lado_a_completar = posicoes_ultima_linha.includes(1) ?
-                "esquerda" :
-                "direita"  ;
+                "direita" :
+                "esquerda";
+
+            console.log(lado_a_completar);
 
             const posicoes_linha_completa = vis.params.posicoes_linha_completa;
-
-            console.log(posicoes_linha_completa);
 
             // faz a diferença da linha completa para a última linha
 
@@ -276,54 +276,80 @@ const vis = {
 
             if (tem_elementos_remanescentes) {
 
+                const ajuste_lado =  
+                  lado_a_completar == "esquerda" ?
+                  0 : 
+                  qde_por_linha - qde_elementos_remanescentes;
+
+                for (let i = 1; i <= qde_elementos_remanescentes; i++) {
+
+                    const elem = {
+
+                        unidade : indice_atual,
+                        pos_x : i + ajuste_lado,
+                        pos_y : linha_atual,
+
+                    }
+
+                    dataset_emissao.push(elem);
+
+                    indice_atual++;
+
+                }
 
             }
 
+            console.log("Dados emissão: ", dataset_emissao);
 
-            // e agora a linha que completa a última
+            console.log("Diferença de linhas", );
 
-            if (qde_posicoes_vazias > 0) {
+            const deslocamento_necessario = nro_primeira_linha_emissao - ultima_linha_atual - 1 + tem_posicoes_a_completar; // se tiver posicoes a completar, tem que deslocar mais um
 
-                const ajuste_lado_primeira = 
-                lado_a_completar == "esquerda" ?
-                0 : 
-                vis.params.unidade.qde_por_linha - qde_posicoes_vazias + 1;
-  
-              unidade_atual = indice_ultimo_elemento + 1;
-              linha = linha-1;
-  
-              for (let i = 1; i <= qde_posicoes_vazias; i++) {
-  
-                  const elem = {
-  
-                      pos_x : i + ajuste_lado_primeira,
-                      pos_y : linha,
-                      unidade : unidade_atual,
-  
-                  }
-  
-                  dados_emissao.push(elem);
-  
-                  unidade_atual++
-  
-              }
 
-            }
+            // refatorar isso
 
-            console.log("Dados emissão: ", dados_emissao);
-
+            // fazer funções de renderização separadas?
 
             const svg = d3.select(vis.refs.svg);
 
+
+            vis.selections.rects_ultima_emissao = 
             svg
               .selectAll("rect.emissao")
-              .data(dados_emissao)
+              .data(dataset_emissao)
               .join("rect")
+              .classed("emissao", true)
               .attr("y", d => vis.draw.components.scales.y(d.pos_y))
               .attr("x", d => vis.draw.components.scales.x(d.pos_x))
               .attr("width", vis.params.unidade.tamanho)
               .attr("height", vis.params.unidade.tamanho)
-              .attr("fill", "red");
+              .attr("fill", "red")
+              .transition()
+              .duration(1000)
+              .attr("opacity", 1);
+
+            vis.selections.rects_ultima_emissao
+              .transition()
+              .ease(d3.easeLinear)
+              .delay(1000)
+              .duration(deslocamento_necessario * 100)
+              .attr("y", d => vis.draw.components.scales.y(d.pos_y - deslocamento_necessario));
+
+            vis.selections.rects_ultima_emissao
+              .transition()
+              .delay(1000 + 1000 + deslocamento_necessario * 100)
+              .duration(500)
+              .attr("fill", "goldenrod");
+
+            vis.data.divida.push(...dataset_emissao);
+            svg
+            .selectAll("rect.emissao")
+            .classed("emissao", false);
+
+
+            
+
+            
 
 
 
