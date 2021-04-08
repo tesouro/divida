@@ -346,6 +346,11 @@ const vis = {
             .selectAll("rect.emissao")
             .classed("emissao", false);
 
+            //update no objeto selection que pega o estoque
+            //renumerar depois do pagamento?
+            //refatorar
+            //estilizar
+
 
             
 
