@@ -26,6 +26,8 @@ const vis = {
 
     selections : {
 
+        svg : null,
+        container : null,
         rects_divida : null,
         rects_ultima_emissao : null
 
@@ -119,6 +121,7 @@ const vis = {
 
             const ultimo_elemento = vis.data.divida.slice(-1)[0];
             const nro_ultima_linha = ultimo_elemento.pos_y;
+            const indice_ultimo_elemento = ultimo_elemento.unidade;
 
             console.log("o ultimo elemento está em ", ultimo_elemento.pos_x, ultimo_elemento.pos_y);
 
@@ -130,8 +133,8 @@ const vis = {
             // avalia o lado por onde começar a completar
 
             const lado_a_completar = posicoes_ultima_linha.includes(1) ?
-                                     "direita" :
-                                     "esquerda";
+                "esquerda" :
+                "direita"  ;
 
 
             console.log("posicoes da ultima linha: ", posicoes_ultima_linha, ", lado a completar: ", lado_a_completar);
@@ -140,7 +143,7 @@ const vis = {
 
             console.log(linha_completa);
 
-            // faz a diferença da linha completa para a linha que já existe.
+            // faz a diferença da linha completa para a última linha
 
             const posicoes_vazias = linha_completa.filter(
                 
@@ -150,65 +153,157 @@ const vis = {
 
             const qde_posicoes_vazias = posicoes_vazias.length;
 
+            // quantas linhas serão necessárias
+
             const linhas_completas = 
               qde_unidades > qde_posicoes_vazias ?
               Math.floor((qde_unidades - qde_posicoes_vazias)/vis.params.unidade.qde_por_linha) :
               0;
+            
+            console.log("calculo", qde_unidades, qde_posicoes_vazias, linhas_completas)
 
-            const qde_posicoes_ultima_linha = (qde_unidades - qde_posicoes_vazias) % vis.params.unidade.qde_por_linha;
+            const qde_posicoes_ultima_linha_nova = (qde_unidades - qde_posicoes_vazias) % vis.params.unidade.qde_por_linha;
 
-            console.log("Precisamos de ", linhas_completas, " linhas além da linha incompleta. Posições vazias: ", posicoes_vazias);
+            console.log("Precisamos de ", linhas_completas, " linhas além da linha incompleta. Posições vazias: ", posicoes_vazias, ". Linha final no topo: ", qde_posicoes_ultima_linha_nova);
 
-            // cálculo dos dados dos quadradinhos da emissão
+            // vamos montar o dataset da emissão, de trás para a frente
 
-            function calcula_qde_linhas(dimensao) {
+            const ultima_linha_possivel_grid = vis.utils.calcula_qde_linhas(vis.dims.altura_necessaria);
 
-                return Math.floor((dimensao - vis.params.unidade.margem) / (vis.params.unidade.tamanho + vis.params.unidade.margem))
+            let linha = ultima_linha_possivel_grid;
+            console.log("ultima linha possivel", linha)
+            let unidade_atual = indice_ultimo_elemento + qde_unidades - qde_posicoes_ultima_linha_nova + 1;
+            // seria o primeiro da linha
+
+            const dados_emissao = [];
+            let posicao_x_atual;
+
+            // vamos começar pela primeira linha incompleta do alto para baixo
+
+            if (qde_posicoes_ultima_linha_nova > 0) {
+
+                const ajuste_lado = 
+                  lado_a_completar == "esquerda" ?
+                  0 : 
+                  vis.params.unidade.qde_por_linha - qde_posicoes_ultima_linha_nova + 1;
+
+                for (let i = 1; i<= qde_posicoes_ultima_linha_nova; i++) {
+
+                    const elem = {
+
+                        pos_x : i + ajuste_lado,
+                        pos_y : linha,
+                        unidade : unidade_atual,
+
+                    }
+
+                    dados_emissao.push(elem);
+
+                    unidade_atual++
+                }
 
             }
-            // é o contrário da outra funcao. por em .utils?
 
-            const ultima_linha_possivel = calcula_qde_linhas(vis.dims.altura_necessaria)
+            // agora as linhas completas
+
+            if (linhas_completas > 0) {
+
+                const qde_unidade_linhas_completas = linhas_completas * vis.params.unidade.qde_por_linha;
+                const primeira_unidade_linhas_completas = unidade_atual - qde_posicoes_ultima_linha_nova - qde_unidade_linhas_completas;
+                
+                unidade_atual = primeira_unidade_linhas_completas;
+                linha = linha - linhas_completas + 1;
+                const primeira_linha_completa = linha;
+    
+                for (let i = 1; i <= qde_unidade_linhas_completas; i++) {
+    
+                    const elem = {
+    
+                        unidade : unidade_atual,
+                        pos_x : ( (i - 1) % vis.params.unidade.qde_por_linha ) + 1,
+                        pos_y : linha
+    
+                    }
+    
+                    if ( i % vis.params.unidade.qde_por_linha == 0 ) {
+    
+                        linha++
+    
+                    }
+    
+                    unidade_atual ++
+    
+                    dados_emissao.push(elem);
+    
+                }
+
+            }
+
+            // e agora a linha que completa a última
+
+            if (qde_posicoes_vazias > 0) {
+
+                const ajuste_lado_primeira = 
+                lado_a_completar == "esquerda" ?
+                0 : 
+                vis.params.unidade.qde_por_linha - qde_posicoes_vazias + 1;
+  
+              unidade_atual = indice_ultimo_elemento + 1;
+              linha = linha-1;
+  
+              for (let i = 1; i <= qde_posicoes_vazias; i++) {
+  
+                  const elem = {
+  
+                      pos_x : i + ajuste_lado_primeira,
+                      pos_y : linha,
+                      unidade : unidade_atual,
+  
+                  }
+  
+                  dados_emissao.push(elem);
+  
+                  unidade_atual++
+  
+              }
+
+            }
+
+            console.log("Dados emissão: ", dados_emissao);
+
 
             const svg = d3.select(vis.refs.svg);
 
             svg
-              .append("rect")
-              .attr("y", vis.draw.components.scales.y(ultima_linha_possivel))
-              .attr("x", vis.draw.components.scales.x(1))
+              .selectAll("rect.emissao")
+              .data(dados_emissao)
+              .join("rect")
+              .attr("y", d => vis.draw.components.scales.y(d.pos_y))
+              .attr("x", d => vis.draw.components.scales.x(d.pos_x))
               .attr("width", vis.params.unidade.tamanho)
               .attr("height", vis.params.unidade.tamanho)
               .attr("fill", "red");
 
 
 
-            let linha = ultima_linha_possivel;
+            // let linha = ultima_linha_possivel;
 
-            const dados_emissao = [];
-
-            const ultimo_index = ultimo_elemento.unidade;
-
-            let unidade_atual = ultimo_index + qde_unidades;
-
-            // ultima linha (de baixo para cima)
-
-            // const x_inicial = 
-
-            dados_emissao.push()
-
-            
+            // const dados_emissao = [];
 
 
 
 
 
+            // // ultima linha (de baixo para cima)
 
+            // // const x_inicial = 
 
-
-
+            // dados_emissao.push()
 
 
         },
+
+
 
         registra_pagamento : function(valor, posicao_inicial) {
 
@@ -356,6 +451,12 @@ const vis = {
                 pos.push(i);
 
             }
+
+        },
+
+        calcula_qde_linhas : function(dimensao) {
+
+            return Math.floor((dimensao - vis.params.unidade.margem) / (vis.params.unidade.tamanho + vis.params.unidade.margem))
 
         }
 
