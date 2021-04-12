@@ -217,7 +217,7 @@ const vis = {
                 const ajuste_lado =  
                   lado_a_completar == "esquerda" ?
                   0 : 
-                  qde_por_linha - qde_elementos_ultima_linha;
+                  qde_elementos_ultima_linha;
 
                 for (let i = 1; i <= qde_a_completar; i++) {
 
@@ -333,12 +333,18 @@ const vis = {
               .duration(1000)
               .attr("opacity", 1);
 
+            // move para o estoque principal e atualiza as posições.
+
             vis.selections.rects_ultima_emissao
               .transition()
               .ease(d3.easeLinear)
               .delay(1000)
               .duration(deslocamento_necessario * 100)
-              .attr("y", d => vis.draw.components.scales.y(d.pos_y - deslocamento_necessario));
+              .attr("y", d => {
+                  const nova_pos_y = d.pos_y - deslocamento_necessario;
+                  d.pos_y = nova_pos_y;
+                  return vis.draw.components.scales.y(d.pos_y)
+              });
 
             vis.selections.rects_ultima_emissao
               .transition()
