@@ -355,10 +355,16 @@ const vis = {
             vis.data.divida.push(...dataset_emissao);
 
             vis.selections.rects_ultima_emissao
-              .classed("emissao", false);
+              .classed("emissao", false)
+              .classed("estoque", true);
+
+            console.log("Selecao ultima emissao", vis.selections.rects_ultima_emissao);
+            console.log("Selecao rects, antes do merge", vis.selections.rects_divida);
 
             vis.selections.rects_divida = vis.selections.rects_divida
               .merge(vis.selections.rects_ultima_emissao);
+
+            console.log("Selecao rects, depois do merge", vis.selections.rects_divida);
 
         },
 
