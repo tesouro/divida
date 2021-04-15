@@ -66,6 +66,22 @@ h2 {
 
 }
 
+.vis p:first-of-type::before {
+
+    content: "";
+    display: block;
+    width: 10vw;
+    height: 1rem;
+    border-top: 2px solid var(--title-color);
+
+}
+
+.full-page {
+
+    height: 100vw;
+
+}
+
 .svg-container {
 
     outline: 10px solid var(--comp-color1);
