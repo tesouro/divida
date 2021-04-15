@@ -358,13 +358,10 @@ const vis = {
               .classed("emissao", false)
               .classed("estoque", true);
 
-            console.log("Selecao ultima emissao", vis.selections.rects_ultima_emissao);
-            console.log("Selecao rects, antes do merge", vis.selections.rects_divida);
+            // atualiza seleção
 
-            vis.selections.rects_divida = vis.selections.rects_divida
-              .merge(vis.selections.rects_ultima_emissao);
-
-            console.log("Selecao rects, depois do merge", vis.selections.rects_divida);
+            vis.selections.rects_divida = svg.selectAll("rect.estoque")
+              .data(vis.data.divida);
 
         },
 
