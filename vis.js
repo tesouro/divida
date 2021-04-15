@@ -4,9 +4,9 @@ const vis = {
 
         unidade : {
             
-            valor: +5e9,
+            valor: +10e9,
             tamanho: 10,
-            margem: 4,
+            margem: 2,
             qde_por_linha : 20
 
         },
@@ -42,6 +42,55 @@ const vis = {
     },
 
     data : {
+
+        infos : {
+
+            juros : {
+
+                com_emissao : 209,
+                com_outras  : 197,
+                total       : 406
+
+            },
+
+            vencimentos : {
+
+                com_emissao :  773,
+                com_outras  :  394,
+                total       : 1167
+
+            },
+
+            vazamento : {
+
+                resultado_bacen :  30,
+                outras_despesas : 737
+
+            },
+
+            outras_fontes : 591,
+
+            emissoes : {
+
+                refin : {
+
+                    principal : 773,
+                    juros     : 209
+
+                },
+
+                vazamento : 767
+
+            },
+
+            estoque : {
+
+                inicial : 4249,
+                final   : 5010
+
+            }
+
+        },
 
         divida : []
 
@@ -534,7 +583,7 @@ const vis = {
 
         init : function() {
 
-            vis.grid.calcula(+4.8e12);
+            vis.grid.calcula(vis.data.infos.estoque.inicial * 1e9);
             vis.grid.dimensiona_container();
             vis.grid.cria_dataset();
             vis.utils.gera_posicoes_linha_completa();
