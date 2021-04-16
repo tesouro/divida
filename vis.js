@@ -131,8 +131,8 @@ const vis = {
             const cont = d3.select(vis.refs.container);
             const svg = d3.select(vis.refs.svg);
 
-            cont.style("width", vis.dims.largura_necessaria + "px");
-            svg.style("height", vis.dims.altura_necessaria + "px");
+            //cont.style("width", vis.dims.largura_necessaria + "px");
+            //svg.style("height", vis.dims.altura_necessaria + "px");
 
         },
 
