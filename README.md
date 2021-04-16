@@ -32,3 +32,42 @@ y  |  x
 ```
 
 Sempre assumiremos que os pagamentos vão começar do primeiro elemento à esquerda de determinada linha. Com isso, em qualquer caso sempre teremos `n` linhas completas removidas, e no máximo `1` linha incompleta restante.
+
+
+E agora, fazer com greensock ou d3 puro?
+
+## Greensock
+
+```js
+
+const cont = d3.select(".svg-container");
+
+cont             
+    .selectAll("div.rect")
+    .data(vis.data.divida, d => d.unidade)
+    .join("div")
+    .classed("rect", true)
+    .style("position", "absolute")
+    .style("background-color", "coral")
+    .style("left", d => vis.draw.components.scales.x(d.pos_x) + "px" )
+    .style("top", d => vis.draw.components.scales.y(d.pos_y) +"px" )
+    .style("width", vis.params.unidade.tamanho + "px")
+    .style("height", vis.params.unidade.tamanho + "px")
+    .style("transform", "scale(0)");
+
+let anim = new TimelineLite({paused: true});
+
+anim.staggerTo("div.rect", 1, {
+  scale: 1,
+  ease: Back.easeOut,
+  stagger: {
+    grid: "auto",
+    from: "start",
+    axis: "y",
+    each: 0.08
+  }
+});
+
+anim.play(0);
+anim.reverse();
+
