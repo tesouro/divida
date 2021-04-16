@@ -75,7 +75,9 @@ h2, h3, h4 {
 
     outline: 10px solid var(--comp-color1);
     position: sticky;
+    z-index: -1;
     max-width: 100%;
+    width: 200px;
     margin: 0 auto;
     top: 5vh;
     height: 90vh;
@@ -103,6 +105,11 @@ svg {
 
     margin-top: 0;
 
+}
+
+.scroller-steps * {
+
+    background-color: var(--bkg-color);
 
 }
 

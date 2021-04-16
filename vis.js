@@ -5,13 +5,13 @@ const vis = {
         unidade : {
             
             valor: +10e9,
-            tamanho: 10,
+            tamanho: null,
             margem: 2,
-            qde_por_linha : 20
+            qde_por_linha : null
 
         },
 
-        espaco_inicial: 400,
+        espaco_inicial: 0,//400,
 
         posicoes_linha_completa : []
 
@@ -34,6 +34,13 @@ const vis = {
     },
 
     dims : {
+
+        svg : {
+
+            h : null,
+            w : null
+
+        },
 
         largura_necessaria : null,
         altura_necessaria : null,
@@ -107,10 +114,48 @@ const vis = {
 
         },
 
+        pega_tamanho_svg : function() {
+
+            const height = +d3.select("svg").style("height").slice(0,-2);
+            const width  = +d3.select("svg").style("width").slice(0,-2);
+
+            vis.dims.svg.h = height;
+            vis.dims.svg.w = width;
+
+        },
+
         calcula : function(valor) {
 
+            const margem = vis.params.unidade.margem;
+
             const qde_unidades = Math.round(valor/vis.params.unidade.valor);
-            const qde_linhas = Math.floor(qde_unidades / vis.params.unidade.qde_por_linha);
+
+            const area_unitaria = (
+                (vis.dims.svg.h - margem) * 
+                (vis.dims.svg.w - margem) ) / qde_unidades;
+
+            console.log("area", area_unitaria);
+
+            const dim_unitaria = Math.sqrt(area_unitaria);
+
+            console.log("dim_unitaria", dim_unitaria);
+            
+            const lado = Math.round(dim_unitaria - margem);
+
+            vis.params.unidade.tamanho = lado;
+
+            const qde_por_linha = Math.ceil((vis.dims.svg.w - vis.params.unidade.margem) / dim_unitaria);
+
+            vis.params.unidade.qde_por_linha = qde_por_linha;
+
+            const qde_linhas = Math.ceil((vis.dims.svg.h - vis.params.unidade.margem) / dim_unitaria);
+
+            console.log(qde_por_linha, qde_linhas);
+
+
+
+
+            //const qde_linhas = Math.floor(qde_unidades / vis.params.unidade.qde_por_linha);
 
             function dimensao_necessaria(qde_na_dimensao) {
 
@@ -131,7 +176,7 @@ const vis = {
             const cont = d3.select(vis.refs.container);
             const svg = d3.select(vis.refs.svg);
 
-            //cont.style("width", vis.dims.largura_necessaria + "px");
+            cont.style("width", vis.dims.largura_necessaria + "px");
             //svg.style("height", vis.dims.altura_necessaria + "px");
 
         },
@@ -243,7 +288,7 @@ const vis = {
 
             // ultima linha possivel no grid
 
-            const ultima_linha_possivel_grid = vis.utils.calcula_qde_linhas(vis.dims.altura_necessaria);
+            const ultima_linha_possivel_grid = vis.utils.calcula_qde_linhas(vis.dims.svg.h);//vis.dims.altura_necessaria);
 
             console.log("Ultima linha possível", ultima_linha_possivel_grid);
             // primeira linha a ser preenchida na emissão, de baixo para cima
@@ -508,7 +553,7 @@ const vis = {
 
                 x : function(pos_x) {
 
-                    const x = (pos_x - 1)*(vis.params.unidade.tamanho + vis.params.unidade.margem) + vis.params.unidade.margem;
+                    const x = (pos_x - 1) * (vis.params.unidade.tamanho + vis.params.unidade.margem) + vis.params.unidade.margem;
 
                     //console.log(pos_x, x);
 
@@ -518,7 +563,7 @@ const vis = {
 
                 y : function(pos_y) {
 
-                    const y = vis.dims.altura_necessaria - pos_y*(vis.params.unidade.tamanho + vis.params.unidade.margem);
+                    const y = vis.dims.svg.h - (pos_y) * (vis.params.unidade.tamanho + vis.params.unidade.margem);
 
                     //console.log(pos_y, y)
 
@@ -583,7 +628,8 @@ const vis = {
 
         init : function() {
 
-            vis.grid.calcula(vis.data.infos.estoque.inicial * 1e9);
+            vis.grid.pega_tamanho_svg();
+            vis.grid.calcula(vis.data.infos.estoque.final * 1e9);
             vis.grid.dimensiona_container();
             vis.grid.cria_dataset();
             vis.utils.gera_posicoes_linha_completa();
