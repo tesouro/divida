@@ -610,8 +610,8 @@ const vis = {
 
             vis.selections.rects_divida
               .transition()
-              .duration(50)
-              .delay((d,i) => d.pos_x * 50 + d.pos_y * 45)
+              .duration(100)
+              .delay((d,i) => d.pos_x * 10 + d.pos_y * 50)
               .attr("x", d => vis.draw.components.scales.x(d.pos_x))
               .attr("y", d => vis.draw.components.scales.y(d.pos_y))
               .attr("width", vis.params.unidade.tamanho)
