@@ -44,7 +44,8 @@ const vis = {
 
         largura_necessaria : null,
         altura_necessaria : null,
-        qde_unidades : null
+        qde_unidades : null,
+        qde_unidades_inicial : null
 
     },
 
@@ -95,7 +96,9 @@ const vis = {
                 inicial : 4249,
                 final   : 5010
 
-            }
+            },
+
+            pib: 7.4e12
 
         },
 
@@ -121,6 +124,16 @@ const vis = {
 
             vis.dims.svg.h = height;
             vis.dims.svg.w = width;
+
+        },
+
+        qde_unidades_estoque_inicial : function() {
+
+            const qde = Math.round(vis.data.infos.estoque.inicial*1e9/vis.params.unidade.valor);
+
+            vis.dims.qde_unidades_inicial = qde;
+
+            return qde;
 
         },
 
@@ -192,7 +205,11 @@ const vis = {
 
         cria_dataset : function() {
 
-            for (let unidade = 1; unidade <= vis.dims.qde_unidades; unidade++) {
+            const qde_estoque_inicial = vis.grid.qde_unidades_estoque_inicial();
+
+            console.log("Criando ", qde_estoque_inicial, " retangulos");    
+
+            for (let unidade = 1; unidade <= qde_estoque_inicial; unidade++) {
 
                 vis.data.divida[unidade-1] = {
 
@@ -629,7 +646,7 @@ const vis = {
         init : function() {
 
             vis.grid.pega_tamanho_svg();
-            vis.grid.calcula(vis.data.infos.estoque.final * 1e9);
+            vis.grid.calcula(vis.data.infos.pib); // vis.data.infos.estoque.final * 1e9);
             vis.grid.dimensiona_container();
             vis.grid.cria_dataset();
             vis.utils.gera_posicoes_linha_completa();
