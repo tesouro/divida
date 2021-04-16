@@ -603,6 +603,15 @@ const vis = {
               .join("rect")
               .classed("estoque", true)
               .attr("data-unidade", d => d.unidade)
+              .attr("x", d => vis.draw.components.scales.x(d.pos_x) + vis.params.unidade.tamanho/2)
+              .attr("y", d => vis.draw.components.scales.y(d.pos_y) + vis.params.unidade.tamanho/2)
+              .attr("width", 0)
+              .attr("height", 0);
+
+            vis.selections.rects_divida
+              .transition()
+              .duration(50)
+              .delay((d,i) => d.pos_x * 50 + d.pos_y * 45)
               .attr("x", d => vis.draw.components.scales.x(d.pos_x))
               .attr("y", d => vis.draw.components.scales.y(d.pos_y))
               .attr("width", vis.params.unidade.tamanho)
