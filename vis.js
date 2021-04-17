@@ -14,11 +14,10 @@ const vis = {
             
             tamanho: null, 
             qde_por_linha : null,
+            ultima_linha : null,
             posicoes_linha_completa : []
 
         },
-
-        
 
     },
 
@@ -126,6 +125,16 @@ const vis = {
 
     sizing : {
 
+        helpers : {
+
+            tamanho_necessario : function(qde_na_dimensao) {
+
+                return (qde_na_dimensao * (vis.params.calculados.tamanho + vis.params.iniciais.margem) + vis.params.iniciais.margem);
+    
+            }
+
+        },
+
         pega_tamanho_svg : function() {
 
             const height = +d3.select("svg").style("height").slice(0,-2);
@@ -133,6 +142,21 @@ const vis = {
 
             vis.dims.svg.h = height;
             vis.dims.svg.w = width;
+
+        },
+
+        calcula_dimensoes_necessarias : function(valor) {
+
+            const qde_unidades = vis.grid.helpers.calcula_qde_unidades(valor);
+            const qde_linhas = vis.params.calculados.ultima_linha;
+
+            vis.dims.altura_necessaria  = vis.sizing.helpers.tamanho_necessario(qde_linhas) + vis.params.iniciais.espaco_inicial;
+
+            vis.dims.largura_necessaria = vis.sizing.helpers.tamanho_necessario(vis.params.calculados.qde_por_linha);
+
+            vis.dims.qde_unidades       = qde_unidades;
+
+            console.log("Precisaremos de ", qde_unidades, " unidades, ", qde_linhas, " linhas, e uma largura de ", vis.dims.largura_necessaria, "px e uma altura de ", vis.dims.altura_necessaria, "px.");
 
         },
 
@@ -179,51 +203,29 @@ const vis = {
 
         },
 
-        calcula : function(valor) {
+        calcula_parametros : function(valor) {
 
             const margem = vis.params.iniciais.margem;
 
-            const qde_unidades = Math.round(valor/vis.params.iniciais.valor_unidade);
+            const qde_unidades = vis.grid.helpers.calcula_qde_unidades(valor);
 
             const area_unitaria = (
                 (vis.dims.svg.h - margem) * 
                 (vis.dims.svg.w - margem) ) / qde_unidades;
 
-            console.log("area", area_unitaria);
-
             const dim_unitaria = Math.sqrt(area_unitaria);
-
-            console.log("dim_unitaria", dim_unitaria);
             
             const lado = Math.round(dim_unitaria - margem);
 
-            vis.params.calculados.tamanho = lado;
-
             const qde_por_linha = Math.ceil((vis.dims.svg.w - vis.params.iniciais.margem) / dim_unitaria);
-
-            vis.params.calculados.qde_por_linha = qde_por_linha;
 
             const qde_linhas = Math.ceil((vis.dims.svg.h - vis.params.iniciais.margem) / dim_unitaria);
 
-            console.log(qde_por_linha, qde_linhas);
+            vis.params.calculados.tamanho = lado;
+            vis.params.calculados.qde_por_linha = qde_por_linha;
+            vis.params.calculados.ultima_linha = qde_linhas;
 
-
-
-
-            //const qde_linhas = Math.floor(qde_unidades / vis.params.calculados.qde_por_linha);
-
-            function dimensao_necessaria(qde_na_dimensao) {
-
-                return (qde_na_dimensao * (vis.params.calculados.tamanho + vis.params.iniciais.margem) + vis.params.iniciais.margem);
-
-            }
-
-            vis.dims.altura_necessaria  = dimensao_necessaria(qde_linhas) + vis.params.iniciais.espaco_inicial;
-            vis.dims.largura_necessaria = dimensao_necessaria(vis.params.calculados.qde_por_linha);
-            vis.dims.qde_unidades       = qde_unidades;
-
-            console.log("Precisaremos de ", qde_unidades, " unidades, ", qde_linhas, " linhas, e uma largura de ", dimensao_necessaria(vis.params.calculados.qde_por_linha), "px e uma altura de ", dimensao_necessaria(qde_linhas), "px.");
-
+            // em seguida, calcula parametros para redimensionamento
         },
 
         pega_ultima_posicao : function() {
@@ -686,9 +688,14 @@ const vis = {
 
         init : function() {
 
+            const valor = vis.data.infos.pib;
+            // dimensiona container para ficar equivalente ao tamanho do pib
+
             vis.sizing.pega_tamanho_svg();
-            vis.grid.calcula(vis.data.infos.pib); // vis.data.infos.estoque.final * 1e9);
+            vis.grid.calcula_parametros(valor); 
+            vis.sizing.calcula_dimensoes_necessarias(valor);
             vis.sizing.redimensiona_container();
+
             vis.grid.cria_dataset();
             vis.utils.gera_posicoes_linha_completa();
             vis.draw.desenhas_rects();
