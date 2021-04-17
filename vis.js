@@ -59,24 +59,25 @@ const vis = {
 
             juros : {
 
-                com_emissao : 209,
-                com_outras  : 197,
-                total       : 406
+                refin : 210,//209,
+                com_outras  : 200,//197,
+                total       : 410//406
 
             },
 
             vencimentos : {
 
-                com_emissao :  773,
-                com_outras  :  394,
-                total       : 1167
+                refin :  780,//773,
+                com_outras  :  400, //394,
+                total       : 1180//1167
 
             },
 
             vazamento : {
 
                 resultado_bacen :  30,
-                outras_despesas : 737
+                outras_despesas : 737,
+                total : 767
 
             },
 
@@ -97,7 +98,7 @@ const vis = {
 
             estoque : {
 
-                inicial : 4249,
+                inicial : 4250,//4249,
                 final   : 5010
 
             },
@@ -115,7 +116,8 @@ const vis = {
             juros_refin : null,
             vencimentos_outras_fontes : null,
             vencimentos_refin : null,
-            vazamento : null
+            vazamento : null,
+            grid_refin: null
 
         },
 
@@ -156,11 +158,44 @@ const vis = {
 
             vis.data.divida = vis.data.cria_dataset(vis.data.infos.estoque.inicial * 1e9);
 
-            // estoque inicial
-            vis.data.vetores.estoque_inicial = vis.data.cria_dataset(vis.data.infos.estoque.inicial * 1e9);
+            // estoque inicial sem pagamentos
+            vis.data.vetores.estoque_inicial = vis.data.cria_dataset(
+                (vis.data.infos.estoque.inicial - vis.data.infos.vencimentos.total) * 1e9);
 
-            
+            let ultimo_indice = vis.data.vetores.estoque_inicial.length;
 
+            // pagamentos com outras fontes
+            vis.data.vetores.vencimentos_outras_fontes = vis.data.cria_dataset(
+                vis.data.infos.vencimentos.com_outras * 1e9, posicao_inicial = ultimo_indice);
+
+            ultimo_indice += vis.data.vetores.vencimentos_outras_fontes.length;
+
+            // pagamentos refinanciamento
+            vis.data.vetores.vencimentos_refin = vis.data.cria_dataset(
+                vis.data.infos.vencimentos.refin * 1e9, posicao_inicial = ultimo_indice);
+
+            ultimo_indice += vis.data.vetores.vencimentos_refin.length;
+
+            // juros com outras fontes
+            vis.data.vetores.juros_outras_fontes = vis.data.cria_dataset(
+                vis.data.infos.juros.com_outras * 1e9, posicao_inicial = ultimo_indice);
+
+            ultimo_indice += vis.data.vetores.juros_outras_fontes.length;
+
+            // juros refinanciamento
+            vis.data.vetores.juros_refin = vis.data.cria_dataset(
+                vis.data.infos.juros.refin * 1e9, posicao_inicial = ultimo_indice);
+
+            ultimo_indice += vis.data.vetores.juros_refin.length;
+
+            // grid juros e vencimentos refinanciados
+            const ultimo_indice_estoque_sem_pgtos = vis.data.vetores.estoque_inicial.length;
+
+            vis.data.vetores.grid_refin = vis.data.cria_dataset(
+                (vis.data.infos.juros.refin + vis.data.infos.vencimentos.refin) * 1e9, 
+                posicao_inicial = ultimo_indice_estoque_sem_pgtos);
+
+        
         },
 
     },
@@ -240,6 +275,17 @@ const vis = {
 
                 return Math.round(valor/vis.params.iniciais.valor_unidade);
 
+            },
+
+            pega_coordenadas : function(indice) {
+
+                return ({
+
+                    pos_x : ( (indice - 1) % vis.params.calculados.qde_por_linha ) + 1,
+                    pos_y : Math.floor( (indice - 1) / vis.params.calculados.qde_por_linha ) + 1
+
+                })
+
             }
 
         },
@@ -277,6 +323,38 @@ const vis = {
             vis.params.calculados.ultima_linha = qde_linhas;
 
             // em seguida, calcula parametros para redimensionamento
+        },
+
+        cria_divs : function(nome) {
+
+            const cont = document.querySelector(vis.refs.container);
+
+            vis.data.vetores[nome].forEach(d => {
+
+                const new_div = document.createElement("div");
+
+                const props = Object.keys(d);
+
+                props.forEach(property => {
+
+                    new_div.dataset[property] = d[property]
+
+                })
+
+                new_div.dataset.tipo = nome;
+
+                new_div.style.height = vis.params.calculados.tamanho + "px";
+                new_div.style.width  = vis.params.calculados.tamanho + "px";
+                new_div.style.top    = vis.draw.components.scales.y(d.pos_y) + "px";
+                new_div.style.left   = vis.draw.components.scales.x(d.pos_x) + "px";
+
+                new_div.classList.add("quadradinho");
+
+                cont.appendChild(new_div);
+
+
+            });
+
         },
 
         registra_emissao : function(valor) {
