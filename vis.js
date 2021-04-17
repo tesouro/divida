@@ -119,7 +119,49 @@ const vis = {
 
         },
 
-        divida : []
+        divida : [],
+
+        cria_dataset : function(valor, posicao_inicial = 0) {
+
+            //const qde_estoque_inicial = vis.grid.qde_unidades_estoque_inicial();
+
+            const qde = vis.grid.helpers.calcula_qde_unidades(valor);
+
+            console.log("Criando array de ", qde, " retangulos"); 
+            
+            const dataset = [];
+
+            for (let unidade = 1; unidade <= qde; unidade++) {
+
+                const indice = unidade + posicao_inicial;
+
+                dataset[unidade-1] = {
+
+                    unidade : unidade,
+                    indice_geral : indice,
+                    pos_x : ( (indice - 1) % vis.params.calculados.qde_por_linha ) + 1,
+                    pos_y : Math.floor( (indice - 1) / vis.params.calculados.qde_por_linha ) + 1
+
+                }
+
+            }
+
+            vis.grid.ultima_posicao.set();
+
+            return dataset;
+
+        },
+
+        gera_datasets : function() {
+
+            vis.data.divida = vis.data.cria_dataset(vis.data.infos.estoque.inicial * 1e9);
+
+            // estoque inicial
+            vis.data.vetores.estoque_inicial = vis.data.cria_dataset(vis.data.infos.estoque.inicial * 1e9);
+
+            
+
+        },
 
     },
 
@@ -176,6 +218,15 @@ const vis = {
 
         ultima_posicao : {
 
+            set : function() {
+
+                this.x = ( (vis.dims.qde_unidades - 1) % vis.params.calculados.qde_por_linha ) + 1;
+                this.y = Math.floor( (vis.dims.qde_unidades - 1) / vis.params.calculados.qde_por_linha ) + 1;
+                this.unidade = vis.dims.qde_unidades;
+                this.index = vis.dims.qde_unidades - 1;
+
+            },
+
             x : null,
             y : null,
             unidade : null,
@@ -226,37 +277,6 @@ const vis = {
             vis.params.calculados.ultima_linha = qde_linhas;
 
             // em seguida, calcula parametros para redimensionamento
-        },
-
-        pega_ultima_posicao : function() {
-
-            this.ultima_posicao.x = ( (vis.dims.qde_unidades - 1) % vis.params.calculados.qde_por_linha ) + 1;
-            this.ultima_posicao.y = Math.floor( (vis.dims.qde_unidades - 1) / vis.params.calculados.qde_por_linha ) + 1;
-            this.ultima_posicao.unidade = vis.dims.qde_unidades;
-            this.ultima_posicao.index = vis.dims.qde_unidades - 1;
-
-        },
-
-        cria_dataset : function() {
-
-            const qde_estoque_inicial = vis.grid.qde_unidades_estoque_inicial();
-
-            console.log("Criando ", qde_estoque_inicial, " retangulos");    
-
-            for (let unidade = 1; unidade <= qde_estoque_inicial; unidade++) {
-
-                vis.data.divida[unidade-1] = {
-
-                    unidade : unidade,
-                    pos_x : ( (unidade - 1) % vis.params.calculados.qde_por_linha ) + 1,
-                    pos_y : Math.floor( (unidade - 1) / vis.params.calculados.qde_por_linha ) + 1
-
-                }
-
-            }
-
-            this.pega_ultima_posicao();
-
         },
 
         registra_emissao : function(valor) {
@@ -696,7 +716,7 @@ const vis = {
             vis.sizing.calcula_dimensoes_necessarias(valor);
             vis.sizing.redimensiona_container();
 
-            vis.grid.cria_dataset();
+            vis.data.gera_datasets();
             vis.utils.gera_posicoes_linha_completa();
             vis.draw.desenhas_rects();
 
