@@ -2,18 +2,23 @@ const vis = {
 
     params : {
 
-        unidade : {
-            
-            valor: +10e9,
-            tamanho: null,
+        iniciais : {
+
+            valor_unidade: +10e9,
             margem: 2,
-            qde_por_linha : null
+            espaco_inicial: 0,//400,
 
         },
 
-        espaco_inicial: 0,//400,
+        calculados : {
+            
+            tamanho: null, 
+            qde_por_linha : null,
+            posicoes_linha_completa : []
 
-        posicoes_linha_completa : []
+        },
+
+        
 
     },
 
@@ -102,7 +107,44 @@ const vis = {
 
         },
 
+        vetores : {
+
+            // formato elementos : { posx, posy, indice, tipo }
+
+            estoque_inicial : null,
+            juros_outras_fontes : null,
+            juros_refin : null,
+            vencimentos_outras_fontes : null,
+            vencimentos_refin : null,
+            vazamento : null
+
+        },
+
         divida : []
+
+    },
+
+    sizing : {
+
+        pega_tamanho_svg : function() {
+
+            const height = +d3.select("svg").style("height").slice(0,-2);
+            const width  = +d3.select("svg").style("width").slice(0,-2);
+
+            vis.dims.svg.h = height;
+            vis.dims.svg.w = width;
+
+        },
+
+        redimensiona_container : function() {
+
+            const cont = d3.select(vis.refs.container);
+            const svg = d3.select(vis.refs.svg);
+
+            cont.style("width", vis.dims.largura_necessaria + "px");
+            //svg.style("height", vis.dims.altura_necessaria + "px");
+
+        },
 
     },
 
@@ -117,19 +159,19 @@ const vis = {
 
         },
 
-        pega_tamanho_svg : function() {
+        helpers : {
 
-            const height = +d3.select("svg").style("height").slice(0,-2);
-            const width  = +d3.select("svg").style("width").slice(0,-2);
+            calcula_qde_unidades : function(valor) {
 
-            vis.dims.svg.h = height;
-            vis.dims.svg.w = width;
+                return Math.round(valor/vis.params.iniciais.valor_unidade);
+
+            }
 
         },
 
         qde_unidades_estoque_inicial : function() {
 
-            const qde = Math.round(vis.data.infos.estoque.inicial*1e9/vis.params.unidade.valor);
+            const qde = this.helpers.calcula_qde_unidades(vis.data.infos.estoque.inicial*1e9);
 
             vis.dims.qde_unidades_inicial = qde;
 
@@ -139,9 +181,9 @@ const vis = {
 
         calcula : function(valor) {
 
-            const margem = vis.params.unidade.margem;
+            const margem = vis.params.iniciais.margem;
 
-            const qde_unidades = Math.round(valor/vis.params.unidade.valor);
+            const qde_unidades = Math.round(valor/vis.params.iniciais.valor_unidade);
 
             const area_unitaria = (
                 (vis.dims.svg.h - margem) * 
@@ -155,49 +197,39 @@ const vis = {
             
             const lado = Math.round(dim_unitaria - margem);
 
-            vis.params.unidade.tamanho = lado;
+            vis.params.calculados.tamanho = lado;
 
-            const qde_por_linha = Math.ceil((vis.dims.svg.w - vis.params.unidade.margem) / dim_unitaria);
+            const qde_por_linha = Math.ceil((vis.dims.svg.w - vis.params.iniciais.margem) / dim_unitaria);
 
-            vis.params.unidade.qde_por_linha = qde_por_linha;
+            vis.params.calculados.qde_por_linha = qde_por_linha;
 
-            const qde_linhas = Math.ceil((vis.dims.svg.h - vis.params.unidade.margem) / dim_unitaria);
+            const qde_linhas = Math.ceil((vis.dims.svg.h - vis.params.iniciais.margem) / dim_unitaria);
 
             console.log(qde_por_linha, qde_linhas);
 
 
 
 
-            //const qde_linhas = Math.floor(qde_unidades / vis.params.unidade.qde_por_linha);
+            //const qde_linhas = Math.floor(qde_unidades / vis.params.calculados.qde_por_linha);
 
             function dimensao_necessaria(qde_na_dimensao) {
 
-                return (qde_na_dimensao * (vis.params.unidade.tamanho + vis.params.unidade.margem) + vis.params.unidade.margem);
+                return (qde_na_dimensao * (vis.params.calculados.tamanho + vis.params.iniciais.margem) + vis.params.iniciais.margem);
 
             }
 
-            vis.dims.altura_necessaria  = dimensao_necessaria(qde_linhas) + vis.params.espaco_inicial;
-            vis.dims.largura_necessaria = dimensao_necessaria(vis.params.unidade.qde_por_linha);
+            vis.dims.altura_necessaria  = dimensao_necessaria(qde_linhas) + vis.params.iniciais.espaco_inicial;
+            vis.dims.largura_necessaria = dimensao_necessaria(vis.params.calculados.qde_por_linha);
             vis.dims.qde_unidades       = qde_unidades;
 
-            console.log("Precisaremos de ", qde_unidades, " unidades, ", qde_linhas, " linhas, e uma largura de ", dimensao_necessaria(vis.params.unidade.qde_por_linha), "px e uma altura de ", dimensao_necessaria(qde_linhas), "px.");
-
-        },
-
-        dimensiona_container : function() {
-
-            const cont = d3.select(vis.refs.container);
-            const svg = d3.select(vis.refs.svg);
-
-            cont.style("width", vis.dims.largura_necessaria + "px");
-            //svg.style("height", vis.dims.altura_necessaria + "px");
+            console.log("Precisaremos de ", qde_unidades, " unidades, ", qde_linhas, " linhas, e uma largura de ", dimensao_necessaria(vis.params.calculados.qde_por_linha), "px e uma altura de ", dimensao_necessaria(qde_linhas), "px.");
 
         },
 
         pega_ultima_posicao : function() {
 
-            this.ultima_posicao.x = ( (vis.dims.qde_unidades - 1) % vis.params.unidade.qde_por_linha ) + 1;
-            this.ultima_posicao.y = Math.floor( (vis.dims.qde_unidades - 1) / vis.params.unidade.qde_por_linha ) + 1;
+            this.ultima_posicao.x = ( (vis.dims.qde_unidades - 1) % vis.params.calculados.qde_por_linha ) + 1;
+            this.ultima_posicao.y = Math.floor( (vis.dims.qde_unidades - 1) / vis.params.calculados.qde_por_linha ) + 1;
             this.ultima_posicao.unidade = vis.dims.qde_unidades;
             this.ultima_posicao.index = vis.dims.qde_unidades - 1;
 
@@ -214,8 +246,8 @@ const vis = {
                 vis.data.divida[unidade-1] = {
 
                     unidade : unidade,
-                    pos_x : ( (unidade - 1) % vis.params.unidade.qde_por_linha ) + 1,
-                    pos_y : Math.floor( (unidade - 1) / vis.params.unidade.qde_por_linha ) + 1
+                    pos_x : ( (unidade - 1) % vis.params.calculados.qde_por_linha ) + 1,
+                    pos_y : Math.floor( (unidade - 1) / vis.params.calculados.qde_por_linha ) + 1
 
                 }
 
@@ -227,9 +259,9 @@ const vis = {
 
         registra_emissao : function(valor) {
 
-            const qde_por_linha = vis.params.unidade.qde_por_linha;
+            const qde_por_linha = vis.params.calculados.qde_por_linha;
 
-            const qde_unidades = Math.round(valor/vis.params.unidade.valor);
+            const qde_unidades = Math.round(valor/vis.params.iniciais.valor_unidade);
             console.log("Para esta emissão de ", valor, ", precisaremos de ", qde_unidades, " quadradinhos.");
 
             // dados da última linha preenchida do estoque
@@ -256,7 +288,7 @@ const vis = {
 
             console.log(lado_a_completar);
 
-            const posicoes_linha_completa = vis.params.posicoes_linha_completa;
+            const posicoes_linha_completa = vis.params.calculados.posicoes_linha_completa;
 
             // faz a diferença da linha completa para a última linha
 
@@ -435,8 +467,8 @@ const vis = {
               .classed("emissao", true)
               .attr("y", d => vis.draw.components.scales.y(d.pos_y))
               .attr("x", d => vis.draw.components.scales.x(d.pos_x))
-              .attr("width", vis.params.unidade.tamanho)
-              .attr("height", vis.params.unidade.tamanho)
+              .attr("width", vis.params.calculados.tamanho)
+              .attr("height", vis.params.calculados.tamanho)
               .attr("fill", "red");
 
             vis.selections.rects_ultima_emissao  
@@ -480,7 +512,7 @@ const vis = {
 
         registra_pagamento : function(valor, posicao_inicial) {
 
-            const qde_unidades = Math.round(valor/vis.params.unidade.valor);
+            const qde_unidades = Math.round(valor/vis.params.iniciais.valor_unidade);
 
             console.log("Para este pagamento de ", valor, ", apagaremos ", qde_unidades, " quadradinhos.");
 
@@ -493,16 +525,16 @@ const vis = {
 
             // linha do primeiro a ser removido
             const linha_primeiro = vis.data.divida[index_primeiro].pos_y;
-            const qde_linhas_completas = Math.floor(qde_unidades / vis.params.unidade.qde_por_linha);
+            const qde_linhas_completas = Math.floor(qde_unidades / vis.params.calculados.qde_por_linha);
             const nro_linha_incompleta = linha_primeiro + qde_linhas_completas;
-            const primeira_posicao_da_linha_incompleta = qde_unidades % vis.params.unidade.qde_por_linha;
+            const primeira_posicao_da_linha_incompleta = qde_unidades % vis.params.calculados.qde_por_linha;
             
 
             console.log(primeira_posicao_da_linha_incompleta, qde_linhas_completas);
 
             let vetor_deslocamento = [];
 
-            for (let i = 0; i <= vis.params.unidade.qde_por_linha - 1; i++) {
+            for (let i = 0; i <= vis.params.calculados.qde_por_linha - 1; i++) {
 
                 if (i >= primeira_posicao_da_linha_incompleta) {
                     vetor_deslocamento[i] = qde_linhas_completas;
@@ -570,7 +602,7 @@ const vis = {
 
                 x : function(pos_x) {
 
-                    const x = (pos_x - 1) * (vis.params.unidade.tamanho + vis.params.unidade.margem) + vis.params.unidade.margem;
+                    const x = (pos_x - 1) * (vis.params.calculados.tamanho + vis.params.iniciais.margem) + vis.params.iniciais.margem;
 
                     //console.log(pos_x, x);
 
@@ -580,7 +612,7 @@ const vis = {
 
                 y : function(pos_y) {
 
-                    const y = vis.dims.svg.h - (pos_y) * (vis.params.unidade.tamanho + vis.params.unidade.margem);
+                    const y = vis.dims.svg.h - (pos_y) * (vis.params.calculados.tamanho + vis.params.iniciais.margem);
 
                     //console.log(pos_y, y)
 
@@ -603,8 +635,8 @@ const vis = {
               .join("rect")
               .classed("estoque", true)
               .attr("data-unidade", d => d.unidade)
-              .attr("x", d => vis.draw.components.scales.x(d.pos_x) + vis.params.unidade.tamanho/2)
-              .attr("y", d => vis.draw.components.scales.y(d.pos_y) + vis.params.unidade.tamanho/2)
+              .attr("x", d => vis.draw.components.scales.x(d.pos_x) + vis.params.calculados.tamanho/2)
+              .attr("y", d => vis.draw.components.scales.y(d.pos_y) + vis.params.calculados.tamanho/2)
               .attr("width", 0)
               .attr("height", 0);
 
@@ -614,8 +646,8 @@ const vis = {
               .delay((d,i) => d.pos_x * 10 + d.pos_y * 50)
               .attr("x", d => vis.draw.components.scales.x(d.pos_x))
               .attr("y", d => vis.draw.components.scales.y(d.pos_y))
-              .attr("width", vis.params.unidade.tamanho)
-              .attr("height", vis.params.unidade.tamanho);
+              .attr("width", vis.params.calculados.tamanho)
+              .attr("height", vis.params.calculados.tamanho);
 
         }
     },
@@ -625,8 +657,8 @@ const vis = {
         gera_posicoes_linha_completa : function() {
 
 
-            const qde_elementos_linha = vis.params.unidade.qde_por_linha;
-            const pos = vis.params.posicoes_linha_completa;
+            const qde_elementos_linha = vis.params.calculados.qde_por_linha;
+            const pos = vis.params.calculados.posicoes_linha_completa;
 
             for (let i = 1; i <= qde_elementos_linha; i++) {
 
@@ -638,7 +670,7 @@ const vis = {
 
         calcula_qde_linhas : function(dimensao) {
 
-            return Math.floor((dimensao - vis.params.unidade.margem) / (vis.params.unidade.tamanho + vis.params.unidade.margem))
+            return Math.floor((dimensao - vis.params.iniciais.margem) / (vis.params.calculados.tamanho + vis.params.iniciais.margem))
 
         }
 
@@ -654,9 +686,9 @@ const vis = {
 
         init : function() {
 
-            vis.grid.pega_tamanho_svg();
+            vis.sizing.pega_tamanho_svg();
             vis.grid.calcula(vis.data.infos.pib); // vis.data.infos.estoque.final * 1e9);
-            vis.grid.dimensiona_container();
+            vis.sizing.redimensiona_container();
             vis.grid.cria_dataset();
             vis.utils.gera_posicoes_linha_completa();
             vis.draw.desenhas_rects();
