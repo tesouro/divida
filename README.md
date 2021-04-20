@@ -2,12 +2,20 @@
 
 Este projeto, que nasceu como um projeto para criação de uma versão mais interativa e interessante do Relatório Mensal da Dívida (RMD), busca explicar as informações essenciais da dívida pública de uma forma simples, direta e interessante (hopefully).
 
+### To-do
+
+Verificar questões de acessibilidade. Botões, por exemplo.
+
 ### Inspirações
 
 https://www.nytimes.com/interactive/2018/05/09/nyregion/subway-crisis-mta-decisions-signals-rules.html
 
 https://datalab.usaspending.gov/americas-finance-guide/debt/
 
+
+### Sketch
+
+!["sketch"](./other/sketch.jpg)
 
 ### Comentários
 
@@ -70,4 +78,8 @@ anim.staggerTo("div.rect", 1, {
 
 anim.play(0);
 anim.reverse();
+
+```
+
+Parti para uma solução mais direta, sem ser tão genérica.
 
