@@ -15,7 +15,10 @@ const vis = {
             tamanho: null, 
             qde_por_linha : null,
             ultima_linha : null,
-            posicoes_linha_completa : []
+            posicoes_linha_completa : [],
+            primeiro_vencimento_a_excluir : null,
+            primeiro_juros_a_excluir : null,
+            ultimo_elemento : null // estoque + juros
 
         },
 
@@ -108,6 +111,16 @@ const vis = {
 
         },
 
+        marcadores : {
+
+            excluir : ["vencimentos_outras_fontes", "juros_outras_fontes"],
+
+            deslocar_2x : ["vencimentos_refin", "juros_outras_fontes", "juros_refin"],
+
+            desloca_1x : ["juros_refin"]
+
+        },
+
         vetores : {
 
             // formato elementos : { posx, posy, indice, tipo }
@@ -117,14 +130,23 @@ const vis = {
             juros_refin : null,
             vencimentos_outras_fontes : null,
             vencimentos_refin : null,
+
             vazamento : null,
-            grid_refin: null
+
+            grid_refin : null,
+
+            todos : null
+
+            
+
+
+            
 
         },
 
         divida : [],
 
-        cria_dataset : function(valor, posicao_inicial = 0) {
+        cria_dataset : function(valor, tipo, posicao_inicial = 0) {
 
             //const qde_estoque_inicial = vis.grid.qde_unidades_estoque_inicial();
 
@@ -143,15 +165,18 @@ const vis = {
                     unidade : unidade,
                     indice_geral : indice,
                     pos_x : ( (indice - 1) % vis.params.calculados.qde_por_linha ) + 1,
-                    pos_y : Math.floor( (indice - 1) / vis.params.calculados.qde_por_linha ) + 1
+                    pos_y : Math.floor( (indice - 1) / vis.params.calculados.qde_por_linha ) + 1,
+                    tipo : tipo
 
                 }
 
             }
 
-            vis.grid.ultima_posicao.set();
+            //vis.grid.ultima_posicao.set();
 
-            return dataset;
+            vis.data.vetores[tipo] = dataset;
+
+            //return dataset;
 
         },
 
@@ -160,42 +185,69 @@ const vis = {
             vis.data.divida = vis.data.cria_dataset(vis.data.infos.estoque.inicial * 1e9);
 
             // estoque inicial sem pagamentos
-            vis.data.vetores.estoque_inicial = vis.data.cria_dataset(
-                (vis.data.infos.estoque.inicial - vis.data.infos.vencimentos.total) * 1e9);
+            vis.data.cria_dataset(
+                (vis.data.infos.estoque.inicial - vis.data.infos.vencimentos.total) * 1e9,
+                tipo = "estoque_inicial");
 
             let ultimo_indice = vis.data.vetores.estoque_inicial.length;
 
             // pagamentos com outras fontes
-            vis.data.vetores.vencimentos_outras_fontes = vis.data.cria_dataset(
-                vis.data.infos.vencimentos.com_outras * 1e9, posicao_inicial = ultimo_indice);
+            vis.data.cria_dataset(
+                vis.data.infos.vencimentos.com_outras * 1e9, 
+                tipo = "vencimentos_outras_fontes", 
+                posicao_inicial = ultimo_indice);
+
+            vis.params.calculados.primeiro_vencimento_a_excluir = ultimo_indice + 1;
 
             ultimo_indice += vis.data.vetores.vencimentos_outras_fontes.length;
 
             // pagamentos refinanciamento
-            vis.data.vetores.vencimentos_refin = vis.data.cria_dataset(
-                vis.data.infos.vencimentos.refin * 1e9, posicao_inicial = ultimo_indice);
+            vis.data.cria_dataset(
+                vis.data.infos.vencimentos.refin * 1e9, 
+                tipo = "vencimentos_refin",
+                posicao_inicial = ultimo_indice);
 
             ultimo_indice += vis.data.vetores.vencimentos_refin.length;
 
             // juros com outras fontes
-            vis.data.vetores.juros_outras_fontes = vis.data.cria_dataset(
-                vis.data.infos.juros.com_outras * 1e9, posicao_inicial = ultimo_indice);
+            vis.data.cria_dataset(
+                vis.data.infos.juros.com_outras * 1e9, 
+                tipo = "juros_outras_fontes",
+                posicao_inicial = ultimo_indice);
+
+            // para usar depois
+            vis.params.calculados.primeiro_juros_a_excluir = ultimo_indice + 1;
 
             ultimo_indice += vis.data.vetores.juros_outras_fontes.length;
 
             // juros refinanciamento
-            vis.data.vetores.juros_refin = vis.data.cria_dataset(
-                vis.data.infos.juros.refin * 1e9, posicao_inicial = ultimo_indice);
+            vis.data.cria_dataset(
+                vis.data.infos.juros.refin * 1e9,
+                tipo = "juros_refin", 
+                posicao_inicial = ultimo_indice);
 
             ultimo_indice += vis.data.vetores.juros_refin.length;
+            vis.params.calculados.ultimo_elemento = ultimo_indice;
 
             // grid juros e vencimentos refinanciados
             const ultimo_indice_estoque_sem_pgtos = vis.data.vetores.estoque_inicial.length;
 
-            vis.data.vetores.grid_refin = vis.data.cria_dataset(
+            vis.data.cria_dataset(
                 (vis.data.infos.juros.refin + vis.data.infos.vencimentos.refin) * 1e9, 
+                tipo = "grid_refin",
                 posicao_inicial = ultimo_indice_estoque_sem_pgtos);
 
+            // juros e vencimentos (pois são os que estarão sujeitos a serem deslocados)
+
+            vis.data.vetores.todos = [
+
+                ...vis.data.vetores.estoque_inicial,
+                ...vis.data.vetores.vencimentos_outras_fontes,
+                ...vis.data.vetores.vencimentos_refin,
+                ...vis.data.vetores.juros_outras_fontes,
+                ...vis.data.vetores.juros_refin
+
+            ];
         
         },
 
@@ -216,6 +268,8 @@ const vis = {
         pega_tamanho_svg : function() {
 
             const height = +d3.select("svg").style("height").slice(0,-2);
+
+            // document.querySelector("svg").getBoundingClientRect().height
             const width  = +d3.select("svg").style("width").slice(0,-2);
 
             vis.dims.svg.h = height;
@@ -240,11 +294,10 @@ const vis = {
 
         redimensiona_container : function() {
 
-            const cont = d3.select(vis.refs.container);
-            const svg = d3.select(vis.refs.svg);
+            const cont = document.querySelector(vis.refs.container);
 
-            cont.style("width", vis.dims.largura_necessaria + "px");
-            //svg.style("height", vis.dims.altura_necessaria + "px");
+            cont.style.width = vis.dims.largura_necessaria + "px";
+
 
         },
 
@@ -574,6 +627,56 @@ const vis = {
 
             vis.selections.rects_divida = svg.selectAll("rect.estoque")
               .data(vis.data.divida);
+
+        },
+
+        calcula_nova_posicao_pagtos : function(tipo) {
+
+            // tipo: juros ou vencimentos
+
+            let posicao_inicial, valor;
+
+            if (tipo == "juros") {
+
+                posicao_inicial = vis.params.calculados.primeiro_juros_a_excluir;
+                valor = vis.data.infos.juros.com_outras*1e9;
+
+            } else {
+
+                console.log("aqui");
+
+                posicao_inicial = vis.params.calculados.primeiro_vencimento_a_excluir;
+                valor = vis.data.infos.vencimentos.com_outras*1e9;
+
+            }
+
+            const qde_unidades = Math.round(valor/vis.params.iniciais.valor_unidade);
+
+            const posicao_final = posicao_inicial + qde_unidades - 1;
+
+            console.log("Para este pagamento de ", valor, ", apagaremos ", qde_unidades, " quadradinhos, a partir do indice ", posicao_inicial, ", até a posição ", posicao_final)  ;
+
+            // linhas
+
+            const linha_primeiro = vis.grid.helpers.pega_coordenadas(posicao_inicial).pos_y;
+            const linha_ultimo   = vis.grid.helpers.pega_coordenadas(posicao_final).pos_y;
+
+            console.log("temos que apagar ", linha_ultimo - linha_primeiro - 1, "linhas completas: da linha", linha_primeiro, "até a :", linha_ultimo);
+
+            // primeira linha incompleta
+
+            const elementos_a_remover = vis.data.vetores.todos.filter(d => d.indice_geral <= posicao_final & d.indice_geral >= posicao_inicial);
+
+            console.log("A remover", elementos_a_remover);
+
+            const elementos_afetados = vis.data.vetores.todos.filter(d => d.indice_geral > posicao_final);
+
+            console.log("Afetados", elementos_afetados);
+
+            
+
+
+
 
         },
 
