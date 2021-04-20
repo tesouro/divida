@@ -325,38 +325,6 @@ const vis = {
             // em seguida, calcula parametros para redimensionamento
         },
 
-        cria_divs : function(nome) {
-
-            const cont = document.querySelector(vis.refs.container);
-
-            vis.data.vetores[nome].forEach(d => {
-
-                const new_div = document.createElement("div");
-
-                const props = Object.keys(d);
-
-                props.forEach(property => {
-
-                    new_div.dataset[property] = d[property]
-
-                })
-
-                new_div.dataset.tipo = nome;
-
-                new_div.style.height = vis.params.calculados.tamanho + "px";
-                new_div.style.width  = vis.params.calculados.tamanho + "px";
-                new_div.style.top    = vis.draw.components.scales.y(d.pos_y) + "px";
-                new_div.style.left   = vis.draw.components.scales.x(d.pos_x) + "px";
-
-                new_div.classList.add("quadradinho");
-
-                cont.appendChild(new_div);
-
-
-            });
-
-        },
-
         registra_emissao : function(valor) {
 
             const qde_por_linha = vis.params.calculados.qde_por_linha;
@@ -565,8 +533,8 @@ const vis = {
               .data(dataset_emissao)
               .join("rect")
               .classed("emissao", true)
-              .attr("y", d => vis.draw.components.scales.y(d.pos_y))
-              .attr("x", d => vis.draw.components.scales.x(d.pos_x))
+              .attr("y", d => vis.render.components.scales.y(d.pos_y))
+              .attr("x", d => vis.render.components.scales.x(d.pos_x))
               .attr("width", vis.params.calculados.tamanho)
               .attr("height", vis.params.calculados.tamanho)
               .attr("fill", "red");
@@ -586,7 +554,7 @@ const vis = {
               .attr("y", d => {
                   const nova_pos_y = d.pos_y - deslocamento_necessario;
                   d.pos_y = nova_pos_y;
-                  return vis.draw.components.scales.y(d.pos_y)
+                  return vis.render.components.scales.y(d.pos_y)
               });
 
             vis.selections.rects_ultima_emissao
@@ -685,7 +653,7 @@ const vis = {
               .attr("y", function(d) {
                   const nova_pos_y = d.pos_y - vetor_deslocamento[d.pos_x - 1];
                   d.pos_y = nova_pos_y;
-                  return vis.draw.components.scales.y(nova_pos_y)
+                  return vis.render.components.scales.y(nova_pos_y)
               });
 
         }
@@ -694,7 +662,7 @@ const vis = {
 
     },
 
-    draw : {
+    render : {
 
         components : {
 
@@ -725,6 +693,38 @@ const vis = {
 
         },
 
+        cria_divs : function(nome) {
+
+            const cont = document.querySelector(vis.refs.container);
+
+            vis.data.vetores[nome].forEach(d => {
+
+                const new_div = document.createElement("div");
+
+                const props = Object.keys(d);
+
+                props.forEach(property => {
+
+                    new_div.dataset[property] = d[property]
+
+                })
+
+                new_div.dataset.tipo = nome;
+
+                new_div.style.height = vis.params.calculados.tamanho + "px";
+                new_div.style.width  = vis.params.calculados.tamanho + "px";
+                new_div.style.top    = vis.render.components.scales.y(d.pos_y) + "px";
+                new_div.style.left   = vis.render.components.scales.x(d.pos_x) + "px";
+
+                new_div.classList.add("quadradinho");
+
+                cont.appendChild(new_div);
+
+
+            });
+
+        },
+
         desenhas_rects : function() {
 
             const svg = d3.select(vis.refs.svg);
@@ -735,8 +735,8 @@ const vis = {
               .join("rect")
               .classed("estoque", true)
               .attr("data-unidade", d => d.unidade)
-              .attr("x", d => vis.draw.components.scales.x(d.pos_x) + vis.params.calculados.tamanho/2)
-              .attr("y", d => vis.draw.components.scales.y(d.pos_y) + vis.params.calculados.tamanho/2)
+              .attr("x", d => vis.render.components.scales.x(d.pos_x) + vis.params.calculados.tamanho/2)
+              .attr("y", d => vis.render.components.scales.y(d.pos_y) + vis.params.calculados.tamanho/2)
               .attr("width", 0)
               .attr("height", 0);
 
@@ -744,8 +744,8 @@ const vis = {
               .transition()
               .duration(100)
               .delay((d,i) => d.pos_x * 10 + d.pos_y * 50)
-              .attr("x", d => vis.draw.components.scales.x(d.pos_x))
-              .attr("y", d => vis.draw.components.scales.y(d.pos_y))
+              .attr("x", d => vis.render.components.scales.x(d.pos_x))
+              .attr("y", d => vis.render.components.scales.y(d.pos_y))
               .attr("width", vis.params.calculados.tamanho)
               .attr("height", vis.params.calculados.tamanho);
 
@@ -796,7 +796,7 @@ const vis = {
 
             vis.data.gera_datasets();
             vis.utils.gera_posicoes_linha_completa();
-            vis.draw.desenhas_rects();
+            vis.render.desenhas_rects();
 
         }
 
