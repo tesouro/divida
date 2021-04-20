@@ -7,70 +7,56 @@
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css2?family=Lusitana:wght@400;700&display=swap" rel="stylesheet">
     <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+<link href="https://fonts.googleapis.com/css2?family=Alfa+Slab+One&display=swap" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css2?family=Newsreader:wght@300;400&display=swap" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css2?family=Lusitana:wght@400;700&family=Rubik:ital,wght@0,300;0,400;0,500;0,700;1,400&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
     <title>Document</title>
 </head>
 <body>
-    <div class="outer-container">
-        <div class="inner-container">
-            <div class="text">
-                <h1>A Dívida Pública em 3 números</h1>
-                <p>
-                    Texto bem legal aqui sobre como se costuma lançar um véu de obscuridade sobre as informações da dívida pública federal.
-                </p>
-                <p class="placar">
-                    Aqui pode ter um "placar", com os tais três números.
-                </p>
-                <p>If my words did glow with the gold of sunshine
-                    And my tunes were played on the harp unstrung
-                    Would you hear my voice come through the music?
-                    Would you hold it near as it were your own?
-                </p>
-                <p>
-                    It's a hand-me-down, the thoughts are broken
-                    Perhaps they're better left unsung
-                    I don't know, don't really care
-                    Let there be songs to fill the air
-                    Ripple in still water
-                    When there is no pebble tossed
-                    Nor wind to blow
 
-                </p>
-            </div>
-            <div class="vis">
-                <h2>O que aconteceu com a Dívida Federal no último ano</h2>
-                    <div class="svg-container">
-                        <svg></svg>
-                    </div>
-                    <article class="scrolly">
-                        <div class="scroller-steps" data-step="01">
-                            <h3>O Estoque Inicial</h3>
-                            <p> 
-                                Ao final de 2019, a dívida pública
-                            </p>
-                        </div>
-
-                        <div class="scroller-steps" data-step="01">
-                            <p>It's a hand-me-down, the thoughts are broken
-                                Perhaps they're better left unsung
-                                I don't know, don't really care
-                                Let there be songs to fill the air
-                                Ripple in still water
-                                When there is no pebble tossed
-                                Nor wind to blow
-                                Reach out your hand if your cup be empty
-                                If your cup is full, may it be again
-                                Let it be known there is a fountain
-                                That was not made by the hands of men
-                            </p>
-                        </div>
-
-                    </article>
-            </div>
+    <div class="vis">
+        <div class="svg-container">
+            <svg></svg>
         </div>
     </div>
+
+    <div class="container">
+            <div class="slide" id="abertura">
+                <div class="text">
+                    <img src="./web/tt-logo-int.png" alt="Logotipo do Tesouro Transparente" class="logo">
+                    <h1>A Dívida Pública em 3 números</h1>
+                    <p>
+                        Texto bem legal aqui sobre como se costuma lançar um véu de obscuridade sobre as informações da dívida pública federal.
+                    </p>
+                    <p class="placar">
+                        Aqui pode ter um "placar", com os tais três números.
+                    </p>
+                    <p>If my words did glow with the gold of sunshine
+                        And my tunes were played on the harp unstrung
+                        Would you hear my voice come through the music?
+                        Would you hold it near as it were your own?
+                    </p>
+                    <a href="#step1" class="next"> &gt; </a>
+                </div>
+
+            </div>
+
+            <div class="slide stepper" id="step1">
+                <div class="container-step" data-step="1">
+                    <h3>O Estoque Inicial</h3>
+                    <p> 
+                        Ao final de 2019, a dívida pública
+                    </p>
+                </div>
+                <a href="#abertura" class="back"> &lt; </a>
+            </div>
+
+        </div>
+
+    </div>
+
 
     <script src="d3.min.js"></script>
     <script src="./scripts/gsap.min.js"></script>

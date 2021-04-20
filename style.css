@@ -7,13 +7,24 @@
     --comp-color1 : #474FFC;
     --comp-color2: #FC2DED;
 
-    --font-title : Rubik;
+    --font-title : 'Alfa Slab One';
     --font-text : Newsreader;
 
 }
 
 * {
     box-sizing: border-box;
+}
+
+html {
+    overflow-y: hidden;
+}
+
+img.logo {
+
+    display: block;
+    margin: 0 auto; 
+
 }
 
 body {
@@ -26,6 +37,7 @@ body {
     font-size: 1.2rem;
     font-weight: 300;
     letter-spacing: .01em;
+    scroll-behavior: smooth;
 
 }
 
@@ -50,7 +62,19 @@ h2, h3, h4 {
 
 .text {
 
-    margin-bottom: 2rem;
+    max-width: 32rem;
+    margin: 0 auto;
+
+}
+
+.slide {
+
+    height: 98vh;
+    padding: 1rem 0;
+    min-width: 100vw;
+    position: relative;
+    scroll-snap-align: start;
+
 
 }
 
@@ -60,28 +84,70 @@ h2, h3, h4 {
 
 }
 
-.inner-container {
+a.back,
+a.next {
 
-    max-width: 32rem;
-    margin: 0 auto;
+    text-decoration: none;
+    position: absolute;
+    top: 50vh;
+    font-size: 5rem;
+    font-weight: bold;
+    color: var(--text-color);
+    transform: translateY(-50%) scale(.35,1);
+
+}
+
+.next {
+
+    right: 5vw;
+
+}
+
+.back {
+
+    left: 5vw;
+
+}
+
+.container {
+
+    scroll-behavior: smooth;
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: flex-start;
+    scroll-snap-type: block mandatory;
+    overflow-x: scroll;
+    overflow-y: hidden;
     /*background-color: blanchedalmond;*/
+
+}
+
+.container-step {
+
+    margin-left: 1rem;
+    width: calc(50vw - 1rem - 150px);
 
 }
 
 /* scroller */
 
+.vis {
+    position: fixed;
+    z-index: -1;
+    top: 5vh;
+    min-height: 90vh;
+    left: 0;
+    width: 100%;
+    opacity: 0;
+}
 
 .svg-container {
 
     outline: 10px solid var(--comp-color1);
-    position: sticky;
-    z-index: -1;
     max-width: 100%;
     width: 200px;
     margin: 0 auto;
-    top: 5vh;
     height: 90vh;
-    left: 0;
 
 }
 
