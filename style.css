@@ -11,7 +11,7 @@
     --font-text : Newsreader;
 
     --cor-estoque-inicial : var(--title-color);
-    --cor-juros : purple;
+    --cor-juros : lavender;
 
     --mobile-break-point: 500px;
 
@@ -192,6 +192,7 @@ a.next {
     width: 200px;
     margin: 0 auto;
     height: 90vh;
+    position: relative;
 
 }
 
@@ -227,8 +228,8 @@ rect.estoque {
 
 .destaque-texto {
 
-    padding: .2em .5rm;
-    border-radius: 10px;
+    padding: .1em .3em;
+    border-radius: .2em;
 
 }
 
@@ -242,11 +243,13 @@ rect.estoque {
 
 }
 
-[data-destaque="juros"] {
+[data-destaque="juros"], [data-tipo="juros_refin"], [data-tipo="juros_outras_fontes"] {
 
     /* fazer no JS? */
 
     background-color: var(--cor-juros);
+    color: var(--bkg-color);
 
 }
+
 
