@@ -159,36 +159,6 @@ svg {
 
 }
 
-.scroller-steps {
-
-    height: 100vh;
-    max-width: 20rem;
-    margin: 0 auto;
-
-}
-
-.scroller-steps h3 {
-
-    margin-top: 0;
-
-}
-
-.scroller-steps * {
-
-    background-color: var(--bkg-color);
-
-}
-
-.scroller-steps::before {
-
-    content: "";
-    display: block;
-    width: 5vw;
-    height: 1rem;
-    border-top: 4px solid var(--title-color);
-
-}
-
 
 /* vis */
 
