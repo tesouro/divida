@@ -24,7 +24,8 @@ const vis = {
     refs : {
 
         svg : "svg",
-        container : ".svg-container"
+        container : ".svg-container",
+        buttons : ".back, .next"
     
     },
 
@@ -693,7 +694,7 @@ const vis = {
 
         },
 
-        cria_divs : function(nome) {
+        cria_divs : function(nome, visivel = 1) {
 
             const cont = document.querySelector(vis.refs.container);
 
@@ -715,15 +716,17 @@ const vis = {
                 new_div.style.width  = vis.params.calculados.tamanho + "px";
                 new_div.style.top    = vis.render.components.scales.y(d.pos_y) + "px";
                 new_div.style.left   = vis.render.components.scales.x(d.pos_x) + "px";
+                new_div.style.opacity = visivel;
 
                 new_div.classList.add("quadradinho");
 
                 cont.appendChild(new_div);
 
-
             });
 
         },
+
+
 
         desenhas_rects : function() {
 
@@ -750,6 +753,25 @@ const vis = {
               .attr("height", vis.params.calculados.tamanho);
 
         }
+    },
+
+    stepper : {
+
+        "estoque inicial" : function() {
+
+            vis.render.cria_divs("estoque_inicial");
+            vis.render.cria_divs("vencimentos_outras_fontes");
+            vis.render.cria_divs("vencimentos_refin");
+
+        },
+
+        "juros" : function() {
+
+            vis.render.cria_divs("juros_outras_fontes");
+            vis.render.cria_divs("juros_refin");
+
+        }
+
     },
 
     utils : {
@@ -789,6 +811,8 @@ const vis = {
             const valor = vis.data.infos.pib;
             // dimensiona container para ficar equivalente ao tamanho do pib
 
+            vis.control.monitora_botoes();
+
             vis.sizing.pega_tamanho_svg();
             vis.grid.calcula_parametros(valor); 
             vis.sizing.calcula_dimensoes_necessarias(valor);
@@ -796,7 +820,23 @@ const vis = {
 
             vis.data.gera_datasets();
             vis.utils.gera_posicoes_linha_completa();
-            vis.render.desenhas_rects();
+            //vis.render.desenhas_rects();
+
+        },
+
+        monitora_botoes : function() {
+
+            const btns = document.querySelectorAll(vis.refs.buttons);
+
+            btns.forEach(btn => btn.addEventListener("click", function(e) {
+                console.log(e.target, e.target.dataset.next)
+
+                vis.stepper[e.target.dataset.next]();
+
+            }))
+
+
+
 
         }
 
