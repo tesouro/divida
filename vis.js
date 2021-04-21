@@ -166,7 +166,9 @@ const vis = {
                     indice_geral : indice,
                     pos_x : ( (indice - 1) % vis.params.calculados.qde_por_linha ) + 1,
                     pos_y : Math.floor( (indice - 1) / vis.params.calculados.qde_por_linha ) + 1,
-                    tipo : tipo
+                    tipo : tipo,
+                    proximo_pos_y1 : null,
+                    proximo_pos_y2 : null
 
                 }
 
@@ -663,19 +665,47 @@ const vis = {
 
             console.log("temos que apagar ", linha_ultimo - linha_primeiro - 1, "linhas completas: da linha", linha_primeiro, "até a :", linha_ultimo);
 
-            // primeira linha incompleta
+            // elementos a remover
 
             const elementos_a_remover = vis.data.vetores.todos.filter(d => d.indice_geral <= posicao_final & d.indice_geral >= posicao_inicial);
 
             console.log("A remover", elementos_a_remover);
 
+            // elementos afetados
+
             const elementos_afetados = vis.data.vetores.todos.filter(d => d.indice_geral > posicao_final);
 
             console.log("Afetados", elementos_afetados);
 
-            
+            const deslocamentos = Array(vis.params.calculados.qde_por_linha + 1).fill(0)
 
+            elementos_a_remover.forEach(d => {
 
+                deslocamentos[d.pos_x] += 1
+
+            });
+
+            console.log("Deslocamentos", deslocamentos);
+
+            vis.data.vetores.todos.forEach(d => {
+
+                if ( elementos_a_remover.includes(d) ) {
+
+                    d["remover"] = true;
+
+                } else {
+
+                    if (d.indice_geral > posicao_final) {
+
+                        d["deslocar"] = true;
+
+                        d.proximo_pos_y1 = d.pos_y - deslocamentos[d.pos_x]
+
+                    }
+
+                }
+
+            });
 
 
         },
@@ -801,6 +831,8 @@ const vis = {
 
             const cont = document.querySelector(vis.refs.container);
 
+            // "data binding"
+
             vis.data.vetores[nome].forEach(d => {
 
                 const new_div = document.createElement("div");
@@ -813,7 +845,7 @@ const vis = {
 
                 })
 
-                new_div.dataset.tipo = nome;
+                new_div.dataset.tipo = d.tipo;
 
                 new_div.style.height = vis.params.calculados.tamanho + "px";
                 new_div.style.width  = vis.params.calculados.tamanho + "px";
@@ -829,7 +861,25 @@ const vis = {
 
         },
 
+        remove : function() {
 
+            let remove = document.querySelectorAll('[data-remover="true"]');
+
+            remove.forEach(
+                d => d.style.opacity = 0
+            );
+
+        },
+
+        desloca : function() {
+
+            let desloca = document.querySelectorAll('[data-deslocar="true"]');
+
+            desloca.forEach(d =>
+                d.style.top = vis.render.components.scales.y(d.dataset.proximo_pos_y1) + "px"
+            );
+
+        },
 
         desenhas_rects : function() {
 
@@ -862,16 +912,18 @@ const vis = {
 
         "estoque inicial" : function() {
 
-            vis.render.cria_divs("estoque_inicial");
-            vis.render.cria_divs("vencimentos_outras_fontes");
-            vis.render.cria_divs("vencimentos_refin");
+            vis.render.cria_divs("todos");
+
+            //vis.render.cria_divs("estoque_inicial");
+            //vis.render.cria_divs("vencimentos_outras_fontes");
+            //vis.render.cria_divs("vencimentos_refin");
 
         },
 
         "juros" : function() {
 
-            vis.render.cria_divs("juros_outras_fontes");
-            vis.render.cria_divs("juros_refin");
+            //vis.render.cria_divs("juros_outras_fontes");
+            //vis.render.cria_divs("juros_refin");
 
         }
 
@@ -922,6 +974,7 @@ const vis = {
             vis.sizing.redimensiona_container();
 
             vis.data.gera_datasets();
+            vis.grid.calcula_nova_posicao_pagtos();
             vis.utils.gera_posicoes_linha_completa();
             //vis.render.desenhas_rects();
 
