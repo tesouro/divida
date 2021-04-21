@@ -243,12 +243,30 @@ rect.estoque {
 
 }
 
-[data-destaque="juros"], [data-tipo="juros_refin"], [data-tipo="juros_outras_fontes"] {
+[data-destaque="juros"], [data-tipo="juros_refin"] {
 
     /* fazer no JS? */
 
     background-color: var(--cor-juros);
     color: var(--bkg-color);
+
+}
+
+[data-tipo="juros_outras_fontes"] {
+
+    background-color: limegreen;
+
+}
+
+[data-tipo="vencimentos_outras_fontes"] {
+
+    background-color: seagreen;
+
+}
+
+[data-tipo="vencimentos_refin"] {
+
+    background-color: skyblue;
 
 }
 
