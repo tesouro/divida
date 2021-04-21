@@ -167,8 +167,10 @@ const vis = {
                     pos_x : ( (indice - 1) % vis.params.calculados.qde_por_linha ) + 1,
                     pos_y : Math.floor( (indice - 1) / vis.params.calculados.qde_por_linha ) + 1,
                     tipo : tipo,
-                    proximo_pos_y1 : null,
-                    proximo_pos_y2 : null
+                    proximo_pos_y_juros : null,
+                    proximo_pos_y_vencimentos : null,
+                    remover : null,
+                    deslocar : null
 
                 }
 
@@ -636,77 +638,106 @@ const vis = {
 
             // tipo: juros ou vencimentos
 
-            let posicao_inicial, valor;
+            const elementos_a_remover = {};
+            const deslocamentos = {};
+            const posicoes_finais = {};
 
-            if (tipo == "juros") {
+            for (tipo of ["juros", "vencimentos"]) {
 
-                posicao_inicial = vis.params.calculados.primeiro_juros_a_excluir;
-                valor = vis.data.infos.juros.com_outras*1e9;
+                let posicao_inicial, valor, campo_de_proximo;
 
-            } else {
+                if (tipo == "juros") {
+    
+                    posicao_inicial = vis.params.calculados.primeiro_juros_a_excluir;
+                    valor = vis.data.infos.juros.com_outras*1e9;
+                    campo_de_proximo = "proximo_pos_y_juros";
+    
+                } else {
+    
+                    console.log("aqui");
+    
+                    posicao_inicial = vis.params.calculados.primeiro_vencimento_a_excluir;
+                    valor = vis.data.infos.vencimentos.com_outras*1e9;
+                    campo_de_proximo = "proximo_pos_y_vencimento";
+    
+                }
+    
+                const qde_unidades = Math.round(valor/vis.params.iniciais.valor_unidade);
+    
+                const posicao_final = posicao_inicial + qde_unidades - 1;
 
-                console.log("aqui");
+                posicoes_finais[tipo] = posicao_final;
+    
+                console.log("Para este pagamento de ", valor, ", apagaremos ", qde_unidades, " quadradinhos, a partir do indice ", posicao_inicial, ", até a posição ", posicao_final)  ;
+    
+                // linhas
+    
+                const linha_primeiro = vis.grid.helpers.pega_coordenadas(posicao_inicial).pos_y;
+                const linha_ultimo   = vis.grid.helpers.pega_coordenadas(posicao_final).pos_y;
+    
+                console.log("temos que apagar ", linha_ultimo - linha_primeiro - 1, "linhas completas: da linha", linha_primeiro, "até a :", linha_ultimo);
+    
+                // elementos a remover
+    
+                elementos_a_remover[tipo] = vis.data.vetores.todos.filter(d => d.indice_geral <= posicao_final & d.indice_geral >= posicao_inicial);
 
-                posicao_inicial = vis.params.calculados.primeiro_vencimento_a_excluir;
-                valor = vis.data.infos.vencimentos.com_outras*1e9;
+                console.log("Elementos a remover, para o tipo ", tipo, ": ", elementos_a_remover[tipo]);
+    
+                // // elementos afetados
+    
+                // elementos_afetados[tipo] = vis.data.vetores.todos.filter(d => d.indice_geral > posicao_final);
+    
+    
+                deslocamentos[tipo] = Array(vis.params.calculados.qde_por_linha + 1).fill(0)
+    
+                elementos_a_remover[tipo].forEach(d => {
+    
+                    deslocamentos[tipo][d.pos_x] += 1
+    
+                });
 
             }
 
-            const qde_unidades = Math.round(valor/vis.params.iniciais.valor_unidade);
+            console.log({posicoes_finais});
 
-            const posicao_final = posicao_inicial + qde_unidades - 1;
+            // junta os elementos_a_remover
 
-            console.log("Para este pagamento de ", valor, ", apagaremos ", qde_unidades, " quadradinhos, a partir do indice ", posicao_inicial, ", até a posição ", posicao_final)  ;
+            const a_remover = [
+                ...elementos_a_remover["juros"],
+                ...elementos_a_remover["vencimentos"]
+            ];
 
-            // linhas
+            console.log(a_remover, elementos_a_remover["juros"], elementos_a_remover["vencimentos"]);
 
-            const linha_primeiro = vis.grid.helpers.pega_coordenadas(posicao_inicial).pos_y;
-            const linha_ultimo   = vis.grid.helpers.pega_coordenadas(posicao_final).pos_y;
-
-            console.log("temos que apagar ", linha_ultimo - linha_primeiro - 1, "linhas completas: da linha", linha_primeiro, "até a :", linha_ultimo);
-
-            // elementos a remover
-
-            const elementos_a_remover = vis.data.vetores.todos.filter(d => d.indice_geral <= posicao_final & d.indice_geral >= posicao_inicial);
-
-            console.log("A remover", elementos_a_remover);
-
-            // elementos afetados
-
-            const elementos_afetados = vis.data.vetores.todos.filter(d => d.indice_geral > posicao_final);
-
-            console.log("Afetados", elementos_afetados);
-
-            const deslocamentos = Array(vis.params.calculados.qde_por_linha + 1).fill(0)
-
-            elementos_a_remover.forEach(d => {
-
-                deslocamentos[d.pos_x] += 1
-
-            });
-
-            console.log("Deslocamentos", deslocamentos);
+            //console.log("Deslocamentos", deslocamentos);
 
             vis.data.vetores.todos.forEach(d => {
 
-                if ( elementos_a_remover.includes(d) ) {
+                if ( a_remover.includes(d) ) {
 
                     d["remover"] = true;
 
                 } else {
 
-                    if (d.indice_geral > posicao_final) {
+                    if (d.indice_geral > posicoes_finais["juros"]) {
 
-                        d["deslocar"] = true;
+                        d["deslocar_juros"] = true;
 
-                        d.proximo_pos_y1 = d.pos_y - deslocamentos[d.pos_x]
+                        d["proximo_pos_y_juros"] = d.pos_y - deslocamentos.juros[d.pos_x] - deslocamentos.vencimentos[d.pos_x]
+                        // a posicao final dos juros, que estão em cima dos quadradinhos dos vencimentos, precisa ser complementada pelos deslocamentos dos vencimentos.
+                    }
+                    
+                    if (d.indice_geral > posicoes_finais["vencimentos"]) {
+
+                        d["deslocar_vencimentos"] = true;
+
+                        d["proximo_pos_y_vencimentos"] = d.pos_y - deslocamentos.vencimentos[d.pos_x]
 
                     }
 
                 }
 
             });
-
 
         },
 
@@ -871,12 +902,12 @@ const vis = {
 
         },
 
-        desloca : function() {
+        desloca : function(tipo) {
 
-            let desloca = document.querySelectorAll('[data-deslocar="true"]');
+            let desloca = document.querySelectorAll('[data-deslocar_' + tipo + '="true"]');
 
             desloca.forEach(d =>
-                d.style.top = vis.render.components.scales.y(d.dataset.proximo_pos_y1) + "px"
+                d.style.top = vis.render.components.scales.y(d.dataset["proximo_pos_y_" + tipo]) + "px"
             );
 
         },
