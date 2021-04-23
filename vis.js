@@ -28,7 +28,11 @@ const vis = {
 
         svg : "svg",
         container : ".svg-container",
-        buttons : ".back, .next"
+        buttons : ".back, .next",
+        estoque : "[data-tipo='estoque_inicial'], [data-tipo='vencimentos_outras_fontes'], [data-tipo='vencimentos_refin']",
+        juros : "[data-tipo='juros_outras_fontes'], [data-tipo='juros_refin']",
+        juros_refin : "[data-tipo='juros_refin']",
+        vencimentos : "[data-tipo='vencimentos_outras_fontes'], [data-tipo='vencimentos_refin']"
     
     },
 
@@ -634,7 +638,7 @@ const vis = {
 
         },
 
-        calcula_nova_posicao_pagtos : function(tipo) {
+        calcula_posicao_apos_pagtos : function() {
 
             // tipo: juros ou vencimentos
 
@@ -739,6 +743,54 @@ const vis = {
 
             });
 
+        },
+
+        calcula_emissoes : function(tipo) {
+
+            // tipo = "refin" ou "vazamento"
+
+            let valor;
+
+            if (tipo == "refin") {
+
+                valor = (
+                    vis.data.infos.emissoes.refin.principal + 
+                    vis.data.infos.emissoes.refin.juros ) * 1e9;
+
+                    console.log("em refin, valor : ", valor)
+
+            } else {
+
+                valor = vis.data.infos.emissoes[tipo]*1e9;
+
+            }
+
+            
+
+            const qde = vis.grid.helpers.calcula_qde_unidades(valor);
+
+            console.log("Vamos emitir ", qde);
+
+            // qual a última linha atual?
+
+            // último elemento
+
+            const ultimo = vis.data.vetores.todos.slice(-1)[0];
+            const ultima_linha = ultimo.proximo_pos_y_juros;
+
+            const elementos_da_ultima_linha = vis.data.vetores.todos.filter(d => d.pos_y == ultima_linha);
+
+            console.log("ultimos elementos ", elementos_da_ultima_linha);
+
+            document.querySelectorAll(vis.refs.juros_refin)
+              .forEach(el => {
+                  if (el.dataset.proximo_pos_y_juros == ultima_linha) {
+                    el.style.backgroundColor = "coral"
+                  }   
+              });
+                
+
+        
         },
 
 
@@ -943,7 +995,10 @@ const vis = {
 
         "estoque inicial" : function() {
 
-            vis.render.cria_divs("todos");
+            document.querySelectorAll(vis.refs.estoque).forEach(quadradinho =>
+                quadradinho.style.opacity = 1);
+
+            
 
             //vis.render.cria_divs("estoque_inicial");
             //vis.render.cria_divs("vencimentos_outras_fontes");
@@ -953,10 +1008,30 @@ const vis = {
 
         "juros" : function() {
 
+            document.querySelectorAll(vis.refs.juros).forEach(quadradinho =>
+                quadradinho.style.opacity = 1);
+
             //vis.render.cria_divs("juros_outras_fontes");
             //vis.render.cria_divs("juros_refin");
 
-        }
+        },
+
+        "pagamentos" : function() {
+
+            document.querySelectorAll(vis.refs.vencimentos).forEach(quadradinho =>
+                quadradinho.style.opacity = 1);
+
+            vis.render.remove();
+            vis.render.desloca("juros");
+            vis.render.desloca("pagamentos");
+
+        },
+
+        "emissoes" : function() {
+
+            vis.grid.calcula_emissoes("refin");
+
+        } 
 
     },
 
@@ -1005,9 +1080,9 @@ const vis = {
             vis.sizing.redimensiona_container();
 
             vis.data.gera_datasets();
-            vis.grid.calcula_nova_posicao_pagtos();
+            vis.grid.calcula_posicao_apos_pagtos();
             vis.utils.gera_posicoes_linha_completa();
-            //vis.render.desenhas_rects();
+            vis.render.cria_divs("todos", visivel = 0);
 
         },
 
