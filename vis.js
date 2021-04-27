@@ -795,7 +795,9 @@ const vis = {
 
             // quantas linhas adicionais serão necessárias?
 
-            const qde_linhas_adicionais = Math.ceil( (qde - qde_a_preencher_ultima_linha) / vis.params.calculados.qde_por_linha );
+            const qde_elementos_restantes = qde - qde_a_preencher_ultima_linha;
+
+            const qde_linhas_adicionais = Math.ceil( qde_elementos_restantes / vis.params.calculados.qde_por_linha );
 
             // total de linhas a preencher:
 
@@ -809,12 +811,59 @@ const vis = {
 
             const linha_topo = vis.params.calculados.ultima_linha;
 
-            const deslocamento = linha_topo - ultima_linha_emissao;
+            const deslocamento = linha_topo - ultima_linha_emissao + 1;
+
+            // vamos gerar o vetor
+
+            // primeiro os quadradinhos para preencher a última linha
+
+            let vetor_emissao = posicoes_a_preencher.map(x => (
+                {
+                    pos_x : x,
+                    pos_y : ultima_linha,
+                    tipo : 'emissao_' + tipo,
+                    pos_y_emissao : ultima_linha + deslocamento
+
+                })
+            );
+
+            // agora o resto
+
+            linha_atual = ultima_linha + 1;
+            const qde_por_linha = vis.params.calculados.qde_por_linha;
+
+            for (let i = 1; i <= qde_elementos_restantes; i++) {
+
+                const novo_elemento = {
+
+                    pos_x : ( (i - 1) % qde_por_linha ) + 1,
+                    pos_y : linha_atual,
+                    tipo : 'emissao_' + tipo,
+                    pos_y_emissao : linha_atual + deslocamento
+
+                }
+
+                if ( i % qde_por_linha == 0 ) {
+
+                    linha_atual++
+
+                }
+
+                vetor_emissao.push(novo_elemento);
+
+            }
+
+            vis.data.vetores['emissao_' + tipo] = vetor_emissao;
+
+            // atualiza vetor todos
+
+            vis.data.vetores.todos = [...vis.data.vetores.todos, ...vetor_emissao];
 
 
             console.log("ultimos elementos ", elementos_da_ultima_linha);
             console.log("posicoes a preencher ", posicoes_a_preencher);
             console.log('ultima linha emissao', ultima_linha_emissao, 'deslocamento', deslocamento);
+            console.log('vetor emissão', vetor_emissao);
 
             // document.querySelectorAll(vis.refs.juros_refin)
             //   .forEach(el => {
@@ -825,7 +874,6 @@ const vis = {
 
             // talvez aqui tenha que testar se a linha inferior tb está incompleta
 
-            let linhas_incompletas = 1;
                 
 
         
@@ -948,7 +996,7 @@ const vis = {
 
         },
 
-        cria_divs : function(nome, visivel = 1) {
+        cria_divs : function(nome, visivel = 1, tipo_pos_y = 'pos_y') {
 
             const cont = document.querySelector(vis.refs.container);
 
@@ -970,7 +1018,7 @@ const vis = {
 
                 new_div.style.height = vis.params.calculados.tamanho + "px";
                 new_div.style.width  = vis.params.calculados.tamanho + "px";
-                new_div.style.top    = vis.render.components.scales.y(d.pos_y) + "px";
+                new_div.style.top    = vis.render.components.scales.y(d[tipo_pos_y]) + "px";
                 new_div.style.left   = vis.render.components.scales.x(d.pos_x) + "px";
                 new_div.style.opacity = visivel;
 
@@ -1004,6 +1052,16 @@ const vis = {
 
             vis.data.vetores.todos.forEach(quadradinho => 
                 quadradinho.pos_y = quadradinho["proximo_pos_y_" + tipo]);
+
+        },
+
+        desloca_emissao : function(tipo) {
+
+            let desloca = document.querySelectorAll('[data-tipo="emissao_"' + tipo + '"]');
+
+            desloca.forEach(el => 
+                el.style.top = vis.render.components.scales.y(el.dataset.pos_y_emissao) + 'px'
+                );
 
         },
 
@@ -1085,8 +1143,17 @@ const vis = {
         "emissoes" : function() {
 
             vis.grid.calcula_emissoes("refin");
+            vis.render.cria_divs('emissao_refin', visivel = 1, tipo_pos_y = 'pos_y_emissoes');
 
-        } 
+        },
+
+        "emissoes-vazamento" : function() {
+
+            vis.render.desloca_emissao('refin');
+            vis.grid.calcula_emissoes("vazamento");
+            vis.render.cria_divs('emissao_vazamento', visivel = 1, tipo_pos_y = 'pos_y_emissoes');
+
+        }
 
     },
 
