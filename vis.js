@@ -773,21 +773,59 @@ const vis = {
 
             // qual a última linha atual?
 
-            // último elemento
-
             const ultimo = vis.data.vetores.todos.slice(-1)[0];
-            const ultima_linha = ultimo.proximo_pos_y_juros;
+            const ultima_linha = ultimo.pos_y//proximo_pos_y_juros;
+
+            // posicoes dessa ultima linha
 
             const elementos_da_ultima_linha = vis.data.vetores.todos.filter(d => d.pos_y == ultima_linha);
 
-            console.log("ultimos elementos ", elementos_da_ultima_linha);
+            const posicoes_elementos_ultima_linha = elementos_da_ultima_linha.map(d => d.pos_x);
 
-            document.querySelectorAll(vis.refs.juros_refin)
-              .forEach(el => {
-                  if (el.dataset.proximo_pos_y_juros == ultima_linha) {
-                    el.style.backgroundColor = "coral"
-                  }   
-              });
+            // posicoes de uma linha completa
+
+            const posicoes_linha_completa = vis.params.calculados.posicoes_linha_completa;
+
+            // é preciso preencher a última linha?
+
+            const posicoes_a_preencher = posicoes_linha_completa
+              .filter(d => !posicoes_elementos_ultima_linha.includes(d));
+
+            const qde_a_preencher_ultima_linha = posicoes_a_preencher.length;
+
+            // quantas linhas adicionais serão necessárias?
+
+            const qde_linhas_adicionais = Math.ceil( (qde - qde_a_preencher_ultima_linha) / vis.params.calculados.qde_por_linha );
+
+            // total de linhas a preencher:
+
+            const total_linhas = qde_linhas_adicionais + ( qde_a_preencher_ultima_linha > 0 );
+
+            // ultima linha após o preenchimento
+
+            const ultima_linha_emissao = ultima_linha + total_linhas;
+
+            // inicialmente, os quadradinhos ficarão no topo. Então a última linha do bloco vai ser a última linha do container
+
+            const linha_topo = vis.params.calculados.ultima_linha;
+
+            const deslocamento = linha_topo - ultima_linha_emissao;
+
+
+            console.log("ultimos elementos ", elementos_da_ultima_linha);
+            console.log("posicoes a preencher ", posicoes_a_preencher);
+            console.log('ultima linha emissao', ultima_linha_emissao, 'deslocamento', deslocamento);
+
+            // document.querySelectorAll(vis.refs.juros_refin)
+            //   .forEach(el => {
+            //       if (el.dataset.proximo_pos_y_juros == ultima_linha) {
+            //         el.style.backgroundColor = "coral"
+            //       }   
+            //   });
+
+            // talvez aqui tenha que testar se a linha inferior tb está incompleta
+
+            let linhas_incompletas = 1;
                 
 
         
@@ -962,6 +1000,11 @@ const vis = {
                 d.style.top = vis.render.components.scales.y(d.dataset["proximo_pos_y_" + tipo]) + "px"
             );
 
+            // atualiza vetores
+
+            vis.data.vetores.todos.forEach(quadradinho => 
+                quadradinho.pos_y = quadradinho["proximo_pos_y_" + tipo]);
+
         },
 
         desenhas_rects : function() {
@@ -1016,14 +1059,26 @@ const vis = {
 
         },
 
-        "pagamentos" : function() {
+        "vencimentos" : function() {
 
             document.querySelectorAll(vis.refs.vencimentos).forEach(quadradinho =>
                 quadradinho.style.opacity = 1);
 
             vis.render.remove();
+
+        },
+
+        "pagamentos-vencimentos" : function() {
+
+            vis.render.remove();
+            vis.render.desloca("vencimentos");
+
+        },
+
+        "pagamentos-juros" : function() {
+
+            vis.render.remove();
             vis.render.desloca("juros");
-            vis.render.desloca("pagamentos");
 
         },
 
