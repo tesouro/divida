@@ -83,3 +83,16 @@ anim.reverse();
 
 Parti para uma solução mais direta, sem ser tão genérica.
 
+
+
+Cria divs refin: 
+
+```js
+vis.render.cria_divs('emissao_refin');
+
+
+document.querySelectorAll('[data-tipo="emissao_refin"]').forEach(el => el.style.top = vis.render.components.scales.y(el.dataset.pos_y_emissao) + 'px')
+
+```
+
+Lá no desloca, poderia deixar com uma opção de marcar os quadradinhos que vão ser deslocados, e deslocar sempre para a 'pos_y'. Aí no cálculo dos pagamentos, incluir a posição anterior ao pagamento como 'pos_y_anterior', passando esse 'tipo_pos_y' na chamada da funcão `cria_divs`.
