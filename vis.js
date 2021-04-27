@@ -749,9 +749,12 @@ const vis = {
 
             // tipo = "refin" ou "vazamento"
 
-            let valor;
+            let valor, vetor_anterior;
 
             if (tipo == "refin") {
+
+                vetor_anterior = 'estoque_inicial';
+                // as posições finais das emissões de refinanciamento vão ser em cima do estoque inicial
 
                 valor = (
                     vis.data.infos.emissoes.refin.principal + 
@@ -760,6 +763,10 @@ const vis = {
                     console.log("em refin, valor : ", valor)
 
             } else {
+
+                vetor_anterior = 'emissao_refin';
+                // as posições finais das emissões de vazamento vão ser em cima das emissões de refinanciamento
+
 
                 valor = vis.data.infos.emissoes[tipo]*1e9;
 
@@ -773,14 +780,20 @@ const vis = {
 
             // qual a última linha atual?
 
-            const ultimo = vis.data.vetores.todos.slice(-1)[0];
+            const ultimo = vis.data.vetores[vetor_anterior].slice(-1)[0];
             const ultima_linha = ultimo.pos_y//proximo_pos_y_juros;
+
+            console.log("Ultimo, ultima linha", ultimo, ultima_linha);
+
+            console.log('vetor anterior', vis.data.vetores[vetor_anterior]);
 
             // posicoes dessa ultima linha
 
-            const elementos_da_ultima_linha = vis.data.vetores.todos.filter(d => d.pos_y == ultima_linha);
+            const elementos_da_ultima_linha = vis.data.vetores[vetor_anterior].filter(d => d.pos_y == ultima_linha);
 
             const posicoes_elementos_ultima_linha = elementos_da_ultima_linha.map(d => d.pos_x);
+
+            console.log("Ultima linha", elementos_da_ultima_linha, posicoes_elementos_ultima_linha);
 
             // posicoes de uma linha completa
 
@@ -790,6 +803,8 @@ const vis = {
 
             const posicoes_a_preencher = posicoes_linha_completa
               .filter(d => !posicoes_elementos_ultima_linha.includes(d));
+
+            console.log('posicoes a preencher ', posicoes_a_preencher);
 
             const qde_a_preencher_ultima_linha = posicoes_a_preencher.length;
 
@@ -857,7 +872,7 @@ const vis = {
 
             // atualiza vetor todos
 
-            vis.data.vetores.todos = [...vis.data.vetores.todos, ...vetor_emissao];
+            //vis.data.vetores.todos = [...vis.data.vetores.todos, ...vetor_emissao];
 
 
             console.log("ultimos elementos ", elementos_da_ultima_linha);
@@ -881,85 +896,85 @@ const vis = {
 
 
 
-        registra_pagamento : function(valor, posicao_inicial) {
+        // registra_pagamento : function(valor, posicao_inicial) {
 
-            const qde_unidades = Math.round(valor/vis.params.iniciais.valor_unidade);
+        //     const qde_unidades = Math.round(valor/vis.params.iniciais.valor_unidade);
 
-            console.log("Para este pagamento de ", valor, ", apagaremos ", qde_unidades, " quadradinhos.");
+        //     console.log("Para este pagamento de ", valor, ", apagaremos ", qde_unidades, " quadradinhos.");
 
-            // acha o index do elemento inicial no dataset
+        //     // acha o index do elemento inicial no dataset
 
-            const index_primeiro = vis.data.divida
-              .map(elemento => elemento.unidade)
-              .indexOf(posicao_inicial)
-            ;
+        //     const index_primeiro = vis.data.divida
+        //       .map(elemento => elemento.unidade)
+        //       .indexOf(posicao_inicial)
+        //     ;
 
-            // linha do primeiro a ser removido
-            const linha_primeiro = vis.data.divida[index_primeiro].pos_y;
-            const qde_linhas_completas = Math.floor(qde_unidades / vis.params.calculados.qde_por_linha);
-            const nro_linha_incompleta = linha_primeiro + qde_linhas_completas;
-            const primeira_posicao_da_linha_incompleta = qde_unidades % vis.params.calculados.qde_por_linha;
+        //     // linha do primeiro a ser removido
+        //     const linha_primeiro = vis.data.divida[index_primeiro].pos_y;
+        //     const qde_linhas_completas = Math.floor(qde_unidades / vis.params.calculados.qde_por_linha);
+        //     const nro_linha_incompleta = linha_primeiro + qde_linhas_completas;
+        //     const primeira_posicao_da_linha_incompleta = qde_unidades % vis.params.calculados.qde_por_linha;
             
 
-            console.log(primeira_posicao_da_linha_incompleta, qde_linhas_completas);
+        //     console.log(primeira_posicao_da_linha_incompleta, qde_linhas_completas);
 
-            let vetor_deslocamento = [];
+        //     let vetor_deslocamento = [];
 
-            for (let i = 0; i <= vis.params.calculados.qde_por_linha - 1; i++) {
+        //     for (let i = 0; i <= vis.params.calculados.qde_por_linha - 1; i++) {
 
-                if (i >= primeira_posicao_da_linha_incompleta) {
-                    vetor_deslocamento[i] = qde_linhas_completas;
-                } else {
-                    vetor_deslocamento[i] = qde_linhas_completas + 1
-                }
+        //         if (i >= primeira_posicao_da_linha_incompleta) {
+        //             vetor_deslocamento[i] = qde_linhas_completas;
+        //         } else {
+        //             vetor_deslocamento[i] = qde_linhas_completas + 1
+        //         }
 
-            }
+        //     }
 
-            console.log(vetor_deslocamento);
+        //     console.log(vetor_deslocamento);
 
-            const elementos_removidos = vis.data.divida.splice(index_primeiro, qde_unidades);
+        //     const elementos_removidos = vis.data.divida.splice(index_primeiro, qde_unidades);
 
-            console.log("Foram removidos, a partir do index ", index_primeiro, ": ", elementos_removidos);
+        //     console.log("Foram removidos, a partir do index ", index_primeiro, ": ", elementos_removidos);
 
 
-            // atualiza data join
+        //     // atualiza data join
 
-            vis.selections.rects_divida = vis.selections.rects_divida
-              .data(vis.data.divida, d => d.unidade);
+        //     vis.selections.rects_divida = vis.selections.rects_divida
+        //       .data(vis.data.divida, d => d.unidade);
 
-            // remove rects pagos
+        //     // remove rects pagos
 
-            vis.selections.rects_divida
-              .exit()
-              .classed("estoque", false) // para a transicao funcionar (estoque define a cor com style)
-              .attr("fill", "goldenrod")  // mesma coisa
-              .attr("opacity", 1)     // mesma coisa
-              .transition()
-              .duration(1000)
-              .attr("fill", "blue")
-              .attr("stroke", "blue")
-              .attr("stroke-width", 3)
-              .transition()
-              .delay(1000)
-              .duration(1000)
-              .attr("opacity", 0)
-              .remove()
-            ;
+        //     vis.selections.rects_divida
+        //       .exit()
+        //       .classed("estoque", false) // para a transicao funcionar (estoque define a cor com style)
+        //       .attr("fill", "goldenrod")  // mesma coisa
+        //       .attr("opacity", 1)     // mesma coisa
+        //       .transition()
+        //       .duration(1000)
+        //       .attr("fill", "blue")
+        //       .attr("stroke", "blue")
+        //       .attr("stroke-width", 3)
+        //       .transition()
+        //       .delay(1000)
+        //       .duration(1000)
+        //       .attr("opacity", 0)
+        //       .remove()
+        //     ;
 
-            // desloca
+        //     // desloca
 
-            vis.selections.rects_divida
-              .filter(datum => datum.pos_y >= nro_linha_incompleta)
-              .transition()
-              .delay(2500)
-              .transition(1000)
-              .attr("y", function(d) {
-                  const nova_pos_y = d.pos_y - vetor_deslocamento[d.pos_x - 1];
-                  d.pos_y = nova_pos_y;
-                  return vis.render.components.scales.y(nova_pos_y)
-              });
+        //     vis.selections.rects_divida
+        //       .filter(datum => datum.pos_y >= nro_linha_incompleta)
+        //       .transition()
+        //       .delay(2500)
+        //       .transition(1000)
+        //       .attr("y", function(d) {
+        //           const nova_pos_y = d.pos_y - vetor_deslocamento[d.pos_x - 1];
+        //           d.pos_y = nova_pos_y;
+        //           return vis.render.components.scales.y(nova_pos_y)
+        //       });
 
-        }
+        // }
 
 
 
@@ -1109,6 +1124,8 @@ const vis = {
             document.querySelectorAll(vis.refs.estoque).forEach(quadradinho =>
                 quadradinho.style.opacity = 1);
 
+                console.log(vis.data.vetores.estoque_inicial[0].pos_y);
+
             
 
             //vis.render.cria_divs("estoque_inicial");
@@ -1122,6 +1139,8 @@ const vis = {
             document.querySelectorAll(vis.refs.juros).forEach(quadradinho =>
                 quadradinho.style.opacity = 1);
 
+                console.log(vis.data.vetores.estoque_inicial[0].pos_y);
+
             //vis.render.cria_divs("juros_outras_fontes");
             //vis.render.cria_divs("juros_refin");
 
@@ -1134,12 +1153,17 @@ const vis = {
 
             vis.render.remove();
 
+            console.log(vis.data.vetores.estoque_inicial[0].pos_y);
+
         },
 
         "pagamentos-vencimentos" : function() {
 
             vis.render.remove();
+            console.log(vis.data.vetores.estoque_inicial[0].pos_y);
             vis.render.desloca("vencimentos");
+
+            console.log(vis.data.vetores.estoque_inicial[0].pos_y);
 
         },
 
@@ -1147,6 +1171,8 @@ const vis = {
 
             vis.render.remove();
             vis.render.desloca("juros");
+
+            console.log(vis.data.vetores.estoque_inicial[0].pos_y);
 
         },
 
@@ -1215,6 +1241,8 @@ const vis = {
             vis.grid.calcula_posicao_apos_pagtos();
             vis.utils.gera_posicoes_linha_completa();
             vis.render.cria_divs("todos", visivel = 0);
+
+            console.log(vis.data.vetores.estoque_inicial[0].pos_y);
 
         },
 
