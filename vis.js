@@ -1067,31 +1067,39 @@ const vis = {
 
         },
 
-        desenhas_rects : function() {
+        pagamento_refin : function() {
 
-            const svg = d3.select(vis.refs.svg);
+            let pgtos_refin = document.querySelectorAll('[data-tipo="juros_refin"], [data-tipo="vencimentos_refin"]');
 
-            vis.selections.rects_divida = svg
-              .selectAll("rect")
-              .data(vis.data.divida, d => d.unidade)
-              .join("rect")
-              .classed("estoque", true)
-              .attr("data-unidade", d => d.unidade)
-              .attr("x", d => vis.render.components.scales.x(d.pos_x) + vis.params.calculados.tamanho/2)
-              .attr("y", d => vis.render.components.scales.y(d.pos_y) + vis.params.calculados.tamanho/2)
-              .attr("width", 0)
-              .attr("height", 0);
+            pgtos_refin.forEach(el => el.classList.add('fantasma'));
 
-            vis.selections.rects_divida
-              .transition()
-              .duration(100)
-              .delay((d,i) => d.pos_x * 10 + d.pos_y * 50)
-              .attr("x", d => vis.render.components.scales.x(d.pos_x))
-              .attr("y", d => vis.render.components.scales.y(d.pos_y))
-              .attr("width", vis.params.calculados.tamanho)
-              .attr("height", vis.params.calculados.tamanho);
+        },
 
-        }
+        // desenhas_rects : function() {
+
+        //     const svg = d3.select(vis.refs.svg);
+
+        //     vis.selections.rects_divida = svg
+        //       .selectAll("rect")
+        //       .data(vis.data.divida, d => d.unidade)
+        //       .join("rect")
+        //       .classed("estoque", true)
+        //       .attr("data-unidade", d => d.unidade)
+        //       .attr("x", d => vis.render.components.scales.x(d.pos_x) + vis.params.calculados.tamanho/2)
+        //       .attr("y", d => vis.render.components.scales.y(d.pos_y) + vis.params.calculados.tamanho/2)
+        //       .attr("width", 0)
+        //       .attr("height", 0);
+
+        //     vis.selections.rects_divida
+        //       .transition()
+        //       .duration(100)
+        //       .delay((d,i) => d.pos_x * 10 + d.pos_y * 50)
+        //       .attr("x", d => vis.render.components.scales.x(d.pos_x))
+        //       .attr("y", d => vis.render.components.scales.y(d.pos_y))
+        //       .attr("width", vis.params.calculados.tamanho)
+        //       .attr("height", vis.params.calculados.tamanho);
+
+        // }
     },
 
     stepper : {
@@ -1145,7 +1153,7 @@ const vis = {
         "emissoes" : function() {
 
             vis.grid.calcula_emissoes("refin");
-            vis.render.cria_divs('emissao_refin', visivel = 1, tipo_pos_y = 'pos_y_emissoes');
+            vis.render.cria_divs('emissao_refin', visivel = 1, tipo_pos_y = 'pos_y_emissao');
 
         },
 
@@ -1153,7 +1161,7 @@ const vis = {
 
             vis.render.desloca_emissao('refin');
             vis.grid.calcula_emissoes("vazamento");
-            vis.render.cria_divs('emissao_vazamento', visivel = 1, tipo_pos_y = 'pos_y_emissoes');
+            vis.render.cria_divs('emissao_vazamento', visivel = 1, tipo_pos_y = 'pos_y_emissao');
 
         }
 
