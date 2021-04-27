@@ -1057,10 +1057,12 @@ const vis = {
 
         desloca_emissao : function(tipo) {
 
-            let desloca = document.querySelectorAll('[data-tipo="emissao_"' + tipo + '"]');
+            let desloca = document.querySelectorAll('[data-tipo="emissao_' + tipo + '"]');
+
+            console.log("Deslocando emissao", desloca);
 
             desloca.forEach(el => 
-                el.style.top = vis.render.components.scales.y(el.dataset.pos_y_emissao) + 'px'
+                el.style.top = vis.render.components.scales.y(el.dataset.pos_y) + 'px'
                 );
 
         },
