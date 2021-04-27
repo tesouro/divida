@@ -1065,8 +1065,8 @@ const vis = {
 
             // atualiza vetores
 
-            vis.data.vetores.todos.forEach(quadradinho => 
-                quadradinho.pos_y = quadradinho["proximo_pos_y_" + tipo]);
+            // vis.data.vetores.todos.forEach(quadradinho => 
+            //     quadradinho.pos_y = quadradinho["proximo_pos_y_" + tipo]);
 
         },
 
@@ -1176,6 +1176,13 @@ const vis = {
 
         },
 
+        "pagamentos-com-emissoes" : function() {
+
+            vis.render.pagamento_refin();
+
+        },
+
+
         "emissoes" : function() {
 
             vis.grid.calcula_emissoes("refin");
@@ -1188,6 +1195,12 @@ const vis = {
             vis.render.desloca_emissao('refin');
             vis.grid.calcula_emissoes("vazamento");
             vis.render.cria_divs('emissao_vazamento', visivel = 1, tipo_pos_y = 'pos_y_emissao');
+
+        },
+
+        "posiciona-emissoes" : function() {
+
+            vis.render.desloca_emissao('vazamento');
 
         }
 
