@@ -15,6 +15,14 @@
 
     --mobile-break-point: 500px;
 
+    --tetris-purple: #a000f0;
+    --tetris-green: #00f000;
+    --tetris-red: #f00000;
+    --tetris-yellow: #f0f000;
+    --tetris-orange: #f0a000;
+    --tetris-blue: #0000f0;
+    --tetris-cyan: #00f0f0;
+
 }
 
 * {
