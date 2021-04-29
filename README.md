@@ -12,6 +12,11 @@ https://www.nytimes.com/interactive/2018/05/09/nyregion/subway-crisis-mta-decisi
 
 https://datalab.usaspending.gov/americas-finance-guide/debt/
 
+### Fontes
+
+https://fonts.google.com/specimen/VT323#standard-styles
+https://fonts.google.com/specimen/Press+Start+2P#about
+
 
 ### Sketch
 
@@ -96,3 +101,51 @@ document.querySelectorAll('[data-tipo="emissao_refin"]').forEach(el => el.style.
 ```
 
 Lá no desloca, poderia deixar com uma opção de marcar os quadradinhos que vão ser deslocados, e deslocar sempre para a 'pos_y'. Aí no cálculo dos pagamentos, incluir a posição anterior ao pagamento como 'pos_y_anterior', passando esse 'tipo_pos_y' na chamada da funcão `cria_divs`.
+
+
+Em vez de me preocupar com posicoes finais em px, poderia apenas calcular deslocamentos em termos de linhas, e aí usar transforms para ajustar as posições.
+
+```html
+<div class="container">
+  <div class="obj" id="obj1" data-finalposition="200">1</div>
+  <div class="obj" id="obj2" data-finalposition="400">2</div>
+</div>
+```
+
+```css
+
+.container {
+  position: relative;
+}
+
+.obj {
+  position: absolute;
+    color: white;
+  font-size: 5rem;
+  width: 5rem;
+  text-align: center;
+}
+
+#obj1 {
+  top: 20px;
+  left: 20px;
+  background-color: blue;
+}
+
+#obj2 {
+  top: 120px;
+  left: 20px;
+  background-color: coral;
+}
+```
+
+```js
+
+gsap.to('.obj', {x: getValue})
+
+function getValue(i, target) {
+  console.log(i, +target.dataset.finalposition);
+  return +target.dataset.finalposition;
+}
+
+```
