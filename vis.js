@@ -67,7 +67,7 @@ const vis = {
 
             juros : {
 
-                refin : 210,//209,
+                refin       : 210,//209,
                 com_outras  : 200,//197,
                 total       : 410//406
 
@@ -75,7 +75,7 @@ const vis = {
 
             vencimentos : {
 
-                refin :  780,//773,
+                refin       :  780,//773,
                 com_outras  :  400, //394,
                 total       : 1180//1167
 
@@ -85,7 +85,7 @@ const vis = {
 
                 resultado_bacen :  30,
                 outras_despesas : 737,
-                total : 767
+                total           : 767
 
             },
 
@@ -115,16 +115,6 @@ const vis = {
 
         },
 
-        marcadores : {
-
-            excluir : ["vencimentos_outras_fontes", "juros_outras_fontes"],
-
-            deslocar_2x : ["vencimentos_refin", "juros_outras_fontes", "juros_refin"],
-
-            desloca_1x : ["juros_refin"]
-
-        },
-
         vetores : {
 
             // formato elementos : { posx, posy, indice, tipo }
@@ -140,11 +130,6 @@ const vis = {
             grid_refin : null,
 
             todos : null
-
-            
-
-
-            
 
         },
 
@@ -385,257 +370,6 @@ const vis = {
             vis.params.calculados.ultima_linha = qde_linhas;
 
             // em seguida, calcula parametros para redimensionamento
-        },
-
-        registra_emissao : function(valor) {
-
-            const qde_por_linha = vis.params.calculados.qde_por_linha;
-
-            const qde_unidades = Math.round(valor/vis.params.iniciais.valor_unidade);
-            console.log("Para esta emissão de ", valor, ", precisaremos de ", qde_unidades, " quadradinhos.");
-
-            // dados da última linha preenchida do estoque
-
-            const ultimo_elemento_atual = vis.data.divida.slice(-1)[0];
-            const ultima_linha_atual = ultimo_elemento_atual.pos_y;
-            const indice_ultimo_elemento_estoque = ultimo_elemento_atual.unidade;
-
-            console.log("o ultimo elemento está em ", ultimo_elemento_atual);
-
-            // lista dos elementos dessa última linha atual
-
-            const elementos_da_ultima_linha = vis.data.divida.filter(d => d.pos_y == ultima_linha_atual);
-            const qde_elementos_ultima_linha = elementos_da_ultima_linha.length;
-            const posicoes_ultima_linha = elementos_da_ultima_linha.map(d => d.pos_x);
-
-            console.log("A última linha do estoque atualmente tem ", qde_elementos_ultima_linha);
-
-            // avalia o lado por onde começar a completar
-
-            const lado_a_completar = posicoes_ultima_linha.includes(1) ?
-                "direita" :
-                "esquerda";
-
-            console.log(lado_a_completar);
-
-            const posicoes_linha_completa = vis.params.calculados.posicoes_linha_completa;
-
-            // faz a diferença da linha completa para a última linha
-
-            const posicoes_vazias_ultima_linha = posicoes_linha_completa.filter(
-                
-                d => !posicoes_ultima_linha.includes(d)
-
-            );
-
-            const qde_posicoes_vazias = posicoes_vazias_ultima_linha.length;
-            const qde_a_completar = 
-              (qde_unidades > qde_posicoes_vazias) ? 
-              qde_posicoes_vazias : 
-              qde_unidades;
-
-            // o conjunto de elementos da emissão vai ter, em geral: 
-            // * uma linha com os elementos que faltam ser preenchidos na última linha atual
-            // * n linhas completas
-            // * uma linha incompleta com os elementos remanescentes
-
-            const qde_linhas_completas = 
-              qde_unidades > qde_posicoes_vazias ?
-              Math.floor((qde_unidades - qde_posicoes_vazias)/qde_por_linha) :
-              0;
-
-            const qde_elementos_remanescentes = (qde_unidades - qde_a_completar) % qde_por_linha;
-
-            // resumo da Ópera
-
-            const tem_posicoes_a_completar = qde_a_completar > 0;
-            const tem_linhas_completas = qde_linhas_completas > 0;
-            const tem_elementos_remanescentes = qde_elementos_remanescentes > 0;
-
-            console.log( "\n",
-                "Tem posicoes a completar? ", tem_posicoes_a_completar, qde_a_completar,"\n",
-                "Tem linhas completas? ", tem_linhas_completas, qde_linhas_completas, "\n",
-                "Tem elementos remanescentes? ", tem_elementos_remanescentes, qde_elementos_remanescentes
-            );
-
-            const qde_linhas_emissao = 
-              tem_posicoes_a_completar + // convertido para 0 ou 1
-              qde_linhas_completas + 
-              tem_elementos_remanescentes; // convertido para 0 ou 1
-
-            console.log("A emissão vai ter ", qde_linhas_emissao, " linhas.")
-
-            // ultima linha possivel no grid
-
-            const ultima_linha_possivel_grid = vis.utils.calcula_qde_linhas(vis.dims.svg.h);//vis.dims.altura_necessaria);
-
-            console.log("Ultima linha possível", ultima_linha_possivel_grid);
-            // primeira linha a ser preenchida na emissão, de baixo para cima
-
-            const nro_primeira_linha_emissao = ultima_linha_possivel_grid - qde_linhas_emissao + 1;
-
-            console.log("Primeira linha emissão", nro_primeira_linha_emissao);
-
-            // vamos montar o novo dataset
-
-            const dataset_emissao = [];
-
-            let linha_atual = nro_primeira_linha_emissao;
-            let indice_atual = indice_ultimo_elemento_estoque + 1;
-
-            // primeiro as posições a completar na última linha do estoque
-
-            if (tem_posicoes_a_completar) {
-
-                const ajuste_lado =  
-                  lado_a_completar == "esquerda" ?
-                  0 : 
-                  qde_elementos_ultima_linha;
-
-                for (let i = 1; i <= qde_a_completar; i++) {
-
-                    const elem = {
-
-                        unidade : indice_atual,
-                        pos_x : i + ajuste_lado,
-                        pos_y : linha_atual,
-
-                    }
-
-                    dataset_emissao.push(elem);
-
-                    indice_atual++;
-
-                }
-
-                linha_atual++;
-
-            }
-
-            // agora vamos para as linhas completas, se houver
-
-            if (tem_linhas_completas) {
-
-                //const ultima_linha_completa = linha_atual + qde_linhas_completas - 1;
-
-                //while (linha_atual <= ultima_linha_completa) {
-
-                //}
-
-                const qde_unidades_em_linhas_completas = qde_linhas_completas * qde_por_linha;
-
-                for (let i = 1; i <= qde_unidades_em_linhas_completas; i++) {
-    
-                    const elem = {
-    
-                        unidade : indice_atual,
-                        pos_x : ( (i - 1) % qde_por_linha ) + 1,
-                        pos_y : linha_atual
-    
-                    }
-    
-                    if ( i % qde_por_linha == 0 ) {
-    
-                        linha_atual++
-    
-                    }
-    
-                    indice_atual ++
-    
-                    dataset_emissao.push(elem);
-    
-                }  
-
-            }
-
-            // por fim, os elementos remanescentes, se houver
-
-            if (tem_elementos_remanescentes) {
-
-                const ajuste_lado =  
-                  lado_a_completar == "esquerda" ?
-                  0 : 
-                  qde_por_linha - qde_elementos_remanescentes;
-
-                for (let i = 1; i <= qde_elementos_remanescentes; i++) {
-
-                    const elem = {
-
-                        unidade : indice_atual,
-                        pos_x : i + ajuste_lado,
-                        pos_y : linha_atual,
-
-                    }
-
-                    dataset_emissao.push(elem);
-
-                    indice_atual++;
-
-                }
-
-            }
-
-            console.log("Dados emissão: ", dataset_emissao);
-
-            console.log("Diferença de linhas", );
-
-            const deslocamento_necessario = nro_primeira_linha_emissao - ultima_linha_atual - 1 + tem_posicoes_a_completar; // se tiver posicoes a completar, tem que deslocar mais um
-
-
-            // refatorar isso
-
-            // fazer funções de renderização separadas?
-
-            const svg = d3.select(vis.refs.svg);
-
-
-            vis.selections.rects_ultima_emissao = 
-            svg
-              .selectAll("rect.emissao")
-              .data(dataset_emissao)
-              .join("rect")
-              .classed("emissao", true)
-              .attr("y", d => vis.render.components.scales.y(d.pos_y))
-              .attr("x", d => vis.render.components.scales.x(d.pos_x))
-              .attr("width", vis.params.calculados.tamanho)
-              .attr("height", vis.params.calculados.tamanho)
-              .attr("fill", "red");
-
-            vis.selections.rects_ultima_emissao  
-              .transition()
-              .duration(1000)
-              .attr("opacity", 1);
-
-            // move para o estoque principal e atualiza as posições.
-
-            vis.selections.rects_ultima_emissao
-              .transition()
-              .ease(d3.easeLinear)
-              .delay(1000)
-              .duration(deslocamento_necessario * 100)
-              .attr("y", d => {
-                  const nova_pos_y = d.pos_y - deslocamento_necessario;
-                  d.pos_y = nova_pos_y;
-                  return vis.render.components.scales.y(d.pos_y)
-              });
-
-            vis.selections.rects_ultima_emissao
-              .transition()
-              .delay(1000 + 1000 + deslocamento_necessario * 100)
-              .duration(500)
-              .attr("fill", "goldenrod");
-
-            vis.data.divida.push(...dataset_emissao);
-
-            vis.selections.rects_ultima_emissao
-              .classed("emissao", false)
-              .classed("estoque", true);
-
-            // atualiza seleção
-
-            vis.selections.rects_divida = svg.selectAll("rect.estoque")
-              .data(vis.data.divida);
-
         },
 
         calcula_posicao_apos_pagtos : function() {
