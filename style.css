@@ -20,6 +20,7 @@
     --tetris-red: #f00000;
     --tetris-yellow: #f0f000;
     --tetris-orange: #f0a000;
+    --tetris-orangesemi : #e6bd6d;
     --tetris-blue: #0000f0;
     --tetris-cyan: #00f0f0;
 
@@ -271,11 +272,11 @@ rect.estoque {
 
     background-color: limegreen;
 
-} */
+
 
 [data-tipo="vencimentos_outras_fontes"] {
 
-    background-color: seagreen;
+    border: 0px solid var(--tetris-orange);
 
 }
 
@@ -284,6 +285,8 @@ rect.estoque {
     background-color: skyblue;
 
 }
+
+*/
 
 .fantasma {
 

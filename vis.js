@@ -35,12 +35,13 @@ const vis = {
             popula : function() {
 
                 vis.params.colors.valores.forEach(color => {
-                    vis.params.colors[color] = pega_do_css(color);
+                    console.log(color);
+                    vis.params.colors[color] = vis.params.colors.pega_do_css(color);
                 })
 
             },
 
-            valores : ['purple', 'green', 'red', 'yellow', 'orange', 'blue', 'cyan']
+            valores : ['purple', 'green', 'red', 'yellow', 'orange', 'orangesemi' ,'blue', 'cyan']
 
 
         },
@@ -67,7 +68,9 @@ const vis = {
         estoque : "[data-tipo='estoque_inicial'], [data-tipo='vencimentos_outras_fontes'], [data-tipo='vencimentos_refin']",
         juros : "[data-tipo='juros_outras_fontes'], [data-tipo='juros_refin']",
         juros_refin : "[data-tipo='juros_refin']",
-        vencimentos : "[data-tipo='vencimentos_outras_fontes'], [data-tipo='vencimentos_refin']"
+        vencimentos : "[data-tipo='vencimentos_outras_fontes'], [data-tipo='vencimentos_refin']",
+        vencimentos_outras_fontes : "[data-tipo='vencimentos_outras_fontes']",
+        deslocar_vencimentos : "[data-deslocar_vencimentos='true']",
     
     },
 
@@ -616,6 +619,8 @@ const vis = {
 
             // primeiro os quadradinhos para preencher a última linha
 
+            linha_atual = ultima_linha_emissao;
+
             let vetor_emissao = posicoes_a_preencher.map(x => (
                 {
                     pos_x : x,
@@ -660,7 +665,7 @@ const vis = {
 
             // atualiza vetor todos
 
-            vis.data.vetores.todos.push([...vetor_emissao]);
+            vis.data.vetores.todos.push(...vetor_emissao);
 
 
             console.log("ultimos elementos ", elementos_da_ultima_linha);
@@ -828,6 +833,7 @@ const vis = {
                          .to(".quadradinho", {
                             duration: 1,
                             scale: 1,
+                            opacity: 1,
                             stagger: {
                             grid: "auto",
                             from: "random",
@@ -849,7 +855,7 @@ const vis = {
 
     },
 
-    stepper : {
+    /*stepper : {
 
         "estoque inicial" : function() {
 
@@ -936,7 +942,7 @@ const vis = {
 
         }
 
-    },
+    },*/
 
     utils : {
 
@@ -957,6 +963,21 @@ const vis = {
         calcula_qde_linhas : function(dimensao) {
 
             return Math.floor((dimensao - vis.params.iniciais.margem) / (vis.params.calculados.tamanho + vis.params.iniciais.margem))
+
+        },
+
+        // para usar nas animações
+
+        get_data : {
+
+            vencimentos_outras_fontes : function(i, target) {
+
+                // os deslocamentos estão em quantidade de llinhas. precisamos multiplicar pelo tamanho efetivo de uma linha: tamanhado do quadrado + margem.
+
+                return +target.dataset['deslocamento_em_pagamento_vencimentos_outras'] * (vis.params.calculados.tamanho + vis.params.iniciais.margem);
+
+
+            }
 
         }
 
@@ -1019,38 +1040,16 @@ const vis = {
 
 vis.control.init();
 
-const estoque_inicial = {
-            
-    tl : new gsap.timeline({paused: true})
-                 .to(".quadradinho", {
-                    duration: 1,
-                    scale: 1,
-                    stagger: {
-                    grid: "auto",
-                    from: "random",
-                    axis: "both",
-                    amount: 1.5
-                    }
-                }),
-
-    play: function() {
-        this.tl.play()
-    },
-
-    reverse : function() {
-        this.tl.reverse()
-    }
-
-}
 
 const anims = {
 
     estoque_inicial : {
                 
         tl : new gsap.timeline({paused: true})
-                    .to(".quadradinho", {
+                    .to(vis.refs.estoque, {
                         duration: 1,
                         scale: 1,
+                        opacity: 1,
                         stagger: {
                         grid: "auto",
                         from: "random",
@@ -1071,15 +1070,16 @@ const anims = {
 
     juros : {
 
-        tl : new gsap.timeline({pause: true})
+        tl : new gsap.timeline({paused: true})
                      .to(vis.refs.juros, {
                         scale: 1,
+                        opacity: 1,
                         ease: Back.easeOut,
                         stagger: {
                             grid: "auto",
                             from: "start",
-                            axis: "y",
-                            each: 0.25
+                            //axis: "y",
+                            each: 0.08
                         }
                      }),
 
@@ -1091,6 +1091,65 @@ const anims = {
             this.tl.reverse()
         }
 
+    },
+
+    vencimentos : {
+
+        tl : new gsap.timeline({paused : true})
+                     .to(vis.refs.vencimentos, {
+                         backgroundColor : vis.params.colors.orange
+                     }),
+
+        play: function() {
+            this.tl.play()
+        },
+
+        reverse : function() {
+            this.tl.reverse()
+        }
+
+    },
+
+    vencimentos_outras_fontes : {
+
+        tl : new gsap.timeline({paused : true})
+                     .to(vis.refs.vencimentos_outras_fontes, {
+                         backgroundColor: vis.params.colors.orangesemi
+                     }),
+
+        play: function() {
+            this.tl.play()
+        },
+
+        reverse : function() {
+            this.tl.reverse()
+        }
+
+    },
+
+    apaga_vencimentos_outras_fontes : {
+
+        tl : new gsap.timeline({paused : true})
+                     .to(vis.refs.vencimentos_outras_fontes, {
+                         scale : 0
+                     })
+                     .to(vis.refs.deslocar_vencimentos, {
+                         ease: SteppedEase.config(6),
+                         y : vis.utils.get_data.vencimentos_outras_fontes
+                     }),
+
+        play: function() {
+        this.tl.play()
+        },
+
+        reverse : function() {
+        this.tl.reverse()
+        }
+
+
+
     }
 
 }
+
+
