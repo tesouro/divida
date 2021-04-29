@@ -199,3 +199,108 @@ então o ideal seria, faz todos os cálculos do grid, marcando posições inicia
 
 
   ```
+
+  Na prática, vou trocar os passos do scroller por steps da animação.
+
+  Precisa do enter-view? já que são botões...
+
+
+
+```js
+let estoque_inicial = {
+            
+            tl : new gsap.timeline({paused: true})
+                         .to(".quadradinho", {
+                            duration: 1,
+                            scale: 1,
+                            stagger: {
+                            grid: "auto",
+                            from: "random",
+                            axis: "both",
+                            amount: 1.5
+                            }
+                        }),
+
+            play: function() {
+                this.tl.play()
+            },
+
+            reverse : function() {
+                this.tl.reverse()
+            }
+
+        }
+
+estoque_inicial.play();
+estoque_inicial.reverse();
+```
+
+funciona. Mas :
+
+```js
+
+vis : {
+
+    anim : {
+
+        estoque_inicial : {
+            
+            tl : new gsap.timeline({paused: true})
+                         .to(".quadradinho", {
+                            duration: 1,
+                            scale: 1,
+                            stagger: {
+                            grid: "auto",
+                            from: "random",
+                            axis: "both",
+                            amount: 1.5
+                            }
+                        }),
+
+            play: function() {
+                this.tl.play()
+            },
+
+            reverse : function() {
+                this.tl.reverse()
+            }
+         }
+    }
+}
+
+```
+
+Assim tb funciona. Que loucura.
+
+```js
+const obj = { 
+    
+    anims : {
+
+        estoque_inicial3 : {
+                    
+            tl : new gsap.timeline({paused: true})
+                        .to(".quadradinho", {
+                            duration: 1,
+                            scale: 1,
+                            stagger: {
+                            grid: "auto",
+                            from: "random",
+                            axis: "both",
+                            amount: 1.5
+                            }
+                        }),
+
+            play: function() {
+                this.tl.play()
+            },
+
+            reverse : function() {
+                this.tl.reverse()
+            }
+        }
+    }
+}
+
+
+```
