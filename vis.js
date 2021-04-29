@@ -22,6 +22,29 @@ const vis = {
 
         },
 
+        colors : {
+
+            pega_do_css : function(color) {
+
+                const style_root = getComputedStyle( document.documentElement );
+                const value = style_root.getPropertyValue( '--tetris-' + color );
+                return value;
+
+            },
+
+            popula : function() {
+
+                vis.params.colors.valores.forEach(color => {
+                    vis.params.colors[color] = pega_do_css(color);
+                })
+
+            },
+
+            valores : ['purple', 'green', 'red', 'yellow', 'orange', 'blue', 'cyan']
+
+
+        },
+
         steps : [
 
             'estoque_inicial',
@@ -954,14 +977,20 @@ const vis = {
 
             vis.control.monitora_botoes();
 
+            vis.params.colors.popula();
+
             vis.sizing.pega_tamanho_svg();
             vis.grid.calcula_parametros(valor); 
             vis.sizing.calcula_dimensoes_necessarias(valor);
             vis.sizing.redimensiona_container();
 
             vis.data.gera_datasets();
-            vis.grid.calcula_posicao_apos_pagtos();
             vis.utils.gera_posicoes_linha_completa();
+
+            vis.grid.calcula_posicao_apos_pagtos();
+            vis.grid.calcula_emissoes("refin");
+            vis.grid.calcula_emissoes("vazamento");
+
             vis.render.cria_divs("todos", visivel = 0);
 
             console.log(vis.data.vetores.estoque_inicial[0].pos_y);
@@ -1050,7 +1079,7 @@ const anims = {
                             grid: "auto",
                             from: "start",
                             axis: "y",
-                            each: 0.15
+                            each: 0.25
                         }
                      }),
 
