@@ -167,3 +167,35 @@ então o ideal seria, faz todos os cálculos do grid, marcando posições inicia
 6*. talvez seja preciso mexer em algo aqui, por causa da disposição dos quadradinhos. comparar última linha do grid com a última da emissão refin.
 
 7 aparece emissão do vazamento. "A história pararia aqui, se bla bla".
+
+### scroller. fazer voltando:
+
+```js
+
+    enterView({
+        selector: ".slide",
+        offset: 0.5,
+        enter: function(el) {
+
+            let step = +el.id.slice(-2);
+            // aqui não preciso me preocupar com direção, pq ele só "enter" na descida.
+            steps.push(step);
+            console.log(steps);
+            console.log("avançando");
+
+            desenha(step, "descendo");
+        },
+
+        exit: function(el) {
+
+            let step = +el.id.slice(-2) - 1;
+            // pois aqui tb não preciso me preocupar com direção, pq aparentemente só "exit" na subida 
+            steps.push(step);
+            console.log(steps);
+            console.log("voltando");
+
+            desenha(step, "voltando");
+    )}
+
+
+  ```
