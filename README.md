@@ -149,3 +149,21 @@ function getValue(i, target) {
 }
 
 ```
+
+então o ideal seria, faz todos os cálculos do grid, marcando posições iniciais e "posicao_seguinte1", "posicao_seguinte2". depois cria todos os divs (inclusive os fantasmas), todos com opacity 0. aí define as animações:
+
+1. aparecem estoque_inicial, vencimentos_refin, vencimentos_outras, com uma mesma cor. Poder ser um stagger?
+
+2. aparecem os juros_refin, animando para cima. ver artigo do will.
+
+3. muda cor dos vencimentos, para destacá-los.
+
+4. destaca vencimentos_outras (pisca? brilha? põe margem?) e faz sumir (scale to 0). desloca quadradinhos para baixo. (posicao_seguinte1, dos que estão marcados)
+
+5. destaca juros com outras fontes, mesma coisa do anterior.
+
+6. destaca juros_refin e vencimentos_refin. faz sumir, deixa grid atrás, aparece emissão. desloca emissão.
+
+6*. talvez seja preciso mexer em algo aqui, por causa da disposição dos quadradinhos. comparar última linha do grid com a última da emissão refin.
+
+7 aparece emissão do vazamento. "A história pararia aqui, se bla bla".
