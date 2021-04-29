@@ -224,7 +224,8 @@ rect.estoque {
 .quadradinho {
 
     position: absolute;
-    background-color: crimson;
+    background-color: var(--tetris-yellow);
+    transform: scale(0);
 
 }
 
@@ -260,11 +261,17 @@ rect.estoque {
 
 }
 
-[data-tipo="juros_outras_fontes"] {
+[data-tipo='juros_outras_fontes'], [data-tipo='juros_refin'] {
+
+    background-color: var(--tetris-cyan);
+
+}
+
+/* [data-tipo="juros_outras_fontes"] {
 
     background-color: limegreen;
 
-}
+} */
 
 [data-tipo="vencimentos_outras_fontes"] {
 

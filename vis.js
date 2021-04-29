@@ -22,6 +22,18 @@ const vis = {
 
         },
 
+        steps : [
+
+            'estoque_inicial',
+            'juros',
+            'vencimentos',
+            'pagamento_vencimentos_outras_receitas',
+            'pagamento_juros_outras_receitas',
+            'emissao_refin',
+            'emissao_vazamento'
+
+        ]
+
     },
 
     refs : {
@@ -451,13 +463,20 @@ const vis = {
 
             vis.data.vetores.todos.forEach(d => {
 
-                if ( a_remover.includes(d) ) {
+                // se for um elemento dos pagamentos de vencimentos com outras fontes, vai só ser removido.
 
-                    d["remover"] = true;
+                if ( elementos_a_remover["vencimentos"].includes(d) ) {
+
+                    d["remover_em_pagamento_vencimentos_outras"] = true;
 
                 } else {
 
                     if (d.indice_geral > posicoes_finais["juros"]) {
+
+                        // aqui sao os juros pagos com emissoes. vao cair após o pagamento de juros.
+                        // mas também vao cair após o pagamento de vencimentos (vao ser capturados no if abaixo)
+
+                        d['deslocamento_em_pagamento_juros_outras'] = deslocamentos.juros[d.pos_x] - deslocamentos.vencimentos[d.pos_x];
 
                         d["deslocar_juros"] = true;
 
@@ -467,10 +486,18 @@ const vis = {
                     
                     if (d.indice_geral > posicoes_finais["vencimentos"]) {
 
+                        d['deslocamento_em_pagamento_vencimentos_outras'] = deslocamentos.vencimentos[d.pos_x];
+
                         d["deslocar_vencimentos"] = true;
 
                         d["proximo_pos_y_vencimentos"] = d.pos_y - deslocamentos.vencimentos[d.pos_x]
 
+                    }
+
+                    if ( elementos_a_remover["juros"].includes(d) ) {
+
+                        d["remover_em_pagamento_juros_outras"] = true;
+    
                     }
 
                 }
@@ -569,8 +596,10 @@ const vis = {
             let vetor_emissao = posicoes_a_preencher.map(x => (
                 {
                     pos_x : x,
-                    pos_y : ultima_linha,
+                    //pos_y : linha_atual,
+                    pos_y : linha_atual + deslocamento,
                     tipo : 'emissao_' + tipo,
+                    ['deslocamento_em_emissao_' + tipo] : deslocamento,
                     pos_y_emissao : ultima_linha + deslocamento
 
                 })
@@ -586,8 +615,10 @@ const vis = {
                 const novo_elemento = {
 
                     pos_x : ( (i - 1) % qde_por_linha ) + 1,
-                    pos_y : linha_atual,
+                    //pos_y : linha_atual,
+                    pos_y : linha_atual + deslocamento,
                     tipo : 'emissao_' + tipo,
+                    ['deslocamento_em_emissao_' + tipo] : deslocamento,  
                     pos_y_emissao : linha_atual + deslocamento
 
                 }
@@ -606,7 +637,7 @@ const vis = {
 
             // atualiza vetor todos
 
-            //vis.data.vetores.todos = [...vis.data.vetores.todos, ...vetor_emissao];
+            vis.data.vetores.todos.push([...vetor_emissao]);
 
 
             console.log("ultimos elementos ", elementos_da_ultima_linha);
@@ -627,90 +658,6 @@ const vis = {
 
         
         },
-
-
-
-        // registra_pagamento : function(valor, posicao_inicial) {
-
-        //     const qde_unidades = Math.round(valor/vis.params.iniciais.valor_unidade);
-
-        //     console.log("Para este pagamento de ", valor, ", apagaremos ", qde_unidades, " quadradinhos.");
-
-        //     // acha o index do elemento inicial no dataset
-
-        //     const index_primeiro = vis.data.divida
-        //       .map(elemento => elemento.unidade)
-        //       .indexOf(posicao_inicial)
-        //     ;
-
-        //     // linha do primeiro a ser removido
-        //     const linha_primeiro = vis.data.divida[index_primeiro].pos_y;
-        //     const qde_linhas_completas = Math.floor(qde_unidades / vis.params.calculados.qde_por_linha);
-        //     const nro_linha_incompleta = linha_primeiro + qde_linhas_completas;
-        //     const primeira_posicao_da_linha_incompleta = qde_unidades % vis.params.calculados.qde_por_linha;
-            
-
-        //     console.log(primeira_posicao_da_linha_incompleta, qde_linhas_completas);
-
-        //     let vetor_deslocamento = [];
-
-        //     for (let i = 0; i <= vis.params.calculados.qde_por_linha - 1; i++) {
-
-        //         if (i >= primeira_posicao_da_linha_incompleta) {
-        //             vetor_deslocamento[i] = qde_linhas_completas;
-        //         } else {
-        //             vetor_deslocamento[i] = qde_linhas_completas + 1
-        //         }
-
-        //     }
-
-        //     console.log(vetor_deslocamento);
-
-        //     const elementos_removidos = vis.data.divida.splice(index_primeiro, qde_unidades);
-
-        //     console.log("Foram removidos, a partir do index ", index_primeiro, ": ", elementos_removidos);
-
-
-        //     // atualiza data join
-
-        //     vis.selections.rects_divida = vis.selections.rects_divida
-        //       .data(vis.data.divida, d => d.unidade);
-
-        //     // remove rects pagos
-
-        //     vis.selections.rects_divida
-        //       .exit()
-        //       .classed("estoque", false) // para a transicao funcionar (estoque define a cor com style)
-        //       .attr("fill", "goldenrod")  // mesma coisa
-        //       .attr("opacity", 1)     // mesma coisa
-        //       .transition()
-        //       .duration(1000)
-        //       .attr("fill", "blue")
-        //       .attr("stroke", "blue")
-        //       .attr("stroke-width", 3)
-        //       .transition()
-        //       .delay(1000)
-        //       .duration(1000)
-        //       .attr("opacity", 0)
-        //       .remove()
-        //     ;
-
-        //     // desloca
-
-        //     vis.selections.rects_divida
-        //       .filter(datum => datum.pos_y >= nro_linha_incompleta)
-        //       .transition()
-        //       .delay(2500)
-        //       .transition(1000)
-        //       .attr("y", function(d) {
-        //           const nova_pos_y = d.pos_y - vetor_deslocamento[d.pos_x - 1];
-        //           d.pos_y = nova_pos_y;
-        //           return vis.render.components.scales.y(nova_pos_y)
-        //       });
-
-        // }
-
-
 
     },
 
@@ -739,7 +686,6 @@ const vis = {
                     return y
 
                 }
-
 
             }
 
@@ -849,6 +795,35 @@ const vis = {
         //       .attr("height", vis.params.calculados.tamanho);
 
         // }
+    },
+
+    anim : {
+
+        estoque_inicial : {
+            
+            tl : new gsap.timeline({paused: true})
+                         .to(".quadradinho", {
+                            duration: 1,
+                            scale: 1,
+                            stagger: {
+                            grid: "auto",
+                            from: "random",
+                            axis: "both",
+                            amount: 1.5
+                            }
+                        }),
+
+            play: function() {
+                console.log("toca, misera.", this.tl);
+                this.tl.play()
+            },
+
+            reverse : function() {
+                this.tl.reverse()
+            }
+
+        }
+
     },
 
     stepper : {
@@ -1014,3 +989,79 @@ const vis = {
 }
 
 vis.control.init();
+
+const estoque_inicial = {
+            
+    tl : new gsap.timeline({paused: true})
+                 .to(".quadradinho", {
+                    duration: 1,
+                    scale: 1,
+                    stagger: {
+                    grid: "auto",
+                    from: "random",
+                    axis: "both",
+                    amount: 1.5
+                    }
+                }),
+
+    play: function() {
+        this.tl.play()
+    },
+
+    reverse : function() {
+        this.tl.reverse()
+    }
+
+}
+
+const anims = {
+
+    estoque_inicial : {
+                
+        tl : new gsap.timeline({paused: true})
+                    .to(".quadradinho", {
+                        duration: 1,
+                        scale: 1,
+                        stagger: {
+                        grid: "auto",
+                        from: "random",
+                        axis: "both",
+                        amount: 1.5
+                        }
+                    }),
+
+        play: function() {
+            this.tl.play()
+        },
+
+        reverse : function() {
+            this.tl.reverse()
+        }
+
+    },
+
+    juros : {
+
+        tl : new gsap.timeline({pause: true})
+                     .to(vis.refs.juros, {
+                        scale: 1,
+                        ease: Back.easeOut,
+                        stagger: {
+                            grid: "auto",
+                            from: "start",
+                            axis: "y",
+                            each: 0.15
+                        }
+                     }),
+
+        play: function() {
+            this.tl.play()
+        },
+
+        reverse : function() {
+            this.tl.reverse()
+        }
+
+    }
+
+}
