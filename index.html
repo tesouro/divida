@@ -38,7 +38,7 @@
                         Would you hear my voice come through the music?
                         Would you hold it near as it were your own?
                     </p>
-                    <a href="#step1" class="next" data-next="estoque inicial"> &gt; </a>
+                    <a href="#step1" class="next" data-next="estoque_inicial"> &gt; </a>
                 </div>
 
             </div>
@@ -55,7 +55,7 @@
 
                     </p> 
                 </div>
-                <a href="#abertura" class="back"> &lt; </a>
+                <a href="#abertura" class="back" data-previous="estoque_inicial"> &lt; </a>
                 <a href="#step2" class="next" data-next="juros"> &gt; </a>
             </div>
 
@@ -66,7 +66,7 @@
                         Sobre o valor do estoque da dívida, incidem <strong class="destaque-texto" data-destaque="juros">juros</strong>. Esses juros dependem de uma série de fatores, e seu custo varia para cada tipo de título. Mas, no total, em 2020 foram pagos <span data-campo-juros>1000</span>.
                     </p>
                 </div>
-                <a href="#step1" class="back"> &lt; </a>
+                <a href="#step1" class="back" data-previous="juros"> &lt; </a>
                 <a href="#step3" class="next" data-next="vencimentos"> &gt; </a>
             </div>
 
@@ -77,51 +77,51 @@
                         Quando o Tesouro emite os títulos da dívida, emite títulos com diferentes datas de vencimento. Dessa forma, todo ano, um bom pedaço da dívida total chega ao prazo do vencimento e deve ser pago. A figura agora destaca os valores que venceram no ano passado, e que precisaram ser honrados/pagos.
                     </p>
                 </div>
-                <a href="#step2" class="back"> &lt; </a>
-                <a href="#step4" class="next" data-next="pagamentos-vencimentos"> &gt; </a>
+                <a href="#step2" class="back" data-previous="vencimentos"> &lt; </a>
+                <a href="#step4" class="next" data-next="vencimentos_outras_fontes"> &gt; </a>
             </div>
 
             <div class="slide stepper" id="step4">
-                <div class="container-step" data-step="pagamentos-vencimentos">
+                <div class="container-step" data-step="vencimentos_outras_fontes">
                     <h3>Pagamentos dos vencimentos</h3>
                     <p>
                         Pague.
                     </p>
                 </div>
-                <a href="#step3" class="back"> &lt; </a>
-                <a href="#step5" class="next" data-next="pagamentos-juros"> &gt; </a>
+                <a href="#step3" class="back" data-previous="vencimentos_outras_fontes"> &lt; </a>
+                <a href="#step5" class="next" data-next="apaga_vencimentos_outras_fontes"> &gt; </a>
             </div>
 
             <div class="slide stepper" id="step5">
-                <div class="container-step" data-step="pagamentos-juros">
+                <div class="container-step" data-step="apaga_vencimentos_outras_fontes">
                     <h3>Pagamento de juros</h3>
                     <p>
                         Pague também.
                     </p>
                 </div>
-                <a href="#step4" class="back"> &lt; </a>
-                <a href="#step6" class="next" data-next="pagamentos-com-emissoes"> &gt; </a>
+                <a href="#step4" class="back" data-previous="apaga_vencimentos_outras_fontes"> &lt; </a>
+                <a href="#step6" class="next" data-next="juros_outras_fontes"> &gt; </a>
             </div>
 
             <div class="slide stepper" id="step6">
-                <div class="container-step" data-step="pagamentos-com-emissoes">
+                <div class="container-step" data-step="juros_outras_fontes">
                     <h3>Pagamento com emissões.</h3>
                     <p>
                         Fantasmas
                     </p>
                 </div>
-                <a href="#step5" class="back"> &lt; </a>
-                <a href="#step7" class="next" data-next="emissoes"> &gt; </a>
+                <a href="#step5" class="back" data-previous="juros_outras_fontes"> &lt; </a>
+                <a href="#step7" class="next" data-next="apaga_juros_outras_fontes"> &gt; </a>
             </div>
 
             <div class="slide stepper" id="step7">
-                <div class="container-step" data-step="emissoes">
+                <div class="container-step" data-step="apaga_juros_outras_fontes">
                     <h3>Emissoes</h3>
                     <p>
                         Emissões refin.
                     </p>
                 </div>
-                <a href="#step6" class="back"> &lt; </a>
+                <a href="#step6" class="back" data-previous="apaga_juros_outras_fontes"> &lt; </a>
                 <a href="#step8" class="next" data-next="emissoes-vazamento"> &gt; </a>
             </div>
 

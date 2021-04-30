@@ -72,6 +72,7 @@ const vis = {
         vencimentos : "[data-tipo='vencimentos_outras_fontes'], [data-tipo='vencimentos_refin']",
         vencimentos_outras_fontes : "[data-tipo='vencimentos_outras_fontes']",
         deslocar_vencimentos : "[data-deslocar_vencimentos='true']",
+        deslocar_juros : "[data-deslocar_juros='true']"
     
     },
 
@@ -503,7 +504,7 @@ const vis = {
                         // aqui sao os juros pagos com emissoes. vao cair após o pagamento de juros.
                         // mas também vao cair após o pagamento de vencimentos (vao ser capturados no if abaixo)
 
-                        d['deslocamento_em_pagamento_juros_outras'] = deslocamentos.juros[d.pos_x] - deslocamentos.vencimentos[d.pos_x];
+                        d['deslocamento_em_pagamento_juros_outras'] = deslocamentos.juros[d.pos_x] + deslocamentos.vencimentos[d.pos_x];
 
                         d["deslocar_juros"] = true;
 
@@ -1002,7 +1003,17 @@ const vis = {
             btns.forEach(btn => btn.addEventListener("click", function(e) {
                 console.log(e.target, e.target.dataset.next)
 
-                vis.stepper[e.target.dataset.next]();
+                if (e.target.classList.contains('back')) {
+
+                    const step = e.target.dataset.previous;
+                    anims[step].reverse();
+
+                } else {
+
+                    const step = e.target.dataset.next;
+                    anims[step].play();
+
+                }
 
             }))
 
@@ -1159,10 +1170,10 @@ const anims = {
     apaga_juros_outras_fontes : {
 
         tl : new gsap.timeline({paused : true})
-                     .to(vis.refs.juros.outras_fontes, {
+                     .to(vis.refs.juros_outras_fontes, {
                          scale : 0
                      })
-                     .to(vis.refs.deslocar_vencimentos, {
+                     .to(vis.refs.deslocar_juros, {
                          ease: SteppedEase.config(6),
                          y : vis.utils.get_data.juros_outras_fontes
                      }),
