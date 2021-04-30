@@ -947,7 +947,7 @@ const anims = {
                         ],//"auto",
                         from: "random",
                         axis: "both",
-                        each: 0.01
+                        each: 0.02
                         }
                     })
                     .to(vis.refs.setinha_saldo_anterior, {
@@ -994,7 +994,13 @@ const anims = {
 
         tl : new gsap.timeline({paused : true})
                      .to(vis.refs.vencimentos, {
-                         backgroundColor : vis.params.colors.orange
+                         backgroundColor : vis.params.colors.orange,
+                         stagger: {
+                            grid: "auto",
+                            from: "start",
+                            axis: "both",
+                            each: 0.1
+                            }
                      }),
 
         play: function() {
@@ -1170,7 +1176,7 @@ const anims = {
                      })
                      .to(vis.refs.emissao_vazamento, {
                          ease: SteppedEase.config(12),
-                         duration: 1.2,
+                         duration: 1.5,
                          y : vis.utils.get_data.emissao_vazamento
                      }),
 
