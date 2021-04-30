@@ -442,20 +442,20 @@ const vis = {
 
                 posicoes_finais[tipo] = posicao_final;
     
-                console.log("Para este pagamento de ", valor, ", apagaremos ", qde_unidades, " quadradinhos, a partir do indice ", posicao_inicial, ", até a posição ", posicao_final)  ;
+                //console.log("Para este pagamento de ", valor, ", apagaremos ", qde_unidades, " quadradinhos, a partir do indice ", posicao_inicial, ", até a posição ", posicao_final)  ;
     
                 // linhas
     
                 const linha_primeiro = vis.grid.helpers.pega_coordenadas(posicao_inicial).pos_y;
                 const linha_ultimo   = vis.grid.helpers.pega_coordenadas(posicao_final).pos_y;
     
-                console.log("temos que apagar ", linha_ultimo - linha_primeiro - 1, "linhas completas: da linha", linha_primeiro, "até a :", linha_ultimo);
+                //console.log("temos que apagar ", linha_ultimo - linha_primeiro - 1, "linhas completas: da linha", linha_primeiro, "até a :", linha_ultimo);
     
                 // elementos a remover
     
                 elementos_a_remover[tipo] = vis.data.vetores.todos.filter(d => d.indice_geral <= posicao_final & d.indice_geral >= posicao_inicial);
 
-                console.log("Elementos a remover, para o tipo ", tipo, ": ", elementos_a_remover[tipo]);
+                //console.log("Elementos a remover, para o tipo ", tipo, ": ", elementos_a_remover[tipo]);
     
                 // // elementos afetados
     
@@ -472,7 +472,7 @@ const vis = {
 
             }
 
-            console.log({posicoes_finais});
+            //console.log({posicoes_finais});
 
             // junta os elementos_a_remover
 
@@ -481,7 +481,7 @@ const vis = {
                 ...elementos_a_remover["vencimentos"]
             ];
 
-            console.log(a_remover, elementos_a_remover["juros"], elementos_a_remover["vencimentos"]);
+            //console.log(a_remover, elementos_a_remover["juros"], elementos_a_remover["vencimentos"]);
 
             //console.log("Deslocamentos", deslocamentos);
 
@@ -685,10 +685,10 @@ const vis = {
             vis.data.vetores.todos.push(...vetor_emissao);
 
 
-            console.log("ultimos elementos ", elementos_da_ultima_linha);
-            console.log("posicoes a preencher ", posicoes_a_preencher);
-            console.log('ultima linha emissao', ultima_linha_emissao, 'deslocamento', deslocamento);
-            console.log('vetor emissão', vetor_emissao);
+            //console.log("ultimos elementos ", elementos_da_ultima_linha);
+            //console.log("posicoes a preencher ", posicoes_a_preencher);
+            //console.log('ultima linha emissao', ultima_linha_emissao, 'deslocamento', deslocamento);
+            //console.log('vetor emissão', vetor_emissao);
         
         },
 
@@ -712,7 +712,7 @@ const vis = {
 
             indexes.forEach((d,i) => {
 
-                console.log("Posicao x antiga: ", vis.data.vetores.todos[d].pos_x, ", Posicao nova: ", posicoes_x[i]);
+                //console.log("Posicao x antiga: ", vis.data.vetores.todos[d].pos_x, ", Posicao nova: ", posicoes_x[i]);
 
                 vis.data.vetores.todos[d].pos_x = posicoes_x[i];
 
@@ -898,7 +898,7 @@ const vis = {
             const btns = document.querySelectorAll(vis.refs.buttons);
 
             btns.forEach(btn => btn.addEventListener("click", function(e) {
-                console.log(e.target, e.target.dataset.next)
+                //console.log(e.target, e.target.dataset.next)
 
                 if (e.target.classList.contains('back')) {
 
