@@ -1004,16 +1004,25 @@ const anims = {
     vencimentos_outras_fontes : {
 
         tl : new gsap.timeline({paused : true})
-                     .to(vis.refs.vencimentos_outras_fontes, {
-                         backgroundColor: vis.params.colors.orangesemi,
-                         ease: Back.easeOut,
-                         stagger: {
-                            grid: "auto",
-                            from: "start",
-                            //axis: "y",
-                            each: 0.05
-                        }
-                     }),
+                    .to(vis.refs.vencimentos_outras_fontes, {
+                        backgroundColor: vis.params.colors.orangesemi,
+                        ease: Back.easeOut,
+                        stagger: {
+                        grid: "auto",
+                        from: "start",
+                        //axis: "y",
+                        each: 0.05
+                    }
+                    })
+                    .to(vis.refs.vencimentos_outras_fontes, {
+                    scale : 0
+                    })
+                    .to(vis.refs.deslocar_vencimentos, {
+                    ease: SteppedEase.config(6),
+                    y : vis.utils.get_data.vencimentos_outras_fontes
+                    })
+                     
+                     ,
 
         play: function() {
             this.tl.play()
@@ -1025,26 +1034,26 @@ const anims = {
 
     },
 
-    apaga_vencimentos_outras_fontes : {
+    // apaga_vencimentos_outras_fontes : {
 
-        tl : new gsap.timeline({paused : true})
-                     .to(vis.refs.vencimentos_outras_fontes, {
-                         scale : 0
-                     })
-                     .to(vis.refs.deslocar_vencimentos, {
-                         ease: SteppedEase.config(6),
-                         y : vis.utils.get_data.vencimentos_outras_fontes
-                     }),
+    //     tl : new gsap.timeline({paused : true})
+    //                  .to(vis.refs.vencimentos_outras_fontes, {
+    //                      scale : 0
+    //                  })
+    //                  .to(vis.refs.deslocar_vencimentos, {
+    //                      ease: SteppedEase.config(6),
+    //                      y : vis.utils.get_data.vencimentos_outras_fontes
+    //                  }),
 
-        play: function() {
-        this.tl.play()
-        },
+    //     play: function() {
+    //     this.tl.play()
+    //     },
 
-        reverse : function() {
-        this.tl.reverse()
-        }
+    //     reverse : function() {
+    //     this.tl.reverse()
+    //     }
 
-    },
+    // },
 
     juros_outras_fontes : {
 
@@ -1058,6 +1067,14 @@ const anims = {
                             //axis: "y",
                             each: 0.05
                         }
+                     })
+                     .to(vis.refs.juros_outras_fontes, {
+                        ease: Back.easeOut,
+                         scale : 0
+                     })
+                     .to(vis.refs.deslocar_juros, {
+                         ease: SteppedEase.config(6),
+                         y : vis.utils.get_data.juros_outras_fontes
                      }),
 
         play: function() {
@@ -1070,27 +1087,27 @@ const anims = {
 
     },
 
-    apaga_juros_outras_fontes : {
+    // apaga_juros_outras_fontes : {
 
-        tl : new gsap.timeline({paused : true})
-                     .to(vis.refs.juros_outras_fontes, {
-                        ease: Back.easeOut,
-                         scale : 0
-                     })
-                     .to(vis.refs.deslocar_juros, {
-                         ease: SteppedEase.config(6),
-                         y : vis.utils.get_data.juros_outras_fontes
-                     }),
+    //     tl : new gsap.timeline({paused : true})
+    //                  .to(vis.refs.juros_outras_fontes, {
+    //                     ease: Back.easeOut,
+    //                      scale : 0
+    //                  })
+    //                  .to(vis.refs.deslocar_juros, {
+    //                      ease: SteppedEase.config(6),
+    //                      y : vis.utils.get_data.juros_outras_fontes
+    //                  }),
 
-        play: function() {
-        this.tl.play()
-        },
+    //     play: function() {
+    //     this.tl.play()
+    //     },
 
-        reverse : function() {
-        this.tl.reverse()
-        }
+    //     reverse : function() {
+    //     this.tl.reverse()
+    //     }
         
-    },
+    // },
 
     emissao_refin : {
 
