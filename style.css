@@ -282,7 +282,7 @@ rect.estoque {
 
 }
 
-[data-texto-estoqueanterior] {
+[data-texto="estoqueanterior"], [data-texto="estoque_final"] {
 
     color: var(--tetris-yellow);
 
@@ -297,7 +297,7 @@ rect.estoque {
 
 }
 
-[data-texto-juros] {
+[data-texto="juros"] {
 
     color: var(--tetris-cyan);
 
@@ -312,6 +312,24 @@ rect.estoque {
 [data-destaque="refinanciamento"] {
 
     background-color: var(--tetris-red);
+
+}
+
+[data-texto="refinanciamento"] {
+
+    color: var(--tetris-red);
+
+}
+
+[data-texto="vazamento"] {
+
+    color: var(--tetris-purple);
+
+}
+
+[data-texto="pib"] {
+
+    color: var(--comp-color1);
 
 }
 

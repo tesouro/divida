@@ -287,6 +287,42 @@ const vis = {
 
     },
 
+    textos_automaticos : {
+
+        ref_textos : "js--text",
+
+        refs : {
+
+            // peguei a lista com um Array.from(document.querySelectorAll(".js--text")).map(d=>d.dataset.texto)
+            
+            "estoqueanterior" : () => vis.data.infos.estoque.inicial/1000,
+            
+            "juros" : () => vis.data.infos.juros.total,
+            
+            "estoque_final" : () => vis.data.infos.estoque.final/1000,
+
+            "vazamento" : () => vis.data.infos.emissoes.vazamento,
+
+            "refinanciamento" : () => vis.data.infos.emissoes.refin.juros + vis.data.infos.emissoes.refin.principal,
+
+            "pib" : () => vis.data.infos.pib/1e12
+
+        },
+
+        populate : function() {
+
+            document.querySelectorAll(".js--text").forEach(campo => {
+
+                const tipo = campo.dataset.texto;
+
+                campo.innerHTML = vis.textos_automaticos.refs[tipo]()
+
+            })
+
+        }
+
+    },
+
     sizing : {
 
         helpers : {
@@ -884,6 +920,7 @@ const vis = {
             vis.control.monitora_botoes();
 
             vis.params.colors.popula();
+            vis.textos_automaticos.populate();
 
             vis.sizing.pega_tamanho_tetris();
             vis.grid.calcula_parametros(valor); 
