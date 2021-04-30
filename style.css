@@ -2,6 +2,7 @@
 
     --title-color: #fdd846;
     --bkg-color  : #3a3a3a;
+    --bkg-color-mobile : #3a3a3aBB;
     --text-color : ghostwhite;
 
     --comp-color1 : #474FFC;
@@ -23,6 +24,9 @@
     --tetris-orangesemi : #f77308;
     --tetris-blue: #0000f0;
     --tetris-cyan: #00f0f0;
+
+    --container-border-width: 10px;
+    --setinha-width: 0.5rem;
 
 }
 
@@ -175,6 +179,7 @@ a.next {
         bottom: 0; /*tem um padding de 1rem no container */
         left: 1rem;
         width: calc(100vw - 2rem);
+        background-color: var(--bkg-color-mobile);
 
     }
 
@@ -295,5 +300,16 @@ rect.estoque {
     border: 1px solid grey;
 
 }
+
+.setinha-saldo-anterior {
+
+    position: absolute;
+    border: .5rem solid;
+    border-color: transparent transparent transparent var(--text-color);
+    transform: translate(calc(-10px - 0.5rem), -50%);
+    top: 100vh;
+
+}
+
 
 

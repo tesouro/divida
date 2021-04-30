@@ -75,7 +75,9 @@ const vis = {
         pagamentos_refin : "[data-tipo='juros_refin'], [data-tipo='vencimentos_refin']",
         emissao_refin : "[data-tipo='emissao_refin']",
         emissao_vazamento : "[data-tipo='emissao_vazamento']",
-        fantasmas_refin : "[data-tipo='fantasmas_refin']"
+        fantasmas_refin : "[data-tipo='fantasmas_refin']",
+
+        setinha_saldo_anterior: '.setinha-saldo-anterior'
     
     },
 
@@ -236,7 +238,7 @@ const vis = {
 
             ultimo_indice += vis.data.vetores.vencimentos_refin.length;
             // para usar na animação
-            vis.params.calculados.qde_linhas_estoque_inicial = ultimo_indice;
+            vis.params.calculados.qde_linhas_estoque_inicial = Math.floor(ultimo_indice / vis.params.calculados.qde_por_linha);
 
             // juros com outras fontes
             vis.data.cria_dataset(
@@ -945,9 +947,13 @@ const anims = {
                         ],//"auto",
                         from: "random",
                         axis: "both",
-                        each: 0.005
+                        each: 0.01
                         }
-                    }),
+                    })
+                    .to(vis.refs.setinha_saldo_anterior, {
+                        top: vis.render.components.scales.y(vis.params.calculados.qde_linhas_estoque_inicial)
+
+                    }, '<'),
 
         play: function() {
             this.tl.play()
