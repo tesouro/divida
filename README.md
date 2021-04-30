@@ -51,6 +51,10 @@ E agora, fazer com greensock ou d3 puro?
 
 ## Greensock
 
+https://greensock.com/docs/v2/Easing
+https://greensock.com/docs/v2/TimelineMax/staggerTo()
+
+
 ```js
 
 const cont = d3.select(".svg-container");
