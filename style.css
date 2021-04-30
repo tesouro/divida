@@ -7,13 +7,38 @@
     --comp-color1 : #474FFC;
     --comp-color2: #FC2DED;
 
-    --font-title : Rubik;
+    --font-title : 'Alfa Slab One';
     --font-text : Newsreader;
+
+    --cor-estoque-inicial : var(--title-color);
+    --cor-juros : lavender;
+
+    --mobile-break-point: 500px;
+
+    --tetris-purple: #a000f0;
+    --tetris-green: #00f000;
+    --tetris-red: #f00000;
+    --tetris-yellow: #f0f000;
+    --tetris-orange: #f0a000;
+    --tetris-orangesemi : #f77308;
+    --tetris-blue: #0000f0;
+    --tetris-cyan: #00f0f0;
 
 }
 
 * {
     box-sizing: border-box;
+}
+
+html {
+    overflow-y: hidden;
+}
+
+img.logo {
+
+    display: block;
+    margin: 0 auto; 
+
 }
 
 body {
@@ -26,6 +51,7 @@ body {
     font-size: 1.2rem;
     font-weight: 300;
     letter-spacing: .01em;
+    scroll-behavior: smooth;
 
 }
 
@@ -50,7 +76,29 @@ h2, h3, h4 {
 
 .text {
 
-    margin-bottom: 2rem;
+    max-width: 32rem;
+    margin: 0 auto;
+
+}
+
+@media (max-width: 500px) {
+
+    .text {
+
+        max-width: 80vw;
+    
+    }
+    
+}
+
+.slide {
+
+    height: 98vh;
+    padding: 1rem 0;
+    min-width: 100vw;
+    position: relative;
+    scroll-snap-align: start;
+
 
 }
 
@@ -60,28 +108,100 @@ h2, h3, h4 {
 
 }
 
-.inner-container {
+a.back,
+a.next {
 
-    max-width: 32rem;
-    margin: 0 auto;
+    text-decoration: none;
+    position: absolute;
+    top: 50vh;
+    font-size: 5rem;
+    font-weight: bold;
+    color: var(--text-color);
+    transform: translateY(-50%) scale(.35,1);
+
+}
+
+.next {
+
+    right: 5px;
+
+}
+
+.back {
+
+    left: 5px;
+
+}
+
+.container {
+
+    scroll-behavior: smooth;
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: flex-start;
+    scroll-snap-type: block mandatory;
+    overflow-x: scroll;
+    overflow-y: hidden;
     /*background-color: blanchedalmond;*/
 
 }
 
+.container-step {
+
+    width: calc(50vw - 3rem - 150px);
+
+}
+
+.slide:nth-child(even) .container-step {
+
+    margin-left: 3rem;
+
+}
+
+.slide:nth-child(odd) .container-step {
+
+    margin-left: auto;
+    margin-right: 3rem;
+    
+}
+
+@media (max-width: 500px) {
+
+    .slide:nth-child(even) .container-step,
+    .slide:nth-child(odd) .container-step {
+
+        margin: 0;
+        position: absolute;
+        bottom: 0; /*tem um padding de 1rem no container */
+        left: 1rem;
+        width: calc(100vw - 2rem);
+
+    }
+
+}
+
+
+
 /* scroller */
 
+.vis {
+    position: fixed;
+    z-index: -1;
+    top: 5vh;
+    min-height: 90vh;
+    left: 0;
+    width: 100%;
+    opacity: 1/*0;*/
+}
 
 .svg-container {
 
     outline: 10px solid var(--comp-color1);
-    position: sticky;
-    z-index: -1;
     max-width: 100%;
     width: 200px;
     margin: 0 auto;
-    top: 5vh;
     height: 90vh;
-    left: 0;
+    position: relative;
 
 }
 
@@ -93,36 +213,6 @@ svg {
 
 }
 
-.scroller-steps {
-
-    height: 100vh;
-    max-width: 20rem;
-    margin: 0 auto;
-
-}
-
-.scroller-steps h3 {
-
-    margin-top: 0;
-
-}
-
-.scroller-steps * {
-
-    background-color: var(--bkg-color);
-
-}
-
-.scroller-steps::before {
-
-    content: "";
-    display: block;
-    width: 5vw;
-    height: 1rem;
-    border-top: 4px solid var(--title-color);
-
-}
-
 
 /* vis */
 
@@ -131,4 +221,78 @@ rect.estoque {
     fill: var(--title-color);
 
 }
+
+.quadradinho {
+
+    position: absolute;
+    background-color: var(--tetris-yellow);
+    transform: scale(0);
+
+}
+
+.container-step p {
+
+    line-height: 1.3;
+
+}
+
+.destaque-texto {
+
+    padding: .1em .3em;
+    border-radius: .2em;
+
+}
+
+.quadradinho-exemplo {
+
+    display: inline-block; /*se não ele não preenche o elemento vazio*/
+    width: 1rem;
+    height: 1rem;
+    background: var(--cor-estoque-inicial);
+    vertical-align: text-top;
+
+}
+
+[data-destaque="juros"], [data-tipo="juros_refin"] {
+
+    /* fazer no JS? */
+
+    background-color: var(--cor-juros);
+    color: var(--bkg-color);
+
+}
+
+[data-tipo='juros_outras_fontes'], [data-tipo='juros_refin'] {
+
+    background-color: var(--tetris-cyan);
+
+}
+
+/* [data-tipo="juros_outras_fontes"] {
+
+    background-color: limegreen;
+
+
+
+[data-tipo="vencimentos_outras_fontes"] {
+
+    border: 0px solid var(--tetris-orange);
+
+}
+
+[data-tipo="vencimentos_refin"] {
+
+    background-color: skyblue;
+
+}
+
+*/
+
+.fantasma {
+
+    background-color: transparent;
+    border: 1px solid grey;
+
+}
+
 

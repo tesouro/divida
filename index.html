@@ -7,70 +7,149 @@
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css2?family=Lusitana:wght@400;700&display=swap" rel="stylesheet">
     <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+<link href="https://fonts.googleapis.com/css2?family=Alfa+Slab+One&display=swap" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css2?family=Newsreader:wght@300;400&display=swap" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css2?family=Lusitana:wght@400;700&family=Rubik:ital,wght@0,300;0,400;0,500;0,700;1,400&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
     <title>Document</title>
 </head>
 <body>
-    <div class="outer-container">
-        <div class="inner-container">
-            <div class="text">
-                <h1>A Dívida Pública em 3 números</h1>
-                <p>
-                    Texto bem legal aqui sobre como se costuma lançar um véu de obscuridade sobre as informações da dívida pública federal.
-                </p>
-                <p class="placar">
-                    Aqui pode ter um "placar", com os tais três números.
-                </p>
-                <p>If my words did glow with the gold of sunshine
-                    And my tunes were played on the harp unstrung
-                    Would you hear my voice come through the music?
-                    Would you hold it near as it were your own?
-                </p>
-                <p>
-                    It's a hand-me-down, the thoughts are broken
-                    Perhaps they're better left unsung
-                    I don't know, don't really care
-                    Let there be songs to fill the air
-                    Ripple in still water
-                    When there is no pebble tossed
-                    Nor wind to blow
 
-                </p>
-            </div>
-            <div class="vis">
-                <h2>O que aconteceu com a Dívida Federal no último ano</h2>
-                    <div class="svg-container">
-                        <svg></svg>
-                    </div>
-                    <article class="scrolly">
-                        <div class="scroller-steps" data-step="01">
-                            <h3>O Estoque Inicial</h3>
-                            <p> 
-                                Ao final de 2019, a dívida pública
-                            </p>
-                        </div>
-
-                        <div class="scroller-steps" data-step="01">
-                            <p>It's a hand-me-down, the thoughts are broken
-                                Perhaps they're better left unsung
-                                I don't know, don't really care
-                                Let there be songs to fill the air
-                                Ripple in still water
-                                When there is no pebble tossed
-                                Nor wind to blow
-                                Reach out your hand if your cup be empty
-                                If your cup is full, may it be again
-                                Let it be known there is a fountain
-                                That was not made by the hands of men
-                            </p>
-                        </div>
-
-                    </article>
-            </div>
+    <div class="vis">
+        <div class="svg-container">
+            <svg></svg>
         </div>
     </div>
+
+    <div class="container">
+            <div class="slide" id="abertura">
+                <div class="text">
+                    <img src="./web/tt-logo-int.png" alt="Logotipo do Tesouro Transparente" class="logo">
+                    <h1>A Dívida Pública em 3 números</h1>
+                    <p>
+                        Texto bem legal aqui sobre como se costuma lançar um véu de obscuridade sobre as informações da dívida pública federal.
+                    </p>
+                    <p class="placar">
+                        Aqui pode ter um "placar", com os tais três números.
+                    </p>
+                    <p>If my words did glow with the gold of sunshine
+                        And my tunes were played on the harp unstrung
+                        Would you hear my voice come through the music?
+                        Would you hold it near as it were your own?
+                    </p>
+                    <a href="#step1" class="next" data-next="estoque_inicial"> &gt; </a>
+                </div>
+
+            </div>
+
+            <div class="slide stepper" id="step1">
+                <div class="container-step" data-step="estoque inicial">
+                    <h3>O Estoque Inicial</h3>
+                    <p> 
+                        Ao final de 2019, a dívida pública
+                    </p>
+                    <p>Vamos representar esse valor por meio de quadradinhos. Cada quadradinho representa R$ 10 bilhões!</p>
+                    <p>
+                        <span class="quadradinho-exemplo"></span> = <strong>R$ 10.000.000.000,00</strong>
+
+                    </p> 
+                </div>
+                <a href="#abertura" class="back" data-previous="estoque_inicial"> &lt; </a>
+                <a href="#step2" class="next" data-next="juros"> &gt; </a>
+            </div>
+
+            <div class="slide stepper" id="step2">
+                <div class="container-step" data-step="juros">
+                    <h3>Os juros</h3>
+                    <p> 
+                        Sobre o valor do estoque da dívida, incidem <strong class="destaque-texto" data-destaque="juros">juros</strong>. Esses juros dependem de uma série de fatores, e seu custo varia para cada tipo de título. Mas, no total, em 2020 foram pagos <span data-campo-juros>1000</span>.
+                    </p>
+                </div>
+                <a href="#step1" class="back" data-previous="juros"> &lt; </a>
+                <a href="#step3" class="next" data-next="vencimentos"> &gt; </a>
+            </div>
+
+            <div class="slide stepper" id="step3">
+                <div class="container-step" data-step="vencimentos">
+                    <h3>Os vencimentos do ano</h3>
+                    <p>
+                        Quando o Tesouro emite os títulos da dívida, emite títulos com diferentes datas de vencimento. Dessa forma, todo ano, um bom pedaço da dívida total chega ao prazo do vencimento e deve ser pago. A figura agora destaca os valores que venceram no ano passado, e que precisaram ser honrados/pagos.
+                    </p>
+                </div>
+                <a href="#step2" class="back" data-previous="vencimentos"> &lt; </a>
+                <a href="#step4" class="next" data-next="vencimentos_outras_fontes"> &gt; </a>
+            </div>
+
+            <div class="slide stepper" id="step4">
+                <div class="container-step" data-step="vencimentos_outras_fontes">
+                    <h3>Pagamentos dos vencimentos</h3>
+                    <p>
+                        Pague.
+                    </p>
+                </div>
+                <a href="#step3" class="back" data-previous="vencimentos_outras_fontes"> &lt; </a>
+                <a href="#step5" class="next" data-next="apaga_vencimentos_outras_fontes"> &gt; </a>
+            </div>
+
+            <div class="slide stepper" id="step5">
+                <div class="container-step" data-step="apaga_vencimentos_outras_fontes">
+                    <h3>Pagamento de juros</h3>
+                    <p>
+                        Pague também.
+                    </p>
+                </div>
+                <a href="#step4" class="back" data-previous="apaga_vencimentos_outras_fontes"> &lt; </a>
+                <a href="#step6" class="next" data-next="juros_outras_fontes"> &gt; </a>
+            </div>
+
+            <div class="slide stepper" id="step6">
+                <div class="container-step" data-step="juros_outras_fontes">
+                    <h3>Pagamento com emissões.</h3>
+                    <p>
+                        Fantasmas
+                    </p>
+                </div>
+                <a href="#step5" class="back" data-previous="juros_outras_fontes"> &lt; </a>
+                <a href="#step7" class="next" data-next="apaga_juros_outras_fontes"> &gt; </a>
+            </div>
+
+            <div class="slide stepper" id="step7">
+                <div class="container-step" data-step="apaga_juros_outras_fontes">
+                    <h3>Emissoes</h3>
+                    <p>
+                        Emissões refin.
+                    </p>
+                </div>
+                <a href="#step6" class="back" data-previous="apaga_juros_outras_fontes"> &lt; </a>
+                <a href="#step8" class="next" data-next="emissao_refin"> &gt; </a>
+            </div>
+
+            <div class="slide stepper" id="step8">
+                <div class="container-step" data-step="emissao_refin">
+                    <h3>Emissoes</h3>
+                    <p>
+                        Emissões vazamento.
+                    </p>
+                </div>
+                <a href="#step7" class="back" data-previous="emissao_refin"> &lt; </a>
+                <a href="#step9" class="next" data-next="emissao_vazamento"> &gt; </a>
+            </div>
+
+            <div class="slide stepper" id="step9">
+                <div class="container-step" data-step="emissao_vazamento">
+                    <h3>Posiciona Emissoes</h3>
+                    <p>
+                        Emissões vazamento.
+                    </p>
+                </div>
+                <a href="#step8" class="back" data-previous="emissao_vazamento"> &lt; </a>
+            </div>
+
+        </div>
+
+    </div>
+
 
     <script src="d3.min.js"></script>
     <script src="./scripts/gsap.min.js"></script>
