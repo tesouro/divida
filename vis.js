@@ -18,7 +18,8 @@ const vis = {
             posicoes_linha_completa : [],
             primeiro_vencimento_a_excluir : null,
             primeiro_juros_a_excluir : null,
-            ultimo_elemento : null // estoque + juros
+            ultimo_elemento : null, // estoque + juros
+            linha_final_estoque_final : null
 
         },
 
@@ -77,7 +78,8 @@ const vis = {
         emissao_vazamento : "[data-tipo='emissao_vazamento']",
         fantasmas_refin : "[data-tipo='fantasmas_refin']",
 
-        setinha_saldo_anterior: '.setinha-saldo-anterior'
+        setinha_saldo_anterior: '[data-setinha-saldo-anterior]',
+        setinha_saldo_final: '[data-setinha-saldo-final]',
     
     },
 
@@ -599,7 +601,7 @@ const vis = {
 
             const posicoes_elementos_ultima_linha = elementos_da_ultima_linha.map(d => d.pos_x);
 
-            console.log("Ultima linha", elementos_da_ultima_linha, posicoes_elementos_ultima_linha);
+            //console.log("Ultima linha", elementos_da_ultima_linha, posicoes_elementos_ultima_linha);
 
             // posicoes de uma linha completa
 
@@ -610,7 +612,7 @@ const vis = {
             const posicoes_a_preencher = posicoes_linha_completa
               .filter(d => !posicoes_elementos_ultima_linha.includes(d));
 
-            console.log('posicoes a preencher ', posicoes_a_preencher);
+            //console.log('posicoes a preencher ', posicoes_a_preencher);
 
             const qde_a_preencher_ultima_linha = posicoes_a_preencher.length;
 
@@ -669,6 +671,15 @@ const vis = {
                     pos_y_final : linha_atual
 
                 }
+
+                // para usar na posição da setinha do saldo final
+                if (tipo == 'vazamento' & i == qde_elementos_restantes) {
+
+                    vis.params.calculados.linha_final_estoque_final = linha_atual
+
+                }
+                ///// 
+
 
                 if ( i % qde_por_linha == 0 ) {
 
@@ -1186,6 +1197,33 @@ const anims = {
 
         reverse : function() {
         this.tl.reverse()
+        }
+
+    },
+
+    incorpora : {
+                
+        tl : new gsap.timeline({paused: true})
+                    .to("[data-tipo='emissao_refin'], [data-tipo='emissao_vazamento']", {
+                        backgroundColor: vis.params.colors.yellow,
+                        stagger: {
+                            grid: "auto",
+                            from: "edges",
+                            axis: "both",
+                            each: 0.04
+                        }
+                    })
+                    .to(vis.refs.setinha_saldo_final, {
+                        top: vis.render.components.scales.y(vis.params.calculados.linha_final_estoque_final)
+
+                    }, '<'),
+
+        play: function() {
+            this.tl.play()
+        },
+
+        reverse : function() {
+            this.tl.reverse()
         }
 
     }
