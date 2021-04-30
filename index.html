@@ -8,6 +8,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Alfa+Slab+One&display=swap" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css2?family=Newsreader:wght@300;400&display=swap" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Quicksand:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
     <title>Document</title>
 </head>
@@ -54,15 +55,17 @@
 
             <div class="slide stepper" id="step1">
                 <div class="container-step" data-step="estoque inicial">
-                    <h3>O Estoque Inicial</h3>
+                    <h3>Quanto é (era)?</h3>
                     <p> 
-                        Ao final de 2019, a dívida pública
+                        Ao final de 2019, a Dívida Pública Federal era de nada menos R$ <strong class="js--text" data-texto-estoqueanterior></strong> trilhões (é o que se chama de <strong data-destaque="estoque">estoque</strong> ).
                     </p>
                     <p>Vamos representar esse valor por meio de quadradinhos. Cada quadradinho representa R$ 10 bilhões!</p>
                     <p>
                         <span class="quadradinho-exemplo"></span> = <strong>R$ 10.000.000.000,00</strong>
-
                     </p> 
+                    <p>
+                        Uma setinha branca na lateral vai marcar esse valor inicial ao longo da narrativa.
+                    </p>
                 </div>
                 <a href="#abertura" class="back" data-previous="estoque_inicial"> &lt; </a>
                 <a href="#step2" class="next" data-next="juros"> &gt; </a>
@@ -70,9 +73,9 @@
 
             <div class="slide stepper" id="step2">
                 <div class="container-step" data-step="juros">
-                    <h3>Os juros</h3>
+                    <h3>Quanto custa?</h3>
                     <p> 
-                        Sobre o valor do estoque da dívida, incidem <strong class="destaque-texto" data-destaque="juros">juros</strong>. Esses juros dependem de uma série de fatores, e seu custo varia para cada tipo de título. Mas, no total, em 2020 foram pagos <span data-campo-juros>1000</span>.
+                        Como em qualquer dívida, sobre o valor da dívida incidem <strong data-destaque="juros">juros</strong>. Esses juros dependem de uma série de fatores, e seu custo varia para cada tipo de título. Mas, no total, ao longo de 2020, a dívida custou R$ <strong class="js--text" data-texto-juros></strong> bilhões na forma de juros.
                     </p>
                 </div>
                 <a href="#step1" class="back" data-previous="juros"> &lt; </a>
@@ -81,9 +84,14 @@
 
             <div class="slide stepper" id="step3">
                 <div class="container-step" data-step="vencimentos">
-                    <h3>Os vencimentos do ano</h3>
+                    <h3>Como se paga?</h3>
+
+                    <h4>O principal da Dívida</h4>
                     <p>
-                        Quando o Tesouro emite os títulos da dívida, emite títulos com diferentes datas de vencimento. Dessa forma, todo ano, um bom pedaço da dívida total chega ao prazo do vencimento e deve ser pago. A figura agora destaca os valores que venceram no ano passado, e que precisaram ser honrados/pagos.
+                        O governo se endivida essencialmente emitindo <strong>títulos</strong>, que pessoas e instituições podem comprar com a promessa de que receberão o valor investido de volta (acrescido dos juros estabelecidos) dentro de um determinado prazo (na data de <strong>vencimento</strong> do titulo).
+                    </p>
+                    <p> 
+                        Dessa forma, todo ano, um bom pedaço da dívida total chega ao prazo do vencimento e deve ser pago. A figura agora destaca os valores do estoque que venceram em algum momento do ano passado (são os <strong data-destaque="vencimentos">vencimentos</strong> do ano), e que precisaram ser honrados/pagos.
                     </p>
                 </div>
                 <a href="#step2" class="back" data-previous="vencimentos"> &lt; </a>
@@ -92,9 +100,12 @@
 
             <div class="slide stepper" id="step4">
                 <div class="container-step" data-step="vencimentos_outras_fontes">
-                    <h3>Pagamentos dos vencimentos</h3>
+                    <h3>Como se paga?</h3>
+
+                    <h4>Pagamento com dinheiro do orçamento</h4>
+
                     <p>
-                        Pague.
+                        Na data em que o título vence, o Tesouro faz o pagamento às instituições financeiras para que essas repassem o valor ao detentor do título. Na maior parte das vezes, esse dinheiro utilizado pelo Tesouro é obtido na forma de novas emissões de títulos. No entanto, sempre que possível, o Tesouro busca utilizar recursos de outras origens para fazer o pagamento (pois assim esses pagamentos representam uma diminuição real da dívida).
                     </p>
                 </div>
                 <a href="#step3" class="back" data-previous="vencimentos_outras_fontes"> &lt; </a>
@@ -114,10 +125,14 @@
 
             <div class="slide stepper" id="step6">
                 <div class="container-step" data-step="juros_outras_fontes">
-                    <h3>Pagamento com emissões.</h3>
+                    <h3>Como se paga?</h3>
+
+                    <h4>Pagamento de juros com dinheiro do orçamento</h4>
+
                     <p>
-                        Fantasmas
+                        A mesma lógica vale para os juros do ano: sempre que possível, o Tesouro busca efetuar o pagamento com dinheiro proveniente de outras origens que não sejam novos endividamentos.
                     </p>
+
                 </div>
                 <a href="#step4" class="back" data-previous="juros_outras_fontes"> &lt; </a>
                 <a href="#step8" class="next" data-next="emissao_refin"> &gt; </a>
@@ -136,9 +151,11 @@
 
             <div class="slide stepper" id="step8">
                 <div class="container-step" data-step="emissao_refin">
-                    <h3>Emissoes</h3>
+                    <h3>Como se paga?</h3>
+
+                    <h4>A tal "rolagem" da Dívida</h4>
                     <p>
-                        Emissões vazamento.
+                        No entanto, esses recursos são limitados. Acaba que, para obter dinheiro para honrar os pagamentos do ano, sejam valores referentes ao principal ou aos juros da dívida, o Tesouro precisa se endividar novamente. Esse processo se chama rolagem da dívida, ou <strong data-destaque="refinanciamento">refinanciamento</strong> da dívida.
                     </p>
                 </div>
                 <a href="#step7" class="back" data-previous="emissao_refin"> &lt; </a>
@@ -147,9 +164,12 @@
 
             <div class="slide stepper" id="step9">
                 <div class="container-step" data-step="emissao_vazamento">
-                    <h3>Posiciona Emissoes</h3>
+                    <h3>Cobrindo o buraco</h3>
                     <p>
-                        Emissões vazamento.
+                        Nos últimos anos, a história da dívida passou a ter um capítulo adicional. Como o governo tem gastado mais do que arrecada (tendo <em>déficits primários</em>), a forma encontrada para custear essas despesas que vão além das receitas é a mesma usada pelas pessoas: contraindo empréstimos, endividando-se.
+                    </p>
+                    <p>
+                        Assim, em 2020 foi preciso endividar-se num valor adicional de R$ <strong class="js--text" data-texto-juros></strong> bilhões de reais para cobrir o buraco no orçamento.
                     </p>
                 </div>
                 <a href="#step8" class="back" data-previous="emissao_vazamento"> &lt; </a>

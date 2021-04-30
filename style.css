@@ -9,7 +9,7 @@
     --comp-color2: #FC2DED;
 
     --font-title : 'Press Start 2P';/*'Alfa Slab One';*/
-    --font-text : Newsreader;
+    --font-text : 'Quicksand';/*Newsreader;*/
 
     --cor-estoque-inicial : var(--title-color);
     --cor-juros : lavender;
@@ -69,13 +69,20 @@ h1 {
 
 }
 
-h2, h3, h4 {
+h2, h3 {
 
     font-family: var(--font-title);
     font-weight: 400;
     color: var(--title-color);
     /*text-align: center;*/
 
+}
+
+h4 {
+
+    font-family: var(--font-text);
+    font-weight: bold;
+    text-transform: uppercase;
 }
 
 .text {
@@ -251,13 +258,6 @@ rect.estoque {
 
 }
 
-.destaque-texto {
-
-    padding: .1em .3em;
-    border-radius: .2em;
-
-}
-
 .quadradinho-exemplo {
 
     display: inline-block; /*se não ele não preenche o elemento vazio*/
@@ -268,14 +268,55 @@ rect.estoque {
 
 }
 
+[data-destaque] {
+
+    padding: .1em .3em;
+    border-radius: .2em;
+
+}
+
+[data-destaque="estoque"] {
+
+    background-color: var(--tetris-yellow);
+    color: var(--bkg-color);
+
+}
+
+[data-texto-estoqueanterior] {
+
+    color: var(--tetris-yellow);
+
+}
+
 [data-destaque="juros"], [data-tipo="juros_refin"] {
 
     /* fazer no JS? */
 
-    background-color: var(--cor-juros);
+    background-color: var(--tetris-cyan);
     color: var(--bkg-color);
 
 }
+
+[data-texto-juros] {
+
+    color: var(--tetris-cyan);
+
+}
+
+[data-destaque="vencimentos"] {
+
+    background-color: var(--tetris-orange);
+
+}
+
+[data-destaque="refinanciamento"] {
+
+    background-color: var(--tetris-red);
+
+}
+
+
+
 
 [data-tipo='juros_outras_fontes'], [data-tipo='juros_refin'] {
 
