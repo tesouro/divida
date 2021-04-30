@@ -543,11 +543,12 @@ const vis = {
 
             // tipo = "refin" ou "vazamento"
 
-            let valor, vetor_anterior;
+            let valor, vetor_anterior, tipo_pos_y;
 
             if (tipo == "refin") {
 
                 vetor_anterior = 'estoque_inicial';
+                tipo_pos_y = 'pos_y'
                 // as posições finais das emissões de refinanciamento vão ser em cima do estoque inicial
 
                 valor = (
@@ -559,6 +560,8 @@ const vis = {
             } else {
 
                 vetor_anterior = 'emissao_refin';
+                tipo_pos_y = 'pos_y_final'
+
                 // as posições finais das emissões de vazamento vão ser em cima das emissões de refinanciamento
 
 
@@ -575,7 +578,7 @@ const vis = {
             // qual a última linha atual?
 
             const ultimo = vis.data.vetores[vetor_anterior].slice(-1)[0];
-            const ultima_linha = ultimo.pos_y//proximo_pos_y_juros;
+            const ultima_linha = ultimo[tipo_pos_y]//proximo_pos_y_juros;
 
             console.log("Ultimo, ultima linha", ultimo, ultima_linha);
 
@@ -583,7 +586,7 @@ const vis = {
 
             // posicoes dessa ultima linha
 
-            const elementos_da_ultima_linha = vis.data.vetores[vetor_anterior].filter(d => d.pos_y == ultima_linha);
+            const elementos_da_ultima_linha = vis.data.vetores[vetor_anterior].filter(d => d[tipo_pos_y] == ultima_linha);
 
             const posicoes_elementos_ultima_linha = elementos_da_ultima_linha.map(d => d.pos_x);
 
@@ -635,7 +638,7 @@ const vis = {
                     pos_y : linha_atual + deslocamento,
                     tipo : 'emissao_' + tipo,
                     ['deslocamento_em_emissao_' + tipo] : deslocamento,
-                    pos_y_emissao : ultima_linha + deslocamento
+                    pos_y_final : linha_atual
 
                 })
             );
@@ -654,7 +657,7 @@ const vis = {
                     pos_y : linha_atual + deslocamento,
                     tipo : 'emissao_' + tipo,
                     ['deslocamento_em_emissao_' + tipo] : deslocamento,  
-                    pos_y_emissao : linha_atual + deslocamento
+                    pos_y_final : linha_atual
 
                 }
 
