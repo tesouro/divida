@@ -160,7 +160,7 @@ const vis = {
 
             vazamento : null,
 
-            grid_refin : null,
+            fantasmas_refin : null,
 
             todos : null
 
@@ -257,13 +257,14 @@ const vis = {
             ultimo_indice += vis.data.vetores.juros_refin.length;
             vis.params.calculados.ultimo_elemento = ultimo_indice;
 
-            // grid juros e vencimentos refinanciados
-            const ultimo_indice_estoque_sem_pgtos = vis.data.vetores.estoque_inicial.length;
+            //apagar
+            // // grid juros e vencimentos refinanciados
+            // const ultimo_indice_estoque_sem_pgtos = vis.data.vetores.estoque_inicial.length;
 
-            vis.data.cria_dataset(
-                (vis.data.infos.juros.refin + vis.data.infos.vencimentos.refin) * 1e9, 
-                tipo = "grid_refin",
-                posicao_inicial = ultimo_indice_estoque_sem_pgtos);
+            // vis.data.cria_dataset(
+            //     (vis.data.infos.juros.refin + vis.data.infos.vencimentos.refin) * 1e9, 
+            //     tipo = "grid_refin",
+            //     posicao_inicial = ultimo_indice_estoque_sem_pgtos);
 
             // juros e vencimentos (pois são os que estarão sujeitos a serem deslocados)
 
@@ -528,6 +529,22 @@ const vis = {
 
         },
 
+        calcula_fantasmas : function() {
+
+            const vetor = vis.data.vetores.todos.filter(d => ['vencimentos_refin', 'juros_refin'].includes(d.tipo));
+
+            vis.data.vetores.fantasmas_refin = vetor.map(d => (
+
+                {
+                    pos_x : d.pos_x,
+                    pos_y : d.proximo_pos_y_juros ? d.proximo_pos_y_juros : d.proximo_pos_y_vencimentos,
+                    tipo : 'fantasmas_refin'
+                }
+
+            ));
+
+        },
+
         calcula_emissoes : function(tipo) {
 
             // tipo = "refin" ou "vazamento"
@@ -671,20 +688,36 @@ const vis = {
             console.log("posicoes a preencher ", posicoes_a_preencher);
             console.log('ultima linha emissao', ultima_linha_emissao, 'deslocamento', deslocamento);
             console.log('vetor emissão', vetor_emissao);
-
-            // document.querySelectorAll(vis.refs.juros_refin)
-            //   .forEach(el => {
-            //       if (el.dataset.proximo_pos_y_juros == ultima_linha) {
-            //         el.style.backgroundColor = "coral"
-            //       }   
-            //   });
-
-            // talvez aqui tenha que testar se a linha inferior tb está incompleta
-
-                
-
         
         },
+
+        recalcula_pos_x_ultima_linha_emissoes_refin : function() {
+
+            const ultima_linha_fantasmas_refin = vis.data.vetores.fantasmas_refin.slice(-1)[0].pos_y;
+
+            const posicoes_x = vis.data.vetores.fantasmas_refin
+                                 .filter(d => d.pos_y == ultima_linha_fantasmas_refin)
+                                 .map(d => d.pos_x);
+
+            const ultima_linha_emissao_refin = vis.data.vetores.todos.filter(d => d.tipo == "emissao_refin").slice(-1)[0].pos_y;
+
+            // pega índices dos elementos que correspondem ao filtro:
+
+            const indexes = vis.data.vetores.todos
+                              .filter(d => d.tipo == 'emissao_refin' & d.pos_y == ultima_linha_emissao_refin)
+                              .map(d => vis.data.vetores.todos.indexOf(d));
+
+            // para cada índice, acessa o vetor original e substitui o valor de pos_x
+
+            indexes.forEach((d,i) => {
+
+                console.log("Posicao x antiga: ", vis.data.vetores.todos[d].pos_x, ", Posicao nova: ", posicoes_x[i]);
+
+                vis.data.vetores.todos[d].pos_x = posicoes_x[i];
+
+            })
+
+        }
 
     },
 
@@ -847,7 +880,9 @@ const vis = {
             vis.utils.gera_posicoes_linha_completa();
 
             vis.grid.calcula_posicao_apos_pagtos();
+            vis.grid.calcula_fantasmas();
             vis.grid.calcula_emissoes("refin");
+            vis.grid.recalcula_pos_x_ultima_linha_emissoes_refin();
             vis.grid.calcula_emissoes("vazamento");
 
             vis.render.cria_divs("todos", visivel = 0);
@@ -908,7 +943,7 @@ const anims = {
                         ],//"auto",
                         from: "random",
                         axis: "both",
-                        each: 0.01
+                        each: 0.005
                         }
                     }),
 
