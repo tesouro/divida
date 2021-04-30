@@ -62,8 +62,7 @@ const vis = {
 
     refs : {
 
-        svg : "svg",
-        container : ".svg-container",
+        container : ".tetris-container",
         buttons : ".back, .next",
         estoque : "[data-tipo='estoque_inicial'], [data-tipo='vencimentos_outras_fontes'], [data-tipo='vencimentos_refin']",
         juros : "[data-tipo='juros_outras_fontes'], [data-tipo='juros_refin']",
@@ -79,18 +78,9 @@ const vis = {
     
     },
 
-    selections : {
-
-        svg : null,
-        container : null,
-        rects_divida : null,
-        rects_ultima_emissao : null
-
-    },
-
     dims : {
 
-        svg : {
+        tetris : {
 
             h : null,
             w : null
@@ -303,15 +293,14 @@ const vis = {
 
         },
 
-        pega_tamanho_svg : function() {
+        pega_tamanho_tetris : function() {
 
-            const height = +d3.select("svg").style("height").slice(0,-2);
+            const height = document.querySelector(".tetris-container").getBoundingClientRect().height;
 
-            // document.querySelector("svg").getBoundingClientRect().height
-            const width  = +d3.select("svg").style("width").slice(0,-2);
+            const width  = document.querySelector(".tetris-container").getBoundingClientRect().width;
 
-            vis.dims.svg.h = height;
-            vis.dims.svg.w = width;
+            vis.dims.tetris.h = height;
+            vis.dims.tetris.w = width;
 
         },
 
@@ -399,16 +388,16 @@ const vis = {
             const qde_unidades = vis.grid.helpers.calcula_qde_unidades(valor);
 
             const area_unitaria = (
-                (vis.dims.svg.h - margem) * 
-                (vis.dims.svg.w - margem) ) / qde_unidades;
+                (vis.dims.tetris.h - margem) * 
+                (vis.dims.tetris.w - margem) ) / qde_unidades;
 
             const dim_unitaria = Math.sqrt(area_unitaria);
             
             const lado = Math.round(dim_unitaria - margem);
 
-            const qde_por_linha = Math.ceil((vis.dims.svg.w - vis.params.iniciais.margem) / dim_unitaria);
+            const qde_por_linha = Math.ceil((vis.dims.tetris.w - vis.params.iniciais.margem) / dim_unitaria);
 
-            const qde_linhas = Math.ceil((vis.dims.svg.h - vis.params.iniciais.margem) / dim_unitaria);
+            const qde_linhas = Math.ceil((vis.dims.tetris.h - vis.params.iniciais.margem) / dim_unitaria);
 
             vis.params.calculados.tamanho = lado;
             vis.params.calculados.qde_por_linha = qde_por_linha;
@@ -717,7 +706,7 @@ const vis = {
 
                 y : function(pos_y) {
 
-                    const y = vis.dims.svg.h - (pos_y) * (vis.params.calculados.tamanho + vis.params.iniciais.margem);
+                    const y = vis.dims.tetris.h - (pos_y) * (vis.params.calculados.tamanho + vis.params.iniciais.margem);
 
                     //console.log(pos_y, y)
 
@@ -763,166 +752,15 @@ const vis = {
 
         },
 
-        remove : function() {
-
-            let remove = document.querySelectorAll('[data-remover="true"]');
-
-            remove.forEach(
-                d => d.style.opacity = 0
-            );
-
-        },
-
-        desloca : function(tipo) {
-
-            let desloca = document.querySelectorAll('[data-deslocar_' + tipo + '="true"]');
-
-            desloca.forEach(d =>
-                d.style.top = vis.render.components.scales.y(d.dataset["proximo_pos_y_" + tipo]) + "px"
-            );
-
-            // atualiza vetores
-
-            // vis.data.vetores.todos.forEach(quadradinho => 
-            //     quadradinho.pos_y = quadradinho["proximo_pos_y_" + tipo]);
-
-        },
-
-        desloca_emissao : function(tipo) {
-
-            let desloca = document.querySelectorAll('[data-tipo="emissao_' + tipo + '"]');
-
-            console.log("Deslocando emissao", desloca);
-
-            desloca.forEach(el => 
-                el.style.top = vis.render.components.scales.y(el.dataset.pos_y) + 'px'
-                );
-
-        },
-
         pagamento_refin : function() {
 
             let pgtos_refin = document.querySelectorAll('[data-tipo="juros_refin"], [data-tipo="vencimentos_refin"]');
 
             pgtos_refin.forEach(el => el.classList.add('fantasma'));
 
-        },
-
-        // desenhas_rects : function() {
-
-        //     const svg = d3.select(vis.refs.svg);
-
-        //     vis.selections.rects_divida = svg
-        //       .selectAll("rect")
-        //       .data(vis.data.divida, d => d.unidade)
-        //       .join("rect")
-        //       .classed("estoque", true)
-        //       .attr("data-unidade", d => d.unidade)
-        //       .attr("x", d => vis.render.components.scales.x(d.pos_x) + vis.params.calculados.tamanho/2)
-        //       .attr("y", d => vis.render.components.scales.y(d.pos_y) + vis.params.calculados.tamanho/2)
-        //       .attr("width", 0)
-        //       .attr("height", 0);
-
-        //     vis.selections.rects_divida
-        //       .transition()
-        //       .duration(100)
-        //       .delay((d,i) => d.pos_x * 10 + d.pos_y * 50)
-        //       .attr("x", d => vis.render.components.scales.x(d.pos_x))
-        //       .attr("y", d => vis.render.components.scales.y(d.pos_y))
-        //       .attr("width", vis.params.calculados.tamanho)
-        //       .attr("height", vis.params.calculados.tamanho);
-
-        // }
-    },
-
-    /*stepper : {
-
-        "estoque inicial" : function() {
-
-            document.querySelectorAll(vis.refs.estoque).forEach(quadradinho =>
-                quadradinho.style.opacity = 1);
-
-                console.log(vis.data.vetores.estoque_inicial[0].pos_y);
-
-            
-
-            //vis.render.cria_divs("estoque_inicial");
-            //vis.render.cria_divs("vencimentos_outras_fontes");
-            //vis.render.cria_divs("vencimentos_refin");
-
-        },
-
-        "juros" : function() {
-
-            document.querySelectorAll(vis.refs.juros).forEach(quadradinho =>
-                quadradinho.style.opacity = 1);
-
-                console.log(vis.data.vetores.estoque_inicial[0].pos_y);
-
-            //vis.render.cria_divs("juros_outras_fontes");
-            //vis.render.cria_divs("juros_refin");
-
-        },
-
-        "vencimentos" : function() {
-
-            document.querySelectorAll(vis.refs.vencimentos).forEach(quadradinho =>
-                quadradinho.style.opacity = 1);
-
-            vis.render.remove();
-
-            console.log(vis.data.vetores.estoque_inicial[0].pos_y);
-
-        },
-
-        "pagamentos-vencimentos" : function() {
-
-            vis.render.remove();
-            console.log(vis.data.vetores.estoque_inicial[0].pos_y);
-            vis.render.desloca("vencimentos");
-
-            console.log(vis.data.vetores.estoque_inicial[0].pos_y);
-
-        },
-
-        "pagamentos-juros" : function() {
-
-            vis.render.remove();
-            vis.render.desloca("juros");
-
-            console.log(vis.data.vetores.estoque_inicial[0].pos_y);
-
-        },
-
-        "pagamentos-com-emissoes" : function() {
-
-            vis.render.pagamento_refin();
-
-        },
-
-
-        "emissoes" : function() {
-
-            vis.grid.calcula_emissoes("refin");
-            vis.render.cria_divs('emissao_refin', visivel = 1, tipo_pos_y = 'pos_y_emissao');
-
-        },
-
-        "emissoes-vazamento" : function() {
-
-            vis.render.desloca_emissao('refin');
-            vis.grid.calcula_emissoes("vazamento");
-            vis.render.cria_divs('emissao_vazamento', visivel = 1, tipo_pos_y = 'pos_y_emissao');
-
-        },
-
-        "posiciona-emissoes" : function() {
-
-            vis.render.desloca_emissao('vazamento');
-
         }
 
-    },*/
+    },
 
     utils : {
 
@@ -1000,7 +838,7 @@ const vis = {
 
             vis.params.colors.popula();
 
-            vis.sizing.pega_tamanho_svg();
+            vis.sizing.pega_tamanho_tetris();
             vis.grid.calcula_parametros(valor); 
             vis.sizing.calcula_dimensoes_necessarias(valor);
             vis.sizing.redimensiona_container();
@@ -1056,6 +894,10 @@ const anims = {
     estoque_inicial : {
                 
         tl : new gsap.timeline({paused: true})
+                    .to(vis.refs.container, {
+                        opacity : 1,
+                        duration: 1
+                    })
                     .to(vis.refs.estoque, {
                         scale: 1,
                         opacity: 1,
@@ -1066,7 +908,7 @@ const anims = {
                         ],//"auto",
                         from: "random",
                         axis: "both",
-                        amount: 1.5
+                        each: 0.01
                         }
                     }),
 

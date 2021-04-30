@@ -194,7 +194,7 @@ a.next {
     opacity: 1/*0;*/
 }
 
-.svg-container {
+.tetris-container {
 
     outline: 10px solid var(--comp-color1);
     max-width: 100%;
@@ -202,10 +202,11 @@ a.next {
     margin: 0 auto;
     height: 90vh;
     position: relative;
+    opacity: 0;
 
 }
 
-svg {
+.tetris {
 
     width: 100%;
     height: 100%;
