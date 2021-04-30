@@ -289,7 +289,7 @@ rect.estoque {
 
 */
 
-.fantasma {
+[data-tipo="fantasmas_refin"] {
 
     background-color: transparent;
     border: 1px solid grey;

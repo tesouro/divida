@@ -74,7 +74,8 @@ const vis = {
         deslocar_juros : "[data-deslocar_juros='true']",
         pagamentos_refin : "[data-tipo='juros_refin'], [data-tipo='vencimentos_refin']",
         emissao_refin : "[data-tipo='emissao_refin']",
-        emissao_vazamento : "[data-tipo='emissao_vazamento']"
+        emissao_vazamento : "[data-tipo='emissao_vazamento']",
+        fantasmas_refin : "[data-tipo='fantasmas_refin']"
     
     },
 
@@ -128,8 +129,8 @@ const vis = {
 
                 refin : {
 
-                    principal : 773,
-                    juros     : 209
+                    principal : 780,
+                    juros     : 210
 
                 },
 
@@ -886,6 +887,7 @@ const vis = {
             vis.grid.calcula_emissoes("vazamento");
 
             vis.render.cria_divs("todos", visivel = 0);
+            vis.render.cria_divs("fantasmas_refin", visivel = 0); // criando depois para ficarem na frente
 
             console.log(vis.data.vetores.estoque_inicial[0].pos_y);
 
@@ -1098,6 +1100,10 @@ const anims = {
                          opacity : 0,
                          backgroundColor : vis.params.colors.red
                      })
+                     .set(vis.refs.fantasmas_refin, {
+                        scale : 1,
+                        opacity : 0
+                    })                     
                      .to(vis.refs.emissao_refin, {
                          opacity: 1
                      })
@@ -1106,10 +1112,16 @@ const anims = {
                         ease: Back.easeIn,
                         scale : 0
                      })
+                     .to(vis.refs.fantasmas_refin, {
+                        opacity : 1
+                      }, "<")   
                      .to(vis.refs.emissao_refin, {
                          ease: SteppedEase.config(12),
                          duration: 1.5,
                          y : vis.utils.get_data.emissao_refin
+                     })
+                     .to(vis.refs.fantasmas_refin, {
+                        opacity : 0
                      }),
 
         play: function() {
