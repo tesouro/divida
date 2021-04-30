@@ -1090,8 +1090,8 @@ const anims = {
                         stagger: {
                             grid: "auto",
                             from: "start",
-                            //axis: "y",
-                            each: 0.08
+                            axis: "y",
+                            amount: 1
                         }
                      }),
 
