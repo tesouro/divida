@@ -74,7 +74,8 @@ const vis = {
         deslocar_vencimentos : "[data-deslocar_vencimentos='true']",
         deslocar_juros : "[data-deslocar_juros='true']",
         pagamentos_refin : "[data-tipo='juros_refin'], [data-tipo='vencimentos_refin']",
-        emissao_refin : "[data-tipo='emissao_refin']"
+        emissao_refin : "[data-tipo='emissao_refin']",
+        emissao_vazamento : "[data-tipo='emissao_vazamento']"
     
     },
 
@@ -243,6 +244,8 @@ const vis = {
                 posicao_inicial = ultimo_indice);
 
             ultimo_indice += vis.data.vetores.vencimentos_refin.length;
+            // para usar na animação
+            vis.params.calculados.qde_linhas_estoque_inicial = ultimo_indice;
 
             // juros com outras fontes
             vis.data.cria_dataset(
@@ -623,7 +626,7 @@ const vis = {
 
             // primeiro os quadradinhos para preencher a última linha
 
-            linha_atual = ultima_linha_emissao;
+            linha_atual = ultima_linha;
 
             let vetor_emissao = posicoes_a_preencher.map(x => (
                 {
@@ -944,6 +947,8 @@ const vis = {
 
         get_data : {
 
+            // preciso meso de todas as funções. descobrir depois como fazer para passar um argumento adicional la dentro do gsap.to() -- o argumento adicional seria o seletor correspondente.
+
             vencimentos_outras_fontes : function(i, target) {
 
                 // os deslocamentos estão em quantidade de llinhas. precisamos multiplicar pelo tamanho efetivo de uma linha: tamanhado do quadrado + margem.
@@ -961,6 +966,13 @@ const vis = {
             emissao_refin : function(i, target)  {
 
                 return +target.dataset['deslocamento_em_emissao_refin'] * (vis.params.calculados.tamanho + vis.params.iniciais.margem);
+
+            },
+
+            emissao_vazamento : function(i, target) {
+
+                return +target.dataset['deslocamento_em_emissao_vazamento'] * (vis.params.calculados.tamanho + vis.params.iniciais.margem);
+
 
             }
 
@@ -1045,7 +1057,10 @@ const anims = {
                         scale: 1,
                         opacity: 1,
                         stagger: {
-                        grid: "auto",
+                        grid: [
+                            vis.params.calculados.qde_por_linha,
+                            vis.params.calculados.qde_linhas_estoque_inicial
+                        ],//"auto",
                         from: "random",
                         axis: "both",
                         amount: 1.5
@@ -1114,7 +1129,7 @@ const anims = {
                             grid: "auto",
                             from: "start",
                             //axis: "y",
-                            each: 0.1
+                            each: 0.05
                         }
                      }),
 
@@ -1159,7 +1174,7 @@ const anims = {
                             grid: "auto",
                             from: "start",
                             //axis: "y",
-                            each: 0.1
+                            each: 0.05
                         }
                      }),
 
@@ -1207,12 +1222,13 @@ const anims = {
                          opacity: 1
                      })
                      .to(vis.refs.pagamentos_refin, {
-                        duration : 2,
+                        duration : 1,
                         ease: Back.easeIn,
                         scale : 0
                      })
                      .to(vis.refs.emissao_refin, {
                          ease: SteppedEase.config(12),
+                         duration: 1.5,
                          y : vis.utils.get_data.emissao_refin
                      }),
 
@@ -1224,7 +1240,32 @@ const anims = {
         this.tl.reverse()
         }
 
+    },
 
+    emissao_vazamento : {
+
+        tl : new gsap.timeline({paused : true})
+                     .set(vis.refs.emissao_vazamento, {
+                         scale : 1,
+                         opacity : 0,
+                         backgroundColor : vis.params.colors.purple
+                     })
+                     .to(vis.refs.emissao_vazamento, {
+                         opacity: 1
+                     })
+                     .to(vis.refs.emissao_vazamento, {
+                         ease: SteppedEase.config(12),
+                         duration: 1.2,
+                         y : vis.utils.get_data.emissao_vazamento
+                     }),
+
+        play: function() {
+        this.tl.play()
+        },
+
+        reverse : function() {
+        this.tl.reverse()
+        }
 
     }
 
