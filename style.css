@@ -8,7 +8,7 @@
     --comp-color1 : #474FFC;
     --comp-color2: #FC2DED;
 
-    --font-title : 'Alfa Slab One';
+    --font-title : 'Press Start 2P';/*'Alfa Slab One';*/
     --font-text : Newsreader;
 
     --cor-estoque-inicial : var(--title-color);
@@ -52,7 +52,7 @@ body {
     color: var(--text-color);
     font-family: var(--font-text);
     font-weight: lighter;
-    font-size: 1.2rem;
+    font-size: 1rem;
     font-weight: 300;
     letter-spacing: .01em;
     scroll-behavior: smooth;
@@ -63,7 +63,7 @@ h1 {
 
     font-family: var(--font-title);
     font-weight: 400;
-    font-size: 3rem;
+    font-size: 2rem;
     text-align: center;
     color: var(--title-color);
 
@@ -85,7 +85,16 @@ h2, h3, h4 {
 
 }
 
+ul {
+    list-style: none;
+    line-height: 1.4;
+}
+
 @media (max-width: 500px) {
+
+    h1 {
+        font-size: 1.5rem;
+    }
 
     .text {
 
