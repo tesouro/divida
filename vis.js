@@ -22,6 +22,42 @@ const vis = {
 
         },
 
+        colors : {
+
+            pega_do_css : function(color) {
+
+                const style_root = getComputedStyle( document.documentElement );
+                const value = style_root.getPropertyValue( '--tetris-' + color );
+                return value;
+
+            },
+
+            popula : function() {
+
+                vis.params.colors.valores.forEach(color => {
+                    console.log(color);
+                    vis.params.colors[color] = vis.params.colors.pega_do_css(color);
+                })
+
+            },
+
+            valores : ['purple', 'green', 'red', 'yellow', 'orange', 'orangesemi' ,'blue', 'cyan']
+
+
+        },
+
+        steps : [
+
+            'estoque_inicial',
+            'juros',
+            'vencimentos',
+            'pagamento_vencimentos_outras_receitas',
+            'pagamento_juros_outras_receitas',
+            'emissao_refin',
+            'emissao_vazamento'
+
+        ]
+
     },
 
     refs : {
@@ -31,8 +67,15 @@ const vis = {
         buttons : ".back, .next",
         estoque : "[data-tipo='estoque_inicial'], [data-tipo='vencimentos_outras_fontes'], [data-tipo='vencimentos_refin']",
         juros : "[data-tipo='juros_outras_fontes'], [data-tipo='juros_refin']",
+        juros_outras_fontes : "[data-tipo='juros_outras_fontes']",
         juros_refin : "[data-tipo='juros_refin']",
-        vencimentos : "[data-tipo='vencimentos_outras_fontes'], [data-tipo='vencimentos_refin']"
+        vencimentos : "[data-tipo='vencimentos_outras_fontes'], [data-tipo='vencimentos_refin']",
+        vencimentos_outras_fontes : "[data-tipo='vencimentos_outras_fontes']",
+        deslocar_vencimentos : "[data-deslocar_vencimentos='true']",
+        deslocar_juros : "[data-deslocar_juros='true']",
+        pagamentos_refin : "[data-tipo='juros_refin'], [data-tipo='vencimentos_refin']",
+        emissao_refin : "[data-tipo='emissao_refin']",
+        emissao_vazamento : "[data-tipo='emissao_vazamento']"
     
     },
 
@@ -201,6 +244,8 @@ const vis = {
                 posicao_inicial = ultimo_indice);
 
             ultimo_indice += vis.data.vetores.vencimentos_refin.length;
+            // para usar na animação
+            vis.params.calculados.qde_linhas_estoque_inicial = ultimo_indice;
 
             // juros com outras fontes
             vis.data.cria_dataset(
@@ -451,13 +496,20 @@ const vis = {
 
             vis.data.vetores.todos.forEach(d => {
 
-                if ( a_remover.includes(d) ) {
+                // se for um elemento dos pagamentos de vencimentos com outras fontes, vai só ser removido.
 
-                    d["remover"] = true;
+                if ( elementos_a_remover["vencimentos"].includes(d) ) {
+
+                    d["remover_em_pagamento_vencimentos_outras"] = true;
 
                 } else {
 
                     if (d.indice_geral > posicoes_finais["juros"]) {
+
+                        // aqui sao os juros pagos com emissoes. vao cair após o pagamento de juros.
+                        // mas também vao cair após o pagamento de vencimentos (vao ser capturados no if abaixo)
+
+                        d['deslocamento_em_pagamento_juros_outras'] = deslocamentos.juros[d.pos_x] + deslocamentos.vencimentos[d.pos_x];
 
                         d["deslocar_juros"] = true;
 
@@ -467,10 +519,18 @@ const vis = {
                     
                     if (d.indice_geral > posicoes_finais["vencimentos"]) {
 
+                        d['deslocamento_em_pagamento_vencimentos_outras'] = deslocamentos.vencimentos[d.pos_x];
+
                         d["deslocar_vencimentos"] = true;
 
                         d["proximo_pos_y_vencimentos"] = d.pos_y - deslocamentos.vencimentos[d.pos_x]
 
+                    }
+
+                    if ( elementos_a_remover["juros"].includes(d) ) {
+
+                        d["remover_em_pagamento_juros_outras"] = true;
+    
                     }
 
                 }
@@ -483,11 +543,12 @@ const vis = {
 
             // tipo = "refin" ou "vazamento"
 
-            let valor, vetor_anterior;
+            let valor, vetor_anterior, tipo_pos_y;
 
             if (tipo == "refin") {
 
                 vetor_anterior = 'estoque_inicial';
+                tipo_pos_y = 'pos_y'
                 // as posições finais das emissões de refinanciamento vão ser em cima do estoque inicial
 
                 valor = (
@@ -499,6 +560,8 @@ const vis = {
             } else {
 
                 vetor_anterior = 'emissao_refin';
+                tipo_pos_y = 'pos_y_final'
+
                 // as posições finais das emissões de vazamento vão ser em cima das emissões de refinanciamento
 
 
@@ -515,7 +578,7 @@ const vis = {
             // qual a última linha atual?
 
             const ultimo = vis.data.vetores[vetor_anterior].slice(-1)[0];
-            const ultima_linha = ultimo.pos_y//proximo_pos_y_juros;
+            const ultima_linha = ultimo[tipo_pos_y]//proximo_pos_y_juros;
 
             console.log("Ultimo, ultima linha", ultimo, ultima_linha);
 
@@ -523,7 +586,7 @@ const vis = {
 
             // posicoes dessa ultima linha
 
-            const elementos_da_ultima_linha = vis.data.vetores[vetor_anterior].filter(d => d.pos_y == ultima_linha);
+            const elementos_da_ultima_linha = vis.data.vetores[vetor_anterior].filter(d => d[tipo_pos_y] == ultima_linha);
 
             const posicoes_elementos_ultima_linha = elementos_da_ultima_linha.map(d => d.pos_x);
 
@@ -566,12 +629,16 @@ const vis = {
 
             // primeiro os quadradinhos para preencher a última linha
 
+            linha_atual = ultima_linha;
+
             let vetor_emissao = posicoes_a_preencher.map(x => (
                 {
                     pos_x : x,
-                    pos_y : ultima_linha,
+                    //pos_y : linha_atual,
+                    pos_y : linha_atual + deslocamento,
                     tipo : 'emissao_' + tipo,
-                    pos_y_emissao : ultima_linha + deslocamento
+                    ['deslocamento_em_emissao_' + tipo] : deslocamento,
+                    pos_y_final : linha_atual
 
                 })
             );
@@ -586,9 +653,11 @@ const vis = {
                 const novo_elemento = {
 
                     pos_x : ( (i - 1) % qde_por_linha ) + 1,
-                    pos_y : linha_atual,
+                    //pos_y : linha_atual,
+                    pos_y : linha_atual + deslocamento,
                     tipo : 'emissao_' + tipo,
-                    pos_y_emissao : linha_atual + deslocamento
+                    ['deslocamento_em_emissao_' + tipo] : deslocamento,  
+                    pos_y_final : linha_atual
 
                 }
 
@@ -606,7 +675,7 @@ const vis = {
 
             // atualiza vetor todos
 
-            //vis.data.vetores.todos = [...vis.data.vetores.todos, ...vetor_emissao];
+            vis.data.vetores.todos.push(...vetor_emissao);
 
 
             console.log("ultimos elementos ", elementos_da_ultima_linha);
@@ -627,90 +696,6 @@ const vis = {
 
         
         },
-
-
-
-        // registra_pagamento : function(valor, posicao_inicial) {
-
-        //     const qde_unidades = Math.round(valor/vis.params.iniciais.valor_unidade);
-
-        //     console.log("Para este pagamento de ", valor, ", apagaremos ", qde_unidades, " quadradinhos.");
-
-        //     // acha o index do elemento inicial no dataset
-
-        //     const index_primeiro = vis.data.divida
-        //       .map(elemento => elemento.unidade)
-        //       .indexOf(posicao_inicial)
-        //     ;
-
-        //     // linha do primeiro a ser removido
-        //     const linha_primeiro = vis.data.divida[index_primeiro].pos_y;
-        //     const qde_linhas_completas = Math.floor(qde_unidades / vis.params.calculados.qde_por_linha);
-        //     const nro_linha_incompleta = linha_primeiro + qde_linhas_completas;
-        //     const primeira_posicao_da_linha_incompleta = qde_unidades % vis.params.calculados.qde_por_linha;
-            
-
-        //     console.log(primeira_posicao_da_linha_incompleta, qde_linhas_completas);
-
-        //     let vetor_deslocamento = [];
-
-        //     for (let i = 0; i <= vis.params.calculados.qde_por_linha - 1; i++) {
-
-        //         if (i >= primeira_posicao_da_linha_incompleta) {
-        //             vetor_deslocamento[i] = qde_linhas_completas;
-        //         } else {
-        //             vetor_deslocamento[i] = qde_linhas_completas + 1
-        //         }
-
-        //     }
-
-        //     console.log(vetor_deslocamento);
-
-        //     const elementos_removidos = vis.data.divida.splice(index_primeiro, qde_unidades);
-
-        //     console.log("Foram removidos, a partir do index ", index_primeiro, ": ", elementos_removidos);
-
-
-        //     // atualiza data join
-
-        //     vis.selections.rects_divida = vis.selections.rects_divida
-        //       .data(vis.data.divida, d => d.unidade);
-
-        //     // remove rects pagos
-
-        //     vis.selections.rects_divida
-        //       .exit()
-        //       .classed("estoque", false) // para a transicao funcionar (estoque define a cor com style)
-        //       .attr("fill", "goldenrod")  // mesma coisa
-        //       .attr("opacity", 1)     // mesma coisa
-        //       .transition()
-        //       .duration(1000)
-        //       .attr("fill", "blue")
-        //       .attr("stroke", "blue")
-        //       .attr("stroke-width", 3)
-        //       .transition()
-        //       .delay(1000)
-        //       .duration(1000)
-        //       .attr("opacity", 0)
-        //       .remove()
-        //     ;
-
-        //     // desloca
-
-        //     vis.selections.rects_divida
-        //       .filter(datum => datum.pos_y >= nro_linha_incompleta)
-        //       .transition()
-        //       .delay(2500)
-        //       .transition(1000)
-        //       .attr("y", function(d) {
-        //           const nova_pos_y = d.pos_y - vetor_deslocamento[d.pos_x - 1];
-        //           d.pos_y = nova_pos_y;
-        //           return vis.render.components.scales.y(nova_pos_y)
-        //       });
-
-        // }
-
-
 
     },
 
@@ -739,7 +724,6 @@ const vis = {
                     return y
 
                 }
-
 
             }
 
@@ -851,7 +835,7 @@ const vis = {
         // }
     },
 
-    stepper : {
+    /*stepper : {
 
         "estoque inicial" : function() {
 
@@ -938,7 +922,7 @@ const vis = {
 
         }
 
-    },
+    },*/
 
     utils : {
 
@@ -960,6 +944,41 @@ const vis = {
 
             return Math.floor((dimensao - vis.params.iniciais.margem) / (vis.params.calculados.tamanho + vis.params.iniciais.margem))
 
+        },
+
+        // para usar nas animações
+
+        get_data : {
+
+            // preciso meso de todas as funções. descobrir depois como fazer para passar um argumento adicional la dentro do gsap.to() -- o argumento adicional seria o seletor correspondente.
+
+            vencimentos_outras_fontes : function(i, target) {
+
+                // os deslocamentos estão em quantidade de llinhas. precisamos multiplicar pelo tamanho efetivo de uma linha: tamanhado do quadrado + margem.
+
+                return +target.dataset['deslocamento_em_pagamento_vencimentos_outras'] * (vis.params.calculados.tamanho + vis.params.iniciais.margem);
+
+            },
+
+            juros_outras_fontes : function(i, target) {
+
+                return +target.dataset['deslocamento_em_pagamento_juros_outras'] * (vis.params.calculados.tamanho + vis.params.iniciais.margem);
+
+            },
+
+            emissao_refin : function(i, target)  {
+
+                return +target.dataset['deslocamento_em_emissao_refin'] * (vis.params.calculados.tamanho + vis.params.iniciais.margem);
+
+            },
+
+            emissao_vazamento : function(i, target) {
+
+                return +target.dataset['deslocamento_em_emissao_vazamento'] * (vis.params.calculados.tamanho + vis.params.iniciais.margem);
+
+
+            }
+
         }
 
     },
@@ -979,14 +998,20 @@ const vis = {
 
             vis.control.monitora_botoes();
 
+            vis.params.colors.popula();
+
             vis.sizing.pega_tamanho_svg();
             vis.grid.calcula_parametros(valor); 
             vis.sizing.calcula_dimensoes_necessarias(valor);
             vis.sizing.redimensiona_container();
 
             vis.data.gera_datasets();
-            vis.grid.calcula_posicao_apos_pagtos();
             vis.utils.gera_posicoes_linha_completa();
+
+            vis.grid.calcula_posicao_apos_pagtos();
+            vis.grid.calcula_emissoes("refin");
+            vis.grid.calcula_emissoes("vazamento");
+
             vis.render.cria_divs("todos", visivel = 0);
 
             console.log(vis.data.vetores.estoque_inicial[0].pos_y);
@@ -1000,7 +1025,17 @@ const vis = {
             btns.forEach(btn => btn.addEventListener("click", function(e) {
                 console.log(e.target, e.target.dataset.next)
 
-                vis.stepper[e.target.dataset.next]();
+                if (e.target.classList.contains('back')) {
+
+                    const step = e.target.dataset.previous;
+                    anims[step].reverse();
+
+                } else {
+
+                    const step = e.target.dataset.next;
+                    anims[step].play();
+
+                }
 
             }))
 
@@ -1014,3 +1049,229 @@ const vis = {
 }
 
 vis.control.init();
+
+
+const anims = {
+
+    estoque_inicial : {
+                
+        tl : new gsap.timeline({paused: true})
+                    .to(vis.refs.estoque, {
+                        scale: 1,
+                        opacity: 1,
+                        stagger: {
+                        grid: [
+                            vis.params.calculados.qde_por_linha,
+                            vis.params.calculados.qde_linhas_estoque_inicial
+                        ],//"auto",
+                        from: "random",
+                        axis: "both",
+                        amount: 1.5
+                        }
+                    }),
+
+        play: function() {
+            this.tl.play()
+        },
+
+        reverse : function() {
+            this.tl.reverse()
+        }
+
+    },
+
+    juros : {
+
+        tl : new gsap.timeline({paused: true})
+                     .to(vis.refs.juros, {
+                        scale: 1,
+                        opacity: 1,
+                        ease: Back.easeOut,
+                        stagger: {
+                            grid: "auto",
+                            from: "start",
+                            axis: "y",
+                            amount: 1
+                        }
+                     }),
+
+        play: function() {
+            this.tl.play()
+        },
+
+        reverse : function() {
+            this.tl.reverse()
+        }
+
+    },
+
+    vencimentos : {
+
+        tl : new gsap.timeline({paused : true})
+                     .to(vis.refs.vencimentos, {
+                         backgroundColor : vis.params.colors.orange
+                     }),
+
+        play: function() {
+            this.tl.play()
+        },
+
+        reverse : function() {
+            this.tl.reverse()
+        }
+
+    },
+
+    vencimentos_outras_fontes : {
+
+        tl : new gsap.timeline({paused : true})
+                     .to(vis.refs.vencimentos_outras_fontes, {
+                         backgroundColor: vis.params.colors.orangesemi,
+                         ease: Back.easeOut,
+                         stagger: {
+                            grid: "auto",
+                            from: "start",
+                            //axis: "y",
+                            each: 0.05
+                        }
+                     }),
+
+        play: function() {
+            this.tl.play()
+        },
+
+        reverse : function() {
+            this.tl.reverse()
+        }
+
+    },
+
+    apaga_vencimentos_outras_fontes : {
+
+        tl : new gsap.timeline({paused : true})
+                     .to(vis.refs.vencimentos_outras_fontes, {
+                         scale : 0
+                     })
+                     .to(vis.refs.deslocar_vencimentos, {
+                         ease: SteppedEase.config(6),
+                         y : vis.utils.get_data.vencimentos_outras_fontes
+                     }),
+
+        play: function() {
+        this.tl.play()
+        },
+
+        reverse : function() {
+        this.tl.reverse()
+        }
+
+    },
+
+    juros_outras_fontes : {
+
+        tl : new gsap.timeline({paused : true})
+                     .to(vis.refs.juros_outras_fontes, {
+                         backgroundColor: vis.params.colors.blue,
+                         ease: Back.easeOut,
+                         stagger: {
+                            grid: "auto",
+                            from: "start",
+                            //axis: "y",
+                            each: 0.05
+                        }
+                     }),
+
+        play: function() {
+            this.tl.play()
+        },
+
+        reverse : function() {
+            this.tl.reverse()
+        }
+
+    },
+
+    apaga_juros_outras_fontes : {
+
+        tl : new gsap.timeline({paused : true})
+                     .to(vis.refs.juros_outras_fontes, {
+                        ease: Back.easeOut,
+                         scale : 0
+                     })
+                     .to(vis.refs.deslocar_juros, {
+                         ease: SteppedEase.config(6),
+                         y : vis.utils.get_data.juros_outras_fontes
+                     }),
+
+        play: function() {
+        this.tl.play()
+        },
+
+        reverse : function() {
+        this.tl.reverse()
+        }
+        
+    },
+
+    emissao_refin : {
+
+        tl : new gsap.timeline({paused : true})
+                     .set(vis.refs.emissao_refin, {
+                         scale : 1,
+                         opacity : 0,
+                         backgroundColor : vis.params.colors.red
+                     })
+                     .to(vis.refs.emissao_refin, {
+                         opacity: 1
+                     })
+                     .to(vis.refs.pagamentos_refin, {
+                        duration : 1,
+                        ease: Back.easeIn,
+                        scale : 0
+                     })
+                     .to(vis.refs.emissao_refin, {
+                         ease: SteppedEase.config(12),
+                         duration: 1.5,
+                         y : vis.utils.get_data.emissao_refin
+                     }),
+
+        play: function() {
+        this.tl.play()
+        },
+
+        reverse : function() {
+        this.tl.reverse()
+        }
+
+    },
+
+    emissao_vazamento : {
+
+        tl : new gsap.timeline({paused : true})
+                     .set(vis.refs.emissao_vazamento, {
+                         scale : 1,
+                         opacity : 0,
+                         backgroundColor : vis.params.colors.purple
+                     })
+                     .to(vis.refs.emissao_vazamento, {
+                         opacity: 1
+                     })
+                     .to(vis.refs.emissao_vazamento, {
+                         ease: SteppedEase.config(12),
+                         duration: 1.2,
+                         y : vis.utils.get_data.emissao_vazamento
+                     }),
+
+        play: function() {
+        this.tl.play()
+        },
+
+        reverse : function() {
+        this.tl.reverse()
+        }
+
+    }
+
+}
+
+

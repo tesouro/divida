@@ -20,6 +20,7 @@
     --tetris-red: #f00000;
     --tetris-yellow: #f0f000;
     --tetris-orange: #f0a000;
+    --tetris-orangesemi : #f77308;
     --tetris-blue: #0000f0;
     --tetris-cyan: #00f0f0;
 
@@ -224,7 +225,8 @@ rect.estoque {
 .quadradinho {
 
     position: absolute;
-    background-color: crimson;
+    background-color: var(--tetris-yellow);
+    transform: scale(0);
 
 }
 
@@ -260,15 +262,21 @@ rect.estoque {
 
 }
 
-[data-tipo="juros_outras_fontes"] {
+[data-tipo='juros_outras_fontes'], [data-tipo='juros_refin'] {
 
-    background-color: limegreen;
+    background-color: var(--tetris-cyan);
 
 }
 
+/* [data-tipo="juros_outras_fontes"] {
+
+    background-color: limegreen;
+
+
+
 [data-tipo="vencimentos_outras_fontes"] {
 
-    background-color: seagreen;
+    border: 0px solid var(--tetris-orange);
 
 }
 
@@ -277,6 +285,8 @@ rect.estoque {
     background-color: skyblue;
 
 }
+
+*/
 
 .fantasma {
 
