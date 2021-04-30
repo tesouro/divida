@@ -72,7 +72,9 @@ const vis = {
         vencimentos : "[data-tipo='vencimentos_outras_fontes'], [data-tipo='vencimentos_refin']",
         vencimentos_outras_fontes : "[data-tipo='vencimentos_outras_fontes']",
         deslocar_vencimentos : "[data-deslocar_vencimentos='true']",
-        deslocar_juros : "[data-deslocar_juros='true']"
+        deslocar_juros : "[data-deslocar_juros='true']",
+        pagamentos_refin : "[data-tipo='juros_refin'], [data-tipo='vencimentos_refin']",
+        emissao_refin : "[data-tipo='emissao_refin']"
     
     },
 
@@ -954,6 +956,11 @@ const vis = {
 
                 return +target.dataset['deslocamento_em_pagamento_juros_outras'] * (vis.params.calculados.tamanho + vis.params.iniciais.margem);
 
+            },
+
+            emissao_refin : function(i, target)  {
+
+                return +target.dataset['deslocamento_em_emissao_refin'] * (vis.params.calculados.tamanho + vis.params.iniciais.margem);
 
             }
 
@@ -1035,7 +1042,6 @@ const anims = {
                 
         tl : new gsap.timeline({paused: true})
                     .to(vis.refs.estoque, {
-                        duration: 1,
                         scale: 1,
                         opacity: 1,
                         stagger: {
@@ -1171,6 +1177,7 @@ const anims = {
 
         tl : new gsap.timeline({paused : true})
                      .to(vis.refs.juros_outras_fontes, {
+                        ease: Back.easeOut,
                          scale : 0
                      })
                      .to(vis.refs.deslocar_juros, {
@@ -1186,6 +1193,39 @@ const anims = {
         this.tl.reverse()
         }
         
+    },
+
+    emissao_refin : {
+
+        tl : new gsap.timeline({paused : true})
+                     .set(vis.refs.emissao_refin, {
+                         scale : 1,
+                         opacity : 0,
+                         backgroundColor : vis.params.colors.red
+                     })
+                     .to(vis.refs.emissao_refin, {
+                         opacity: 1
+                     })
+                     .to(vis.refs.pagamentos_refin, {
+                        duration : 2,
+                        ease: Back.easeIn,
+                        scale : 0
+                     })
+                     .to(vis.refs.emissao_refin, {
+                         ease: SteppedEase.config(12),
+                         y : vis.utils.get_data.emissao_refin
+                     }),
+
+        play: function() {
+        this.tl.play()
+        },
+
+        reverse : function() {
+        this.tl.reverse()
+        }
+
+
+
     }
 
 }
