@@ -67,6 +67,7 @@ const vis = {
         buttons : ".back, .next",
         estoque : "[data-tipo='estoque_inicial'], [data-tipo='vencimentos_outras_fontes'], [data-tipo='vencimentos_refin']",
         juros : "[data-tipo='juros_outras_fontes'], [data-tipo='juros_refin']",
+        juros_outras_fontes : "[data-tipo='juros_outras_fontes']",
         juros_refin : "[data-tipo='juros_refin']",
         vencimentos : "[data-tipo='vencimentos_outras_fontes'], [data-tipo='vencimentos_refin']",
         vencimentos_outras_fontes : "[data-tipo='vencimentos_outras_fontes']",
@@ -825,36 +826,6 @@ const vis = {
         // }
     },
 
-    anim : {
-
-        estoque_inicial : {
-            
-            tl : new gsap.timeline({paused: true})
-                         .to(".quadradinho", {
-                            duration: 1,
-                            scale: 1,
-                            opacity: 1,
-                            stagger: {
-                            grid: "auto",
-                            from: "random",
-                            axis: "both",
-                            amount: 1.5
-                            }
-                        }),
-
-            play: function() {
-                console.log("toca, misera.", this.tl);
-                this.tl.play()
-            },
-
-            reverse : function() {
-                this.tl.reverse()
-            }
-
-        }
-
-    },
-
     /*stepper : {
 
         "estoque inicial" : function() {
@@ -975,6 +946,12 @@ const vis = {
                 // os deslocamentos estão em quantidade de llinhas. precisamos multiplicar pelo tamanho efetivo de uma linha: tamanhado do quadrado + margem.
 
                 return +target.dataset['deslocamento_em_pagamento_vencimentos_outras'] * (vis.params.calculados.tamanho + vis.params.iniciais.margem);
+
+            },
+
+            juros_outras_fontes : function(i, target) {
+
+                return +target.dataset['deslocamento_em_pagamento_juros_outras'] * (vis.params.calculados.tamanho + vis.params.iniciais.margem);
 
 
             }
@@ -1114,7 +1091,14 @@ const anims = {
 
         tl : new gsap.timeline({paused : true})
                      .to(vis.refs.vencimentos_outras_fontes, {
-                         backgroundColor: vis.params.colors.orangesemi
+                         backgroundColor: vis.params.colors.orangesemi,
+                         ease: Back.easeOut,
+                         stagger: {
+                            grid: "auto",
+                            from: "start",
+                            //axis: "y",
+                            each: 0.1
+                        }
                      }),
 
         play: function() {
@@ -1146,8 +1130,51 @@ const anims = {
         this.tl.reverse()
         }
 
+    },
 
+    juros_outras_fontes : {
 
+        tl : new gsap.timeline({paused : true})
+                     .to(vis.refs.juros_outras_fontes, {
+                         backgroundColor: vis.params.colors.blue,
+                         ease: Back.easeOut,
+                         stagger: {
+                            grid: "auto",
+                            from: "start",
+                            //axis: "y",
+                            each: 0.1
+                        }
+                     }),
+
+        play: function() {
+            this.tl.play()
+        },
+
+        reverse : function() {
+            this.tl.reverse()
+        }
+
+    },
+
+    apaga_juros_outras_fontes : {
+
+        tl : new gsap.timeline({paused : true})
+                     .to(vis.refs.juros.outras_fontes, {
+                         scale : 0
+                     })
+                     .to(vis.refs.deslocar_vencimentos, {
+                         ease: SteppedEase.config(6),
+                         y : vis.utils.get_data.juros_outras_fontes
+                     }),
+
+        play: function() {
+        this.tl.play()
+        },
+
+        reverse : function() {
+        this.tl.reverse()
+        }
+        
     }
 
 }
