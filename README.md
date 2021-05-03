@@ -6,6 +6,12 @@ Este projeto, que nasceu como um projeto para criação de uma versão mais inte
 
 Verificar questões de acessibilidade. Botões, por exemplo.
 
+[ ] experimentar scrollTrigger
+[ ] espaçamentos no alto e em baixo para compensar barras do celular.
+[ ] textos menores
+[ ] tela final
+[ ] prever casos em que mais de uma linha final do grid fantasma vai estar incompleta
+
 ### Inspirações
 
 https://www.nytimes.com/interactive/2018/05/09/nyregion/subway-crisis-mta-decisions-signals-rules.html
