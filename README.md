@@ -314,3 +314,343 @@ const obj = {
 
 
 ```
+
+Como fiz antes:
+
+```js
+
+const anims = {
+
+    estoque_inicial : {
+                
+        tl : new gsap.timeline({paused: true})
+                    .to(vis.refs.container, {
+                        opacity : 1,
+                        duration: 1
+                    })
+                    .to(vis.refs.estoque, {
+                        scale: 1,
+                        opacity: 1,
+                        stagger: {
+                        grid: [
+                            vis.params.calculados.qde_por_linha,
+                            vis.params.calculados.qde_linhas_estoque_inicial
+                        ],//"auto",
+                        from: "random",
+                        axis: "both",
+                        each: 0.02
+                        }
+                    })
+                    .to(vis.refs.setinha_saldo_anterior, {
+                        top: vis.render.components.scales.y(vis.params.calculados.qde_linhas_estoque_inicial)
+
+                    }, '<'),
+
+        play: function() {
+            this.tl.play()
+        },
+
+        reverse : function() {
+            this.tl.reverse()
+        }
+
+    },
+
+    juros : {
+
+        tl : new gsap.timeline({paused: true})
+                     .to(vis.refs.juros, {
+                        scale: 1,
+                        opacity: 1,
+                        ease: Back.easeOut,
+                        stagger: {
+                            grid: "auto",
+                            from: "start",
+                            axis: "y",
+                            amount: 1
+                        }
+                     }),
+
+        play: function() {
+            this.tl.play()
+        },
+
+        reverse : function() {
+            this.tl.reverse()
+        }
+
+    },
+
+    vencimentos : {
+
+        tl : new gsap.timeline({paused : true})
+                     .to(vis.refs.vencimentos, {
+                         backgroundColor : vis.params.colors.orange,
+                         stagger: {
+                            grid: "auto",
+                            from: "start",
+                            axis: "both",
+                            each: 0.1
+                            }
+                     }),
+
+        play: function() {
+            this.tl.play()
+        },
+
+        reverse : function() {
+            this.tl.reverse()
+        }
+
+    },
+
+    vencimentos_outras_fontes : {
+
+        tl : new gsap.timeline({paused : true})
+                    .to(vis.refs.vencimentos_outras_fontes, {
+                        backgroundColor: vis.params.colors.orangesemi,
+                        ease: Back.easeOut,
+                        stagger: {
+                        grid: "auto",
+                        from: "start",
+                        //axis: "y",
+                        each: 0.05
+                    }
+                    })
+                    .to(vis.refs.vencimentos_outras_fontes, {
+                    scale : 0
+                    })
+                    .to(vis.refs.deslocar_vencimentos, {
+                    ease: SteppedEase.config(6),
+                    y : vis.utils.get_data.vencimentos_outras_fontes
+                    })
+                     
+                     ,
+
+        play: function() {
+            this.tl.play()
+        },
+
+        reverse : function() {
+            this.tl.reverse()
+        }
+
+    },
+
+    // apaga_vencimentos_outras_fontes : {
+
+    //     tl : new gsap.timeline({paused : true})
+    //                  .to(vis.refs.vencimentos_outras_fontes, {
+    //                      scale : 0
+    //                  })
+    //                  .to(vis.refs.deslocar_vencimentos, {
+    //                      ease: SteppedEase.config(6),
+    //                      y : vis.utils.get_data.vencimentos_outras_fontes
+    //                  }),
+
+    //     play: function() {
+    //     this.tl.play()
+    //     },
+
+    //     reverse : function() {
+    //     this.tl.reverse()
+    //     }
+
+    // },
+
+    juros_outras_fontes : {
+
+        tl : new gsap.timeline({paused : true})
+                     .to(vis.refs.juros_outras_fontes, {
+                         backgroundColor: vis.params.colors.blue,
+                         ease: Back.easeOut,
+                         stagger: {
+                            grid: "auto",
+                            from: "start",
+                            //axis: "y",
+                            each: 0.05
+                        }
+                     })
+                     .to(vis.refs.juros_outras_fontes, {
+                        ease: Back.easeOut,
+                         scale : 0
+                     })
+                     .to(vis.refs.deslocar_juros, {
+                         ease: SteppedEase.config(6),
+                         y : vis.utils.get_data.juros_outras_fontes
+                     }),
+
+        play: function() {
+            this.tl.play()
+        },
+
+        reverse : function() {
+            this.tl.reverse()
+        }
+
+    },
+
+    // apaga_juros_outras_fontes : {
+
+    //     tl : new gsap.timeline({paused : true})
+    //                  .to(vis.refs.juros_outras_fontes, {
+    //                     ease: Back.easeOut,
+    //                      scale : 0
+    //                  })
+    //                  .to(vis.refs.deslocar_juros, {
+    //                      ease: SteppedEase.config(6),
+    //                      y : vis.utils.get_data.juros_outras_fontes
+    //                  }),
+
+    //     play: function() {
+    //     this.tl.play()
+    //     },
+
+    //     reverse : function() {
+    //     this.tl.reverse()
+    //     }
+        
+    // },
+
+    emissao_refin : {
+
+        tl : new gsap.timeline({paused : true})
+                     .set(vis.refs.emissao_refin, {
+                         scale : 1,
+                         opacity : 0,
+                         backgroundColor : vis.params.colors.red
+                     })
+                     .set(vis.refs.fantasmas_refin, {
+                        scale : 1,
+                        opacity : 0
+                    })                     
+                     .to(vis.refs.emissao_refin, {
+                         opacity: 1
+                     })
+                     .to(vis.refs.pagamentos_refin, {
+                        duration : 1,
+                        ease: Back.easeIn,
+                        scale : 0
+                     })
+                     .to(vis.refs.fantasmas_refin, {
+                        opacity : 1
+                      }, "<")   
+                     .to(vis.refs.emissao_refin, {
+                         ease: SteppedEase.config(12),
+                         duration: 1.5,
+                         y : vis.utils.get_data.emissao_refin
+                     })
+                     .to(vis.refs.fantasmas_refin, {
+                        opacity : 0
+                     }),
+
+        play: function() {
+        this.tl.play()
+        },
+
+        reverse : function() {
+        this.tl.reverse()
+        }
+
+    },
+
+    emissao_vazamento : {
+
+        tl : new gsap.timeline({paused : true})
+                     .set(vis.refs.emissao_vazamento, {
+                         scale : 1,
+                         opacity : 0,
+                         backgroundColor : vis.params.colors.purple
+                     })
+                     .to(vis.refs.emissao_vazamento, {
+                         opacity: 1
+                     })
+                     .to(vis.refs.emissao_vazamento, {
+                         ease: SteppedEase.config(12),
+                         duration: 1.5,
+                         y : vis.utils.get_data.emissao_vazamento
+                     }),
+
+        play: function() {
+        this.tl.play()
+        },
+
+        reverse : function() {
+        this.tl.reverse()
+        }
+
+    },
+
+    incorpora : {
+                
+        tl : new gsap.timeline({paused: true})
+                    .to("[data-tipo='emissao_refin'], [data-tipo='emissao_vazamento']", {
+                        backgroundColor: vis.params.colors.yellow,
+                        stagger: {
+                            grid: "auto",
+                            from: "edges",
+                            axis: "both",
+                            each: 0.04
+                        }
+                    })
+                    .to(vis.refs.setinha_saldo_final, {
+                        top: vis.render.components.scales.y(vis.params.calculados.linha_final_estoque_final)
+
+                    }, '<'),
+
+        play: function() {
+            this.tl.play()
+        },
+
+        reverse : function() {
+            this.tl.reverse()
+        }
+
+    }
+
+}
+
+```
+
+Isso combinado com o monitoramento dos botões que disparavam as animações:
+
+```js
+
+monitora_botoes : function() {
+
+    const btns = document.querySelectorAll(vis.refs.buttons);
+
+    btns.forEach(btn => btn.addEventListener("click", function(e) {
+        //console.log(e.target, e.target.dataset.next)
+
+        if (e.target.classList.contains('back')) {
+
+            const step = e.target.dataset.previous;
+            anims[step].reverse();
+
+        } else {
+
+            const step = e.target.dataset.next;
+            anims[step].play();
+        }
+    }))
+}
+
+```
+
+Os botões eram esse anchor tags dentro do markup de cada slide, assim: 
+
+```html
+<div class="slide stepper" id="step1">
+    <div class="container-step" data-step="estoque inicial">
+        <h3>Quanto é (era)?</h3>
+        <p> 
+          bla bla bla
+        </p>
+        <div class="wrapper-navigation">
+            <a href="#abertura" class="back" data-previous="estoque_inicial"> &lt; </a>
+            <a href="#step2" class="next" data-next="juros"> &gt; </a>
+        </div>
+    </div>
+</div>
+```
