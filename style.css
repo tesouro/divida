@@ -35,7 +35,7 @@
 }
 
 html {
-    overflow-y: hidden;
+    /*overflow-y: hidden;*/
 }
 
 img.logo {
@@ -56,7 +56,7 @@ body {
     font-weight: 300;
     letter-spacing: .01em;
     scroll-behavior: smooth;
-    overflow-y: hidden;
+    /*overflow-y: hidden;*/
 
 }
 
@@ -118,7 +118,7 @@ ul {
     padding: 1rem 0;
     min-width: 100vw;
     position: relative;
-    scroll-snap-align: start;
+    /*scroll-snap-align: start;*/
 
 
 }
@@ -169,10 +169,10 @@ a.next {
     /*display: flex;
     flex-flow: row nowrap;
     justify-content: flex-start;*/
-    scroll-snap-type: block mandatory;
-    height: 100vh;
+    /*scroll-snap-type: block mandatory;*/
+    /*height: 100vh; sera q isso está atrapalhando o scroll trigger? 
     overflow-x: hidden;
-    overflow-y: scroll;
+    overflow-y: scroll;*/
     /*background-color: blanchedalmond;*/
 
 }
