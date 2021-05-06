@@ -56,6 +56,7 @@ body {
     font-weight: 300;
     letter-spacing: .01em;
     scroll-behavior: smooth;
+    overflow-y: hidden;
 
 }
 
@@ -132,12 +133,21 @@ a.back,
 a.next {
 
     text-decoration: none;
-    position: absolute;
-    top: 50vh;
+    /*position: absolute;
+    top: 50vh;*/
+
     font-size: 5rem;
-    font-weight: bold;
     color: var(--text-color);
-    transform: translateY(-50%) scale(.35,1);
+
+}
+
+.wrapper-navigation {
+
+    display: block;
+    transform: rotate(90deg) scale(.35,1);
+    letter-spacing: -1rem;
+    max-width: 10rem;
+    margin: 0 auto;
 
 }
 
@@ -156,12 +166,13 @@ a.next {
 .container {
 
     scroll-behavior: smooth;
-    display: flex;
+    /*display: flex;
     flex-flow: row nowrap;
-    justify-content: flex-start;
+    justify-content: flex-start;*/
     scroll-snap-type: block mandatory;
-    overflow-x: scroll;
-    overflow-y: hidden;
+    height: 100vh;
+    overflow-x: hidden;
+    overflow-y: scroll;
     /*background-color: blanchedalmond;*/
 
 }
