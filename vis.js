@@ -993,7 +993,7 @@ const anims = {
 
             scrollTrigger: {
                 trigger: '[data-step="estoque inicial"]',
-                markers: true,
+                markers: false,
                 pin: false,   // pin the trigger element while active
                 start: "top bottom", // when the top of the trigger hits the top of the viewport
                 end: "80% bottom", // end after scrolling 500px beyond the start
@@ -1005,6 +1005,9 @@ const anims = {
                         opacity : 1,
                         duration: 1
                     })
+                    .to('.arrow-start', {
+                        opacity : 0
+                    }, '<')
                     .to(vis.refs.estoque, {
                         scale: 1,
                         opacity: 1,
@@ -1031,7 +1034,7 @@ const anims = {
 
             scrollTrigger: {
                 trigger: '[data-step="juros"]',
-                markers: true,
+                markers: false,
                 pin: false,   // pin the trigger element while active
                 start: "top bottom", // when the top of the trigger hits the top of the viewport
                 end: "80% bottom", // end after scrolling 500px beyond the start
@@ -1059,7 +1062,7 @@ const anims = {
 
             scrollTrigger: {
                 trigger: '[data-step="vencimentos"]',
-                markers: true,
+                markers: false,
                 pin: false,   // pin the trigger element while active
                 start: "top bottom", // when the top of the trigger hits the top of the viewport
                 end: "80% bottom", // end after scrolling 500px beyond the start
@@ -1072,7 +1075,7 @@ const anims = {
                          stagger: {
                             grid: "auto",
                             from: "start",
-                            axis: "both",
+                            axis: "y",
                             each: 0.1
                             }
                      })
@@ -1085,7 +1088,7 @@ const anims = {
 
             scrollTrigger: {
                 trigger: '[data-step="vencimentos_outras_fontes"]',
-                markers: true,
+                markers: false,
                 pin: false,   // pin the trigger element while active
                 start: "top bottom", // when the top of the trigger hits the top of the viewport
                 end: "80% bottom", // end after scrolling 500px beyond the start
@@ -1119,7 +1122,7 @@ const anims = {
 
             scrollTrigger: {
                 trigger: '[data-step="juros_outras_fontes"]',
-                markers: true,
+                markers: false,
                 pin: false,   // pin the trigger element while active
                 start: "top bottom", // when the top of the trigger hits the top of the viewport
                 end: "80% bottom", // end after scrolling 500px beyond the start
@@ -1155,7 +1158,7 @@ const anims = {
 
             scrollTrigger: {
                 trigger: '[data-step="emissao_refin"]',
-                markers: true,
+                markers: false,
                 pin: false,   // pin the trigger element while active
                 start: "top bottom", // when the top of the trigger hits the top of the viewport
                 end: "80% bottom", // end after scrolling 500px beyond the start
@@ -1200,7 +1203,7 @@ const anims = {
 
             scrollTrigger: {
                 trigger: '[data-step="emissao_vazamento"]',
-                markers: true,
+                markers: false,
                 pin: false,   // pin the trigger element while active
                 start: "top bottom", // when the top of the trigger hits the top of the viewport
                 end: "80% bottom", // end after scrolling 500px beyond the start
@@ -1230,7 +1233,7 @@ const anims = {
 
             scrollTrigger: {
                 trigger: '[data-step="incorpora"]',
-                markers: true,
+                markers: false,
                 pin: false,   // pin the trigger element while active
                 start: "top bottom", // when the top of the trigger hits the top of the viewport
                 end: "80% bottom", // end after scrolling 500px beyond the start
