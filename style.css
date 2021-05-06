@@ -219,8 +219,9 @@ a.next {
 .vis {
     position: fixed;
     z-index: -1;
-    top: 5vh;
-    min-height: 90vh;
+    top: 10vh;
+    bottom: 10vh;
+    /*min-height: 90vh;*/
     left: 0;
     width: 100%;
     opacity: 1/*0;*/
@@ -232,7 +233,7 @@ a.next {
     max-width: 100%;
     width: 200px;
     margin: 0 auto;
-    height: 90vh;
+    height: 80vh;
     position: relative;
     opacity: 0;
 
