@@ -305,7 +305,13 @@ const vis = {
 
             "refinanciamento" : () => vis.data.infos.emissoes.refin.juros + vis.data.infos.emissoes.refin.principal,
 
-            "pib" : () => vis.data.infos.pib/1e12
+            "pib" : () => vis.data.infos.pib/1e12,
+
+            "placar_estoque" : () => vis.textos_automaticos.formata_numeros(vis.data.infos.estoque.final*1e9),
+
+            "placar_juros" : () => vis.textos_automaticos.formata_numeros(vis.data.infos.juros.total*1e9),
+
+            "placar_vencimentos" : () => vis.textos_automaticos.formata_numeros((vis.data.infos.juros.total + vis.data.infos.vencimentos.total)*1e9)
 
         },
 
@@ -319,7 +325,9 @@ const vis = {
 
             })
 
-        }
+        },
+
+        formata_numeros : (valor) => valor.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")
 
     },
 
