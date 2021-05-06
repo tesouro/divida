@@ -914,6 +914,8 @@ const vis = {
 
         init : function() {
 
+            gsap.registerPlugin(ScrollTrigger);
+
             const valor = vis.data.infos.pib;
             // dimensiona container para ficar equivalente ao tamanho do pib
 
@@ -974,6 +976,44 @@ const vis = {
 }
 
 vis.control.init();
+
+const anim222 = {
+
+time : new gsap.timeline({
+
+    scrollTrigger: {
+        trigger: "#step1",
+        markers: true,
+        pin: false,   // pin the trigger element while active
+        start: "top bottom", // when the top of the trigger hits the top of the viewport
+        end: "80% bottom", // end after scrolling 500px beyond the start
+        scrub: true, // smooth scrubbing, takes 1 second to "catch up" to the scrollbar
+    }
+
+})
+.to(vis.refs.container, {
+    opacity : 1,
+    duration: 1
+})
+.to(vis.refs.estoque, {
+    scale: 1,
+    opacity: 1,
+    stagger: {
+    grid: [
+        vis.params.calculados.qde_por_linha,
+        vis.params.calculados.qde_linhas_estoque_inicial
+    ],//"auto",
+    from: "random",
+    axis: "both",
+    each: 0.02
+    }
+})
+.to(vis.refs.setinha_saldo_anterior, {
+    top: vis.render.components.scales.y(vis.params.calculados.qde_linhas_estoque_inicial)
+
+}, '<')
+
+}
 
 
 const anims = {
