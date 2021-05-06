@@ -919,7 +919,7 @@ const vis = {
             const valor = vis.data.infos.pib;
             // dimensiona container para ficar equivalente ao tamanho do pib
 
-            vis.control.monitora_botoes();
+            //vis.control.monitora_botoes();
 
             vis.params.colors.popula();
             vis.textos_automaticos.populate();
@@ -945,7 +945,7 @@ const vis = {
 
         },
 
-        monitora_botoes : function() {
+        /*monitora_botoes : function() {
 
             const btns = document.querySelectorAll(vis.refs.buttons);
 
@@ -969,7 +969,7 @@ const vis = {
 
 
 
-        }
+        }*/
 
     }
 
@@ -977,12 +977,283 @@ const vis = {
 
 vis.control.init();
 
-const anim222 = {
+const anims = {
 
-time : new gsap.timeline({
+    estoque_inicial : {
+            
+        tl : new gsap.timeline({
+
+            scrollTrigger: {
+                trigger: '[data-step="estoque inicial"]',
+                markers: true,
+                pin: false,   // pin the trigger element while active
+                start: "top bottom", // when the top of the trigger hits the top of the viewport
+                end: "80% bottom", // end after scrolling 500px beyond the start
+                scrub: 1, // smooth scrubbing, takes 1 second to "catch up" to the scrollbar
+            }
+            
+        })
+                    .to(vis.refs.container, {
+                        opacity : 1,
+                        duration: 1
+                    })
+                    .to(vis.refs.estoque, {
+                        scale: 1,
+                        opacity: 1,
+                        stagger: {
+                        grid: [
+                            vis.params.calculados.qde_por_linha,
+                            vis.params.calculados.qde_linhas_estoque_inicial
+                        ],//"auto",
+                        from: "random",
+                        axis: "both",
+                        each: 0.02
+                        }
+                    })
+                    .to(vis.refs.setinha_saldo_anterior, {
+                        top: vis.render.components.scales.y(vis.params.calculados.qde_linhas_estoque_inicial)
+
+                    }, '<')
+
+    },
+
+    juros : {
+
+        tl : new gsap.timeline({
+
+            scrollTrigger: {
+                trigger: '[data-step="juros"]',
+                markers: true,
+                pin: false,   // pin the trigger element while active
+                start: "top bottom", // when the top of the trigger hits the top of the viewport
+                end: "80% bottom", // end after scrolling 500px beyond the start
+                scrub: 1, // smooth scrubbing, takes 1 second to "catch up" to the scrollbar
+            }
+
+        })
+                     .to(vis.refs.juros, {
+                        scale: 1,
+                        opacity: 1,
+                        ease: Back.easeOut,
+                        stagger: {
+                            grid: "auto",
+                            from: "start",
+                            axis: "y",
+                            amount: 1
+                        }
+                     })
+
+    },
+
+    vencimentos : {
+
+        tl : new gsap.timeline({
+
+            scrollTrigger: {
+                trigger: '[data-step="vencimentos"]',
+                markers: true,
+                pin: false,   // pin the trigger element while active
+                start: "top bottom", // when the top of the trigger hits the top of the viewport
+                end: "80% bottom", // end after scrolling 500px beyond the start
+                scrub: 1, // smooth scrubbing, takes 1 second to "catch up" to the scrollbar
+            }
+
+        })
+                     .to(vis.refs.vencimentos, {
+                         backgroundColor : vis.params.colors.orange,
+                         stagger: {
+                            grid: "auto",
+                            from: "start",
+                            axis: "both",
+                            each: 0.1
+                            }
+                     })
+
+    },
+
+    vencimentos_outras_fontes : {
+
+        tl : new gsap.timeline({
+
+            scrollTrigger: {
+                trigger: '[data-step="vencimentos_outras_fontes"]',
+                markers: true,
+                pin: false,   // pin the trigger element while active
+                start: "top bottom", // when the top of the trigger hits the top of the viewport
+                end: "80% bottom", // end after scrolling 500px beyond the start
+                scrub: 1, // smooth scrubbing, takes 1 second to "catch up" to the scrollbar
+            }
+
+        })
+                    .to(vis.refs.vencimentos_outras_fontes, {
+                        backgroundColor: vis.params.colors.orangesemi,
+                        ease: Back.easeOut,
+                        stagger: {
+                        grid: "auto",
+                        from: "start",
+                        //axis: "y",
+                        each: 0.05
+                    }
+                    })
+                    .to(vis.refs.vencimentos_outras_fontes, {
+                    scale : 0
+                    })
+                    .to(vis.refs.deslocar_vencimentos, {
+                    ease: SteppedEase.config(6),
+                    y : vis.utils.get_data.vencimentos_outras_fontes
+                    })
+
+    },
+
+    juros_outras_fontes : {
+
+        tl : new gsap.timeline({
+
+            scrollTrigger: {
+                trigger: '[data-step="juros_outras_fontes"]',
+                markers: true,
+                pin: false,   // pin the trigger element while active
+                start: "top bottom", // when the top of the trigger hits the top of the viewport
+                end: "80% bottom", // end after scrolling 500px beyond the start
+                scrub: 1, // smooth scrubbing, takes 1 second to "catch up" to the scrollbar
+            }
+
+
+        })
+                     .to(vis.refs.juros_outras_fontes, {
+                         backgroundColor: vis.params.colors.blue,
+                         ease: Back.easeOut,
+                         stagger: {
+                            grid: "auto",
+                            from: "start",
+                            //axis: "y",
+                            each: 0.05
+                        }
+                     })
+                     .to(vis.refs.juros_outras_fontes, {
+                        ease: Back.easeOut,
+                         scale : 0
+                     })
+                     .to(vis.refs.deslocar_juros, {
+                         ease: SteppedEase.config(6),
+                         y : vis.utils.get_data.juros_outras_fontes
+                     })
+
+    },
+
+    emissao_refin : {
+
+        tl : new gsap.timeline({
+
+            scrollTrigger: {
+                trigger: '[data-step="emissao_refin"]',
+                markers: true,
+                pin: false,   // pin the trigger element while active
+                start: "top bottom", // when the top of the trigger hits the top of the viewport
+                end: "80% bottom", // end after scrolling 500px beyond the start
+                scrub: 1, // smooth scrubbing, takes 1 second to "catch up" to the scrollbar
+            }
+
+        })
+                     .set(vis.refs.emissao_refin, {
+                         scale : 1,
+                         opacity : 0,
+                         backgroundColor : vis.params.colors.red
+                     })
+                     .set(vis.refs.fantasmas_refin, {
+                        scale : 1,
+                        opacity : 0
+                    })                     
+                     .to(vis.refs.emissao_refin, {
+                         opacity: 1
+                     })
+                     .to(vis.refs.pagamentos_refin, {
+                        duration : 1,
+                        ease: Back.easeIn,
+                        scale : 0
+                     })
+                     .to(vis.refs.fantasmas_refin, {
+                        opacity : 1
+                      }, "<")   
+                     .to(vis.refs.emissao_refin, {
+                         ease: SteppedEase.config(12),
+                         duration: 1.5,
+                         y : vis.utils.get_data.emissao_refin
+                     })
+                     .to(vis.refs.fantasmas_refin, {
+                        opacity : 0
+                     })
+
+    },
+
+    emissao_vazamento : {
+
+        tl : new gsap.timeline({
+
+            scrollTrigger: {
+                trigger: '[data-step="emissao_vazamento"]',
+                markers: true,
+                pin: false,   // pin the trigger element while active
+                start: "top bottom", // when the top of the trigger hits the top of the viewport
+                end: "80% bottom", // end after scrolling 500px beyond the start
+                scrub: 1, // smooth scrubbing, takes 1 second to "catch up" to the scrollbar
+            }
+
+        })
+                     .set(vis.refs.emissao_vazamento, {
+                         scale : 1,
+                         opacity : 0,
+                         backgroundColor : vis.params.colors.purple
+                     })
+                     .to(vis.refs.emissao_vazamento, {
+                         opacity: 1
+                     })
+                     .to(vis.refs.emissao_vazamento, {
+                         ease: SteppedEase.config(12),
+                         duration: 1.5,
+                         y : vis.utils.get_data.emissao_vazamento
+                     })
+
+    },
+
+    incorpora : {
+                
+        tl : new gsap.timeline({
+
+            scrollTrigger: {
+                trigger: '[data-step="incorpora"]',
+                markers: true,
+                pin: false,   // pin the trigger element while active
+                start: "top bottom", // when the top of the trigger hits the top of the viewport
+                end: "80% bottom", // end after scrolling 500px beyond the start
+                scrub: 1, // smooth scrubbing, takes 1 second to "catch up" to the scrollbar
+            }
+
+        })
+                    .to("[data-tipo='emissao_refin'], [data-tipo='emissao_vazamento']", {
+                        backgroundColor: vis.params.colors.yellow,
+                        stagger: {
+                            grid: "auto",
+                            from: "edges",
+                            axis: "both",
+                            each: 0.04
+                        }
+                    })
+                    .to(vis.refs.setinha_saldo_final, {
+                        top: vis.render.components.scales.y(vis.params.calculados.linha_final_estoque_final)
+
+                    }, '<')
+
+    }
+
+}
+
+/*const anim222 = {
+
+estoque_inicial : new gsap.timeline({
 
     scrollTrigger: {
-        trigger: "#step1",
+        trigger: 'data-step="estoque inicial"',
         markers: true,
         pin: false,   // pin the trigger element while active
         start: "top bottom", // when the top of the trigger hits the top of the viewport
@@ -1308,3 +1579,4 @@ const anims = {
 }
 
 
+*/
