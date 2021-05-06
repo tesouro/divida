@@ -121,6 +121,7 @@ table tr:first-child td {
 
 td.js--text {
     text-align: right;
+    color: var(--tetris-yellow);
 }
 
 .text {
