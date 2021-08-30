@@ -596,14 +596,17 @@ const vis = {
 
         calcula_emissoes : function(tipo) {
 
+            const linha_topo = vis.params.calculados.ultima_linha;
+
             if (tipo == 'refin') {
+
+                // R E F I N
 
                 const fantasmas = vis.data.vetores.fantasmas_refin;
 
                 const ultima_linha_fantasmas_refin = fantasmas.slice(-1)[0].pos_y;
-                const linha_topo = vis.params.calculados.ultima_linha;
 
-                const deslocamento = linha_topo - ultima_linha_fantasmas_refin;
+                let deslocamento = linha_topo - ultima_linha_fantasmas_refin;
 
                 let vetor_emissao = fantasmas.map(el => (
                     {
@@ -622,6 +625,133 @@ const vis = {
                 // atualiza vetor todos
     
                 vis.data.vetores.todos.push(...vetor_emissao);
+
+                return;
+
+            } else {
+
+                // V A Z A M E N T O
+
+                // vamos começar de baixo para cima.
+
+                // ultima linha do vetor anterior, emissao_refin
+
+                const qde_linha_completa = vis.params.calculados.qde_por_linha;
+
+                const refin = vis.data.vetores.emissao_refin;
+
+                const ultima_linha_refin = refin.slice(-1)[0].pos_y_final;
+
+                // qual a ultima linha do refin que está completamente preenchida?
+
+                let linha_atual = ultima_linha_refin;
+
+                let qde_elementos = 0;
+                let qde_posicoes_disponiveis = 0;
+
+                let i = 0;
+
+                while (true) {
+
+                    const posicoes_x = refin
+                      .filter(d => d.pos_y_final == linha_atual)
+                      .map(d => d.pos_x);
+
+                    qde_elementos = posicoes_x.length;
+                    qde_posicoes_disponiveis += qde_elementos;
+
+                    console.log(linha_atual, qde_elementos, qde_linha_completa);
+
+                    if (qde_elementos == qde_linha_completa) break
+                    else linha_atual--
+
+                    i++
+
+                    if (i >= 10) break
+
+                }
+
+                console.log('ultima linha completa', linha_atual, 'qde de posicoes disponiveis', qde_posicoes_disponiveis);
+
+                // PREENCHIMENTO
+
+                const valor = vis.data.infos.emissoes[tipo]*1e9;
+                const qde = vis.grid.helpers.calcula_qde_unidades(valor);
+                console.log("Vamos emitir ", qde);
+            
+                // a primeira linha a ser preenchida vai ser a acima da linha_atual, que foi a última completa.
+
+                let linha_atual_preenchimento = linha_atual + 1;
+
+                // qual vai ser a altura desse bloco do vazamento?
+                const qde_a_completar = qde - qde_posicoes_disponiveis;
+                const linhas_acima_das_incompletas = Math.ceil( qde_a_completar / qde_linha_completa );
+
+                const ultima_linha_vazamento = ultima_linha_refin + linhas_acima_das_incompletas // ultima_linha_refin é justamente a última incompleta
+
+                /*
+                
+                ultima_refin XX
+                             XXXXX XXXX
+                l.at._preen. XXXXXXXXXXXX X
+                linha_atual  XXXXXXXXXXXXXX
+
+                */
+
+                const deslocamento = linha_topo - ultima_linha_vazamento;
+
+                console.log('ultima linha completa', linha_atual, 'qde de posicoes disponiveis', qde_posicoes_disponiveis);
+
+                // iniciando o preenchimento do vetor_vazamento com as posicoes disponiveis nas linhas incompletas
+
+                const posicoes_linha_completa = vis.params.calculados.posicoes_linha_completa;
+
+                // vou ter que repetir o loop, agora de baixo para cima, pq pode acontecer de nao haver quadradinhos suficientes no vazamento (hoje em dia improvavel) para preencher todos os espacos vazios.
+
+                const vetor_vazamento = [];
+
+                let j = 0;
+
+                while (linha_atual_preenchimento <= ultima_linha_refin) {
+
+                    const posicoes_x = refin
+                      .filter(d => d.pos_y_final == linha_atual_preenchimento)
+                      .map(d => d.pos_x);
+
+                    const posicoes_a_preencher = posicoes_linha_completa
+                      .filter(d => !posicoes_x.includes(d));
+
+                    console.log(linha_atual_preenchimento, posicoes_x, posicoes_linha_completa, posicoes_a_preencher);
+
+                    let vetor_linha_atual = posicoes_a_preencher.map(x => (
+                        {
+                            pos_x : x,
+                            //pos_y : linha_atual,
+                            pos_y : linha_atual_preenchimento + deslocamento,
+                            tipo : 'emissao_' + tipo,
+                            ['deslocamento_em_emissao_' + tipo] : deslocamento,
+                            pos_y_final : linha_atual_preenchimento
+                        }
+                        
+                        )
+                    );
+
+                    linha_atual_preenchimento++;
+
+                    vetor_vazamento.push(...vetor_linha_atual);
+
+                    console.log(vetor_vazamento);
+
+                    j++;
+                    if (j>10) break;
+
+                }
+
+                vis.data.vetores['emissao_' + tipo] = vetor_vazamento;
+
+                // atualiza vetor todos
+    
+                vis.data.vetores.todos.push(...vetor_vazamento);
 
                 return;
 
@@ -709,7 +839,7 @@ const vis = {
 
             // inicialmente, os quadradinhos ficarão no topo. Então a última linha do bloco vai ser a última linha do container
 
-            const linha_topo = vis.params.calculados.ultima_linha;
+            //const linha_topo = vis.params.calculados.ultima_linha;
 
             const deslocamento = linha_topo - ultima_linha_emissao + 1;
 
