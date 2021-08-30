@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+<link href="https://fonts.googleapis.com/css2?family=Alfa+Slab+One&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:wght@300;400&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Quicksand:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <title>Document</title>
+</head>
+<body>
+
+    <div class="vis">
+        <div class="tetris-container">
+            <div class="setinha-saldo" data-setinha-saldo-anterior></div>
+            <div class="setinha-saldo" data-setinha-saldo-final></div>
+        </div>
+    </div>
+
+    <div class="container">
+            <div class="slide" id="abertura">
+
+                <div>
+                    <img src="./web/tt-logo-int.png" alt="Logotipo do Tesouro Transparente" class="logo">
+                </div>
+
+                <div class="text">
+                    <h1>Divida Publica Federal</h1>
+
+                    <div class="container-placar">
+
+                        <table>
+                            <tbody>
+                                <tr>
+                                    <td>qual o valor?</td>
+                                    <td class="js--text" data-texto="placar_estoque"></td>
+                                </tr>
+                                <tr>
+                                    <td>quanto custa?</td>
+                                    <td class="js--text" data-texto="placar_juros"></td>
+                                </tr>       
+                                <tr>
+                                    <td>quanto se paga?</td>
+                                    <td class="js--text" data-texto="placar_vencimentos"></td>
+                                </tr>                                                      
+                            </tbody>
+                        </table>
+
+                    </div>
+                    
+                </div>
+
+                <p class="center">E como se paga? 🤔</p>
+
+                <div class="arrow-start">
+                    v
+                </div>
+
+            </div>
+
+            <div class="slide stepper" id="step1">
+                <div class="container-step" data-step="estoque inicial">
+                    <h3>Quanto é (era)?</h3>
+                    <p> 
+                        Ao final de 2019, a Dívida Pública Federal era de nada menos R$ <strong class="js--text" data-texto="estoqueanterior"></strong> trilhões (é o que se chama de <strong data-destaque="estoque">estoque</strong> ).
+                    </p>
+                    <p>Vamos representar esse valor por meio de quadradinhos. Cada quadradinho representa R$ 10 bilhões!</p>
+                    <p>
+                        <span class="quadradinho-exemplo"></span> = <strong>R$ 10.000.000.000,00</strong>
+                    </p> 
+                    <p>
+                        Uma setinha branca na lateral vai marcar esse valor inicial ao longo da narrativa.
+                    </p>
+                    <p>
+                        A caixa ao redor dos quadradinhos tem tamanho equivalente ao PIB brasileiro, R$ <strong class="js--text" data-texto="pib"></strong> trilhões em 2020.
+                    </p>
+                </div>
+
+            </div>
+
+            <div class="slide stepper" id="step2">
+                <div class="container-step" data-step="juros">
+                    <h3>Quanto custa?</h3>
+                    <p> 
+                        Como em qualquer dívida, sobre o valor da dívida incidem <strong data-destaque="juros">juros</strong>. Esses juros dependem de uma série de fatores, e seu custo varia para cada tipo de título. Mas, no total, ao longo de 2020, a dívida custou R$ <strong class="js--text" data-texto="juros"></strong> bilhões na forma de juros.
+                    </p>
+                </div>
+            </div>
+
+            <div class="slide stepper" id="step3">
+                <div class="container-step" data-step="vencimentos">
+                    <h3>Como se paga?</h3>
+
+                    <h4>O principal da Dívida</h4>
+                    <p>
+                        O governo se endivida essencialmente emitindo <strong>títulos</strong>, que pessoas e instituições podem comprar com a promessa de que receberão o valor investido de volta (acrescido dos juros estabelecidos) dentro de um determinado prazo (na data de <strong>vencimento</strong> do titulo).
+                    </p>
+                    <p> 
+                        Dessa forma, todo ano, um bom pedaço da dívida total chega ao prazo do vencimento e deve ser pago. A figura agora destaca os valores do estoque que venceram em algum momento do ano passado (são os <strong data-destaque="vencimentos">vencimentos</strong> do ano), e que precisaram ser honrados/pagos.
+                    </p>
+                </div>
+            </div>
+
+            <div class="slide stepper" id="step4">
+                <div class="container-step" data-step="vencimentos_outras_fontes">
+                    <h3>Como se paga?</h3>
+
+                    <h4>Pagamento com dinheiro do orçamento</h4>
+
+                    <p>
+                        Na data em que o título vence, o Tesouro faz o pagamento às instituições financeiras para que essas repassem o valor ao detentor do título. Na maior parte das vezes, esse dinheiro utilizado pelo Tesouro é obtido com novas emissões de títulos. No entanto, sempre que possível, o Tesouro busca utilizar recursos de outras origens para fazer o pagamento (pois assim esses pagamentos representam uma diminuição real da dívida).
+                    </p>
+                </div>
+            </div>
+
+            <!-- <div class="slide stepper" id="step5">
+                <div class="container-step" data-step="apaga_vencimentos_outras_fontes">
+                    <h3>Pagamento de juros</h3>
+                    <p>
+                        Pague também.
+                    </p>
+                </div>
+                <a href="#step4" class="back" data-previous="apaga_vencimentos_outras_fontes"> &lt; </a>
+                <a href="#step6" class="next" data-next="juros_outras_fontes"> &gt; </a>
+            </div> -->
+
+            <div class="slide stepper" id="step6">
+                <div class="container-step" data-step="juros_outras_fontes">
+                    <h3>Como se paga?</h3>
+
+                    <h4>Pagamento de juros com dinheiro do orçamento</h4>
+
+                    <p>
+                        A mesma lógica vale para os juros do ano: sempre que possível, o Tesouro busca efetuar o pagamento com dinheiro proveniente de outras origens que não sejam novos endividamentos.
+                    </p>
+
+                </div>
+            </div>
+
+            <!-- <div class="slide stepper" id="step7">
+                <div class="container-step" data-step="apaga_juros_outras_fontes">
+                    <h3>Emissoes</h3>
+                    <p>
+                        Emissões refin.
+                    </p>
+                </div>
+                <a href="#step6" class="back" data-previous="apaga_juros_outras_fontes"> &lt; </a>
+                <a href="#step8" class="next" data-next="emissao_refin"> &gt; </a>
+            </div> -->
+
+            <div class="slide stepper" id="step8">
+                <div class="container-step" data-step="emissao_refin">
+                    <h3>Como se paga?</h3>
+
+                    <h4>A tal "rolagem" da Dívida</h4>
+                    <p>
+                        No entanto, esses recursos são limitados. Acaba que, para obter dinheiro para honrar os pagamentos do ano, sejam valores referentes ao principal ou aos juros da dívida, o Tesouro precisa se endividar novamente. Esse processo se chama rolagem ou <strong data-destaque="refinanciamento">refinanciamento</strong> da dívida. No ano passado, foram refinanciados R$ <strong class="js--text" data-texto="refinanciamento"></strong> bilhões.
+                    </p>
+                </div>
+            </div>
+
+            <div class="slide stepper" id="step9">
+                <div class="container-step" data-step="emissao_vazamento">
+                    <h3>Cobrindo o buraco</h3>
+                    <p>
+                        Nos últimos anos, a história da dívida passou a ter um capítulo adicional. Como o governo tem gastado mais do que arrecada (tendo <em>déficits primários</em>), a forma encontrada para custear essas despesas que vão além das receitas é a mesma usada pelas pessoas: contraindo empréstimos, endividando-se.
+                    </p>
+                    <p>
+                        Assim, em 2020 foi preciso endividar-se num valor adicional de R$ <strong class="js--text" data-texto="vazamento"></strong> bilhões para cobrir o buraco no orçamento.
+                    </p>
+                </div>
+            </div>
+
+            <div class="slide stepper" id="step10">
+                <div class="container-step" data-step="incorpora">
+                    <h3>Quanto é?</h3>
+                    <p>
+                        Todas essas emissões ocorridas ao longo de 2020, ou seja, todas essas novas dívidas contraídas acabam se incorporando ao estoque da dívida. Assim, ao final de 2020, a dívida pública federal havia chegado ao valor de R$ <strong class="js--text" data-texto="estoque_final"></strong> trilhões.
+                    </p>
+                </div>
+                <!-- back to top aqui? 
+                    <a href="#step9" class="back" data-previous="incorpora"> &lt; </a> -->
+            </div>
+
+        </div>
+
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.6.1/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.6.1/ScrollTrigger.min.js"></script>
+    <script src="vis.js"></script>
+</body>
+</html>
