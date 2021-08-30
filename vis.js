@@ -1099,12 +1099,12 @@ const anims = {
 
     },
 
-    vencimentos_outras_fontes : {
+    pagamentos_outras_fontes : {
 
         tl : new gsap.timeline({
 
             scrollTrigger: {
-                trigger: '[data-step="vencimentos_outras_fontes"]',
+                trigger: '[data-step="pagamento_outras_fontes"]',
                 markers: false,
                 pin: false,   // pin the trigger element while active
                 start: "top bottom", // when the top of the trigger hits the top of the viewport
@@ -1130,42 +1130,24 @@ const anims = {
                     ease: SteppedEase.config(6),
                     y : vis.utils.get_data.vencimentos_outras_fontes
                     })
-
-    },
-
-    juros_outras_fontes : {
-
-        tl : new gsap.timeline({
-
-            scrollTrigger: {
-                trigger: '[data-step="juros_outras_fontes"]',
-                markers: false,
-                pin: false,   // pin the trigger element while active
-                start: "top bottom", // when the top of the trigger hits the top of the viewport
-                end: "80% bottom", // end after scrolling 500px beyond the start
-                scrub: 1, // smooth scrubbing, takes 1 second to "catch up" to the scrollbar
-            }
-
-
-        })
-                     .to(vis.refs.juros_outras_fontes, {
-                         backgroundColor: vis.params.colors.blue,
-                         ease: Back.easeOut,
-                         stagger: {
-                            grid: "auto",
-                            from: "start",
-                            //axis: "y",
-                            each: 0.05
-                        }
-                     })
-                     .to(vis.refs.juros_outras_fontes, {
+                    .to(vis.refs.juros_outras_fontes, {
+                        backgroundColor: vis.params.colors.blue,
                         ease: Back.easeOut,
-                         scale : 0
-                     })
-                     .to(vis.refs.deslocar_juros, {
-                         ease: SteppedEase.config(6),
-                         y : vis.utils.get_data.juros_outras_fontes
-                     })
+                        stagger: {
+                           grid: "auto",
+                           from: "start",
+                           //axis: "y",
+                           each: 0.05
+                       }
+                    })
+                    .to(vis.refs.juros_outras_fontes, {
+                       ease: Back.easeOut,
+                        scale : 0
+                    })
+                    .to(vis.refs.deslocar_juros, {
+                        ease: SteppedEase.config(6),
+                        y : vis.utils.get_data.juros_outras_fontes
+                    })
 
     },
 

@@ -246,6 +246,7 @@ a.next {
 .container-step {
 
     width: calc(50vw - 3rem - 150px);
+    min-height: 100%;
 
 }
 
