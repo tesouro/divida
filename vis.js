@@ -632,6 +632,8 @@ const vis = {
 
                 // V A Z A M E N T O
 
+                // 1. achando a última linha completa do bloco de refinanciamento.
+
                 // vamos começar de baixo para cima.
 
                 // ultima linha do vetor anterior, emissao_refin
@@ -658,9 +660,7 @@ const vis = {
                       .map(d => d.pos_x);
 
                     qde_elementos = posicoes_x.length;
-                    qde_posicoes_disponiveis += qde_elementos;
-
-                    console.log(linha_atual, qde_elementos, qde_linha_completa);
+                    qde_posicoes_disponiveis += (qde_linha_completa - qde_elementos);
 
                     if (qde_elementos == qde_linha_completa) break
                     else linha_atual--
@@ -671,13 +671,11 @@ const vis = {
 
                 }
 
-                console.log('ultima linha completa', linha_atual, 'qde de posicoes disponiveis', qde_posicoes_disponiveis);
-
-                // PREENCHIMENTO
+                // 2. PREENCHIMENTO do vetor de vazamento
 
                 const valor = vis.data.infos.emissoes[tipo]*1e9;
                 const qde = vis.grid.helpers.calcula_qde_unidades(valor);
-                console.log("Vamos emitir ", qde);
+                console.log("Vamos emitir, para o Vazamento: ", qde);
             
                 // a primeira linha a ser preenchida vai ser a acima da linha_atual, que foi a última completa.
 
@@ -700,7 +698,13 @@ const vis = {
 
                 const deslocamento = linha_topo - ultima_linha_vazamento;
 
-                console.log('ultima linha completa', linha_atual, 'qde de posicoes disponiveis', qde_posicoes_disponiveis);
+                console.log(
+                    'ultima linha completa ', linha_atual, 
+                    '\nqde de posicoes disponiveis', qde_posicoes_disponiveis,
+                    '\n qde restante', qde_a_completar,
+                    '\n qde total', qde);
+
+                // 2.1 preenchendo as posicoes disponiveis nos buracos do refinanciamento
 
                 // iniciando o preenchimento do vetor_vazamento com as posicoes disponiveis nas linhas incompletas
 
@@ -721,8 +725,6 @@ const vis = {
                     const posicoes_a_preencher = posicoes_linha_completa
                       .filter(d => !posicoes_x.includes(d));
 
-                    console.log(linha_atual_preenchimento, posicoes_x, posicoes_linha_completa, posicoes_a_preencher);
-
                     let vetor_linha_atual = posicoes_a_preencher.map(x => (
                         {
                             pos_x : x,
@@ -740,12 +742,48 @@ const vis = {
 
                     vetor_vazamento.push(...vetor_linha_atual);
 
-                    console.log(vetor_vazamento);
-
                     j++;
                     if (j>10) break;
 
                 }
+
+                // 2.2 Preenchendo as demais posicoes
+
+                  // linha_atual_preenchimento deve ser a ultima_linha_refin + 1:
+                  //console.log(ultima_linha_refin, linha_atual_preenchimento);
+    
+                for (let i = 1; i <= qde_a_completar; i++) {
+    
+                    const novo_elemento = {
+    
+                        pos_x : ( (i - 1) % qde_linha_completa ) + 1,
+                        //pos_y : linha_atual,
+                        pos_y : linha_atual_preenchimento + deslocamento,
+                        tipo : 'emissao_' + tipo,
+                        ['deslocamento_em_emissao_' + tipo] : deslocamento,  
+                        pos_y_final : linha_atual_preenchimento
+    
+                    }
+    
+                    // para usar na posição da setinha do saldo final
+                    if (tipo == 'vazamento' & i == qde_a_completar) {
+    
+                        vis.params.calculados.linha_final_estoque_final = linha_atual_preenchimento
+    
+                    }
+                    ///// 
+    
+                    if ( i % qde_linha_completa == 0 ) {
+    
+                        linha_atual_preenchimento++
+    
+                    }
+    
+                    vetor_vazamento.push(novo_elemento);
+    
+                }
+
+                // 3. atualizando os vetores
 
                 vis.data.vetores['emissao_' + tipo] = vetor_vazamento;
 
