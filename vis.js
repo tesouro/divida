@@ -596,6 +596,39 @@ const vis = {
 
         calcula_emissoes : function(tipo) {
 
+            if (tipo == 'refin') {
+
+                const fantasmas = vis.data.vetores.fantasmas_refin;
+
+                const ultima_linha_fantasmas_refin = fantasmas.slice(-1)[0].pos_y;
+                const linha_topo = vis.params.calculados.ultima_linha;
+
+                const deslocamento = linha_topo - ultima_linha_fantasmas_refin;
+
+                let vetor_emissao = fantasmas.map(el => (
+                    {
+                        pos_x : el.pos_x,
+                        //pos_y : linha_atual,
+                        pos_y : el.pos_y + deslocamento,
+                        tipo : 'emissao_' + tipo,
+                        ['deslocamento_em_emissao_' + tipo] : deslocamento,
+                        pos_y_final : el.pos_y
+    
+                    })
+                );
+
+                vis.data.vetores['emissao_' + tipo] = vetor_emissao;
+
+                // atualiza vetor todos
+    
+                vis.data.vetores.todos.push(...vetor_emissao);
+
+                return;
+
+            }
+
+            console.log(tipo);
+
             // tipo = "refin" ou "vazamento"
 
             let valor, vetor_anterior, tipo_pos_y;
@@ -752,6 +785,10 @@ const vis = {
         recalcula_pos_x_ultima_linha_emissoes_refin : function() {
 
             const ultima_linha_fantasmas_refin = vis.data.vetores.fantasmas_refin.slice(-1)[0].pos_y;
+
+            // vamos iterar nos fantasmas, de cima para baixo, até encontrar a última linha completamente preenchida
+
+            let pos_y_atual = ultima_linha_fantasmas_refin;
 
             const posicoes_x = vis.data.vetores.fantasmas_refin
                                  .filter(d => d.pos_y == ultima_linha_fantasmas_refin)
@@ -943,7 +980,10 @@ const vis = {
             vis.grid.calcula_posicao_apos_pagtos();
             vis.grid.calcula_fantasmas();
             vis.grid.calcula_emissoes("refin");
-            vis.grid.recalcula_pos_x_ultima_linha_emissoes_refin();
+
+            // não vamos mais fazer isso.
+            // vis.grid.recalcula_pos_x_ultima_linha_emissoes_refin();
+
             vis.grid.calcula_emissoes("vazamento");
 
             vis.render.cria_divs("todos", visivel = 0);
