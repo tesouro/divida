@@ -12,6 +12,20 @@ Verificar questões de acessibilidade. Botões, por exemplo.
 [ ] tela final
 [ ] prever casos em que mais de uma linha final do grid fantasma vai estar incompleta
 
+### Tips
+
+To target an HTML link to a specific page in a PDF file, add #page=[page number] to the end of the link's URL.
+
+For example, this HTML tag opens page 4 of a PDF file named myfile.pdf:
+
+```html
+<A HREF="http://www.example.com/myfile.pdf#page=4">
+```
+(https://helpx.adobe.com/acrobat/kb/link-html-pdf-page-acrobat.html)
+
+Mas e na chamada dos links das publicações do TT? Coisas tipo: https://sisweb.tesouro.gov.br/apex/f?p=2501:9::::9:P9_ID_PUBLICACAO:41270
+
+
 ### Inspirações
 
 https://www.nytimes.com/interactive/2018/05/09/nyregion/subway-crisis-mta-decisions-signals-rules.html
