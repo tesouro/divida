@@ -324,11 +324,18 @@ rect.estoque {
 
 }
 
-.quadradinho {
+.quadradinho, .quadradinho-explicacao {
 
     position: absolute;
     background-color: var(--tetris-yellow);
     transform: scale(0);
+
+}
+
+.quadradinho-explicacao {
+
+    left : 50%;
+    top: 50%;
 
 }
 

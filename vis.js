@@ -220,7 +220,7 @@ const vis = {
                 (vis.data.infos.estoque.inicial - vis.data.infos.vencimentos.total) * 1e9,
                 tipo = "estoque_inicial");
 
-            let ultimo_indice = vis.data.vetores.estoque_inicial.length;
+            let ultimo_indice = vis.data.vetores.estoque_inicial.length ;
 
             // pagamentos com outras fontes
             vis.data.cria_dataset(
@@ -240,7 +240,7 @@ const vis = {
 
             ultimo_indice += vis.data.vetores.vencimentos_refin.length;
             // para usar na animação
-            vis.params.calculados.qde_linhas_estoque_inicial = Math.floor(ultimo_indice / vis.params.calculados.qde_por_linha);
+            vis.params.calculados.qde_linhas_estoque_inicial = Math.ceil(ultimo_indice / vis.params.calculados.qde_por_linha);
 
             // juros com outras fontes
             vis.data.cria_dataset(
@@ -867,6 +867,14 @@ const vis = {
 
             pgtos_refin.forEach(el => el.classList.add('fantasma'));
 
+        },
+
+        cria_quadradinho_explicacao : function() {
+
+            const first = document.querySelector('.quadradinho-explicacao');
+            first.style.width = vis.params.calculados.tamanho + 'px';
+            first.style.height = vis.params.calculados.tamanho + 'px';
+
         }
 
     },
@@ -899,6 +907,14 @@ const vis = {
 
             // preciso meso de todas as funções. descobrir depois como fazer para passar um argumento adicional la dentro do gsap.to() -- o argumento adicional seria o seletor correspondente.
 
+            // quadradinho_inicial : function(i, target) {
+
+            //     // os deslocamentos estão em quantidade de llinhas. precisamos multiplicar pelo tamanho efetivo de uma linha: tamanhado do quadrado + margem.
+
+            //     return +target.dataset['deslocamento_inicial'] * (vis.params.calculados.tamanho + vis.params.iniciais.margem);
+
+            // },
+
             vencimentos_outras_fontes : function(i, target) {
 
                 // os deslocamentos estão em quantidade de llinhas. precisamos multiplicar pelo tamanho efetivo de uma linha: tamanhado do quadrado + margem.
@@ -922,7 +938,6 @@ const vis = {
             emissao_vazamento : function(i, target) {
 
                 return +target.dataset['deslocamento_em_emissao_vazamento'] * (vis.params.calculados.tamanho + vis.params.iniciais.margem);
-
 
             }
 
@@ -963,8 +978,9 @@ const vis = {
             vis.grid.calcula_emissoes("refin");
             vis.grid.calcula_emissoes("vazamento");
 
-            vis.render.cria_divs("todos", visivel = 0);
+            vis.render.cria_divs("todos", visivel = 0); // aqui que ele vai calcular os estilos efetivos para posicionar os quadradinhos conforme o grid calculado.
             vis.render.cria_divs("fantasmas_refin", visivel = 0); // criando depois para ficarem na frente
+            //vis.render.cria_quadradinho_explicacao();
 
             console.log(vis.data.vetores.estoque_inicial[0].pos_y);
 
@@ -1004,6 +1020,26 @@ vis.control.init();
 
 const anims = {
 
+    // explicacao_inicial : {
+            
+    //     tl : new gsap.timeline({
+
+    //         scrollTrigger: {
+    //             trigger: '[data-step="explicação inicial"]',
+    //             markers: true,
+    //             pin: false,   // pin the trigger element while active
+    //             start: "top bottom", // when the top of the trigger hits the top of the viewport
+    //             end: "80% bottom", // end after scrolling 500px beyond the start
+    //             scrub: 1, // smooth scrubbing, takes 1 second to "catch up" to the scrollbar
+    //         }
+            
+    //     })
+    //                 .to('.quadradinho-explicacao', {
+    //                     scale : 1
+    //                 })
+
+    // },
+
     estoque_inicial : {
             
         tl : new gsap.timeline({
@@ -1022,6 +1058,10 @@ const anims = {
                         opacity : 1,
                         duration: 1
                     })
+                    // .to('.quadradinho-explicacao', {
+                    //     opacity: 0,
+                    //     scale: 0
+                    // }, '<')
                     .to('.arrow-start', {
                         opacity : 0
                     }, '<')
