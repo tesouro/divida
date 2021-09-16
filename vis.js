@@ -447,7 +447,7 @@ const vis = {
 
             const qde_por_linha = Math.ceil((vis.dims.tetris.w - vis.params.iniciais.margem) / dim_unitaria);
 
-            const qde_linhas = Math.ceil((vis.dims.tetris.h - vis.params.iniciais.margem) / dim_unitaria);
+            const qde_linhas = Math.ceil((vis.dims.tetris.h - 10 - 2 * vis.params.iniciais.margem) / dim_unitaria); // esse 10 é a largura do outline
 
             vis.params.calculados.tamanho = lado;
             vis.params.calculados.qde_por_linha = qde_por_linha;
