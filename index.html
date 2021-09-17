@@ -14,147 +14,164 @@
 </head>
 <body>
 
-    <div class="vis">
-        <div class="tetris-container">
-            <!--<div class="quadradinho-explicacao"></div>-->
-            <div class="setinha-saldo" data-setinha-saldo-anterior></div>
-            <div class="setinha-saldo" data-setinha-saldo-final></div>
+    <section class="visualizacao">
+
+        <div class="vis">
+            <div class="tetris-container">
+                <!--<div class="quadradinho-explicacao"></div>-->
+                <div class="setinha-saldo" data-setinha-saldo-anterior></div>
+                <div class="setinha-saldo" data-setinha-saldo-final></div>
+            </div>
         </div>
-    </div>
-
-    <div class="container">
-            <div class="slide" id="abertura">
-
-                <div>
-                    <img src="./web/tt-logo-int.png" alt="Logotipo do Tesouro Transparente" class="logo">
-                </div>
-
-                <div class="text">
-                    <h1>Divida Publica Federal</h1>
-
-                    <div class="container-placar">
-
-                        <table>
-                            <tbody>
-                                <tr>
-                                    <td>qual o valor?</td>
-                                    <td class="js--text" data-texto="placar_estoque"></td>
-                                </tr>
-                                <tr>
-                                    <td>quanto custa?</td>
-                                    <td class="js--text" data-texto="placar_juros"></td>
-                                </tr>       
-                                <tr>
-                                    <td>quanto se paga?</td>
-                                    <td class="js--text" data-texto="placar_vencimentos"></td>
-                                </tr>                                                      
-                            </tbody>
-                        </table>
-
+    
+        <div class="container">
+                <div class="slide" id="abertura">
+    
+                    <div>
+                        <img src="./web/tt-logo-int.png" alt="Logotipo do Tesouro Transparente" class="logo">
                     </div>
-                    
+    
+                    <div class="text">
+                        <h1>Divida Publica Federal</h1>
+    
+                        <div class="container-placar">
+    
+                            <table>
+                                <tbody>
+                                    <tr>
+                                        <td>qual o valor?</td>
+                                        <td class="js--text" data-texto="placar_estoque"></td>
+                                    </tr>
+                                    <tr>
+                                        <td>quanto custa?</td>
+                                        <td class="js--text" data-texto="placar_juros"></td>
+                                    </tr>       
+                                    <tr>
+                                        <td>quanto se paga?</td>
+                                        <td class="js--text" data-texto="placar_vencimentos"></td>
+                                    </tr>                                                      
+                                </tbody>
+                            </table>
+    
+                        </div>
+                        
+                    </div>
+    
+                    <p class="center">E como se paga? 🤔</p>
+    
+                    <div class="arrow-start">
+                        v
+                    </div>
+    
                 </div>
-
-                <p class="center">E como se paga? 🤔</p>
-
-                <div class="arrow-start">
-                    v
+    
+                <div class="slide stepper">
+                    <div class="container-step" data-step="explicação inicial">
+                        <p> 
+                            Vamos imaginar que um quadradinho representa R$ 1.000.000.000,00!
+                        </p>
+                    </div>
+    
                 </div>
-
-            </div>
-
-            <div class="slide stepper">
-                <div class="container-step" data-step="explicação inicial">
-                    <p> 
-                        Vamos imaginar que um quadradinho representa R$ 1.000.000.000,00!
-                    </p>
+    
+                <div class="slide stepper">
+                    <div class="container-step" data-step="estoque inicial">
+                        <h3>Quanto é (era)?</h3>
+                        <p> 
+                            Ao final de 2019, R$ <strong class="js--text" data-texto="estoqueanterior"></strong> trilhões
+                        </p>
+                    </div>
+    
                 </div>
-
-            </div>
-
-            <div class="slide stepper">
-                <div class="container-step" data-step="estoque inicial">
-                    <h3>Quanto é (era)?</h3>
-                    <p> 
-                        Ao final de 2019, R$ <strong class="js--text" data-texto="estoqueanterior"></strong> trilhões
-                    </p>
+    
+                <div class="slide stepper">
+                    <div class="container-step" data-step="juros">
+                        <h3>Quanto custa?</h3>
+                        <p> 
+                            Ao longo de 2020, a dívida custou R$ <strong class="js--text" data-texto="juros"></strong> bilhões na forma de juros.
+                        </p>
+                    </div>
                 </div>
-
-            </div>
-
-            <div class="slide stepper">
-                <div class="container-step" data-step="juros">
-                    <h3>Quanto custa?</h3>
-                    <p> 
-                        Ao longo de 2020, a dívida custou R$ <strong class="js--text" data-texto="juros"></strong> bilhões na forma de juros.
-                    </p>
+    
+                <div class="slide stepper">
+                    <div class="container-step" data-step="vencimentos">
+                        <h3>Como se paga?</h3>
+    
+                        <h4>O principal da Dívida</h4>
+                    </div>
                 </div>
-            </div>
-
-            <div class="slide stepper">
-                <div class="container-step" data-step="vencimentos">
-                    <h3>Como se paga?</h3>
-
-                    <h4>O principal da Dívida</h4>
+    
+    
+                <!-- <div class="slide stepper" id="step5">
+                    <div class="container-step" data-step="apaga_vencimentos_outras_fontes">
+                        <h3>Pagamento de juros</h3>
+                        <p>
+                            Pague também.
+                        </p>
+                    </div>
+                    <a href="#step4" class="back" data-previous="apaga_vencimentos_outras_fontes"> &lt; </a>
+                    <a href="#step6" class="next" data-next="juros_outras_fontes"> &gt; </a>
+                </div> -->
+    
+                <div class="slide stepper">
+                    <div class="container-step" data-step="pagamento_outras_fontes">
+                        <h3>Como se paga?</h3>
+    
+                        <h4>Pagamento com dinheiro do orçamento</h4>
+                    </div>
                 </div>
-            </div>
-
-
-            <!-- <div class="slide stepper" id="step5">
-                <div class="container-step" data-step="apaga_vencimentos_outras_fontes">
-                    <h3>Pagamento de juros</h3>
-                    <p>
-                        Pague também.
-                    </p>
+    
+    
+                <div class="slide stepper">
+                    <div class="container-step" data-step="emissao_refin">
+                        <h3>Como se paga?</h3>
+    
+                        <h4>O refinanciamento da Dívida</h4>
+    
+                    </div>
                 </div>
-                <a href="#step4" class="back" data-previous="apaga_vencimentos_outras_fontes"> &lt; </a>
-                <a href="#step6" class="next" data-next="juros_outras_fontes"> &gt; </a>
-            </div> -->
-
-            <div class="slide stepper">
-                <div class="container-step" data-step="pagamento_outras_fontes">
-                    <h3>Como se paga?</h3>
-
-                    <h4>Pagamento com dinheiro do orçamento</h4>
+    
+                <div class="slide stepper">
+                    <div class="container-step" data-step="emissao_vazamento">
+                        <h3>Cobrindo o buraco</h3>
+                        <p>
+                            Nos últimos anos, a história da dívida passou a ter um capítulo adicional. Como o governo tem gastado mais do que arrecada (tendo <em>déficits primários</em>), a forma encontrada para custear essas despesas que vão além das receitas é a mesma usada pelas pessoas: contraindo empréstimos, endividando-se.
+                        </p>
+                        <p>
+                            Assim, em 2020 foi preciso endividar-se num valor adicional de R$ <strong class="js--text" data-texto="vazamento"></strong> bilhões para cobrir o buraco no orçamento.
+                        </p>
+                    </div>
                 </div>
-            </div>
-
-
-            <div class="slide stepper">
-                <div class="container-step" data-step="emissao_refin">
-                    <h3>Como se paga?</h3>
-
-                    <h4>O refinanciamento da Dívida</h4>
-
+    
+                <div class="slide stepper">
+                    <div class="container-step" data-step="incorpora">
+                        <h3>Quanto é?</h3>
+                        <p>
+                            Todas essas emissões ocorridas ao longo de 2020, ou seja, todas essas novas dívidas contraídas acabam se incorporando ao estoque da dívida. Assim, ao final de 2020, a dívida pública federal havia chegado ao valor de R$ <strong class="js--text" data-texto="estoque_final"></strong> trilhões.
+                        </p>
+                    </div>
+                    <!-- back to top aqui? 
+                        <a href="#step9" class="back" data-previous="incorpora"> &lt; </a> -->
                 </div>
-            </div>
-
-            <div class="slide stepper">
-                <div class="container-step" data-step="emissao_vazamento">
-                    <h3>Cobrindo o buraco</h3>
-                    <p>
-                        Nos últimos anos, a história da dívida passou a ter um capítulo adicional. Como o governo tem gastado mais do que arrecada (tendo <em>déficits primários</em>), a forma encontrada para custear essas despesas que vão além das receitas é a mesma usada pelas pessoas: contraindo empréstimos, endividando-se.
-                    </p>
-                    <p>
-                        Assim, em 2020 foi preciso endividar-se num valor adicional de R$ <strong class="js--text" data-texto="vazamento"></strong> bilhões para cobrir o buraco no orçamento.
-                    </p>
-                </div>
-            </div>
-
-            <div class="slide stepper">
-                <div class="container-step" data-step="incorpora">
-                    <h3>Quanto é?</h3>
-                    <p>
-                        Todas essas emissões ocorridas ao longo de 2020, ou seja, todas essas novas dívidas contraídas acabam se incorporando ao estoque da dívida. Assim, ao final de 2020, a dívida pública federal havia chegado ao valor de R$ <strong class="js--text" data-texto="estoque_final"></strong> trilhões.
-                    </p>
-                </div>
-                <!-- back to top aqui? 
-                    <a href="#step9" class="back" data-previous="incorpora"> &lt; </a> -->
-            </div>
-
+    
         </div>
 
-    </div>
+    </section>
+
+    <section class="faq">
+
+        <h2>Mais detalhes</h2>
+
+        <ol>
+            <li>
+                <h3>O que é Dívida Pública?</h3>
+                <p><a href="#">Série o que é a Dívida Pública</a></p>
+            </li>
+        </ol>
+
+    </section>
+
+
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.6.1/gsap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.6.1/ScrollTrigger.min.js"></script>
