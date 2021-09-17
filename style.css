@@ -232,6 +232,7 @@ a.next {
 .container {
 
     scroll-behavior: smooth;
+    margin-top: -80vh;
     /*display: flex;
     flex-flow: row nowrap;
     justify-content: flex-start;*/
@@ -285,7 +286,7 @@ a.next {
 /* scroller */
 
 .vis {
-    position: fixed;
+    position: sticky;
     z-index: -1;
     top: 10vh;
     bottom: 10vh;
@@ -463,6 +464,14 @@ rect.estoque {
     border-color: transparent transparent transparent var(--text-color);
     transform: translate(calc(-10px - 0.5rem), -50%);
     top: 100vh;
+
+}
+
+/* General Layout */
+
+section.visualizacao {
+
+    position: relative;
 
 }
 
