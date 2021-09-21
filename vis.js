@@ -298,6 +298,8 @@ const vis = {
             "estoqueanterior" : () => vis.data.infos.estoque.inicial/1000,
             
             "juros" : () => vis.data.infos.juros.total,
+
+            "vencimentos" : () => vis.data.infos.vencimentos.total/1000,
             
             "estoque_final" : () => vis.data.infos.estoque.final/1000,
 

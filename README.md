@@ -42,6 +42,30 @@ https://fonts.google.com/specimen/Press+Start+2P#about
 
 !["sketch"](./other/sketch.jpg)
 
+### Novo texto
+
+TETRIS
+
+O retângulo azul comporta o PIB do Brasil e cada quadradinho representa R$ 10 bilhões.
+
+Quanto era?
+Ao final de 2019, R$ 4.25 trilhões
+
+Quanto custa?
+Ao longo de 2020, a dívida custou R$ 410 bilhões em juros.
+
+Quanto vence no ano?
+R$ 1,18 trilhão do principal da dívida vence nesse período. 
+
+Como se paga?
+Do total de R$ 1,59 trilhão, R$ 600 bilhões foram pagos com dinheiro do orçamento.
+
+O restante (R$ 990 bilhões) foi refinanciado, ou seja, trocado por uma dívida nova, em uma operação conhecida como “rolagem” da dívida.
+
+Déficit primário
+Nos últimos anos, o governo tem gastado mais do que arrecada, por isso precisa contrair empréstimos para custear esse déficit nas contas. Em 2020, esse valor adicional foi de R$ 767 bilhões.
+
+
 ### Comentários
 
 Referencial: 
