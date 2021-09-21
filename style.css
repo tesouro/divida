@@ -486,6 +486,28 @@ rect.estoque {
 
 }
 
+.setinha-saldo::before {
+
+    transform: translate(-100%, -50%);
+    position: absolute;
+    text-align: right;
+    font-size: .6rem;
+    padding-right: .8rem;
+
+}
+
+[data-setinha-saldo-anterior]::before {
+
+    content: 'Saldo \ Anterior';
+
+}
+
+[data-setinha-saldo-final]::before {
+
+    content: 'Saldo \ Final';
+
+}
+
 /* General Layout */
 
 section.visualizacao {
