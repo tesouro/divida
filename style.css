@@ -346,13 +346,26 @@ rect.estoque {
 
 }
 
+.espaco-superior {
+
+    margin-top: 25vh;
+
+}
+
 .quadradinho-exemplo {
 
     display: inline-block; /*se não ele não preenche o elemento vazio*/
-    width: 1rem;
-    height: 1rem;
+    width: .5em;
+    height: .5em;
     background: var(--cor-estoque-inicial);
-    vertical-align: text-top;
+    vertical-align: middle;
+
+}
+
+.retangulo-azul {
+
+    border: 3px solid var(--comp-color1);
+    padding: 0 .25em;
 
 }
 

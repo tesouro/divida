@@ -1024,25 +1024,26 @@ vis.control.init();
 
 const anims = {
 
-    // explicacao_inicial : {
+    explicacao_inicial : {
             
-    //     tl : new gsap.timeline({
+        tl : new gsap.timeline({
 
-    //         scrollTrigger: {
-    //             trigger: '[data-step="explicação inicial"]',
-    //             markers: true,
-    //             pin: false,   // pin the trigger element while active
-    //             start: "top bottom", // when the top of the trigger hits the top of the viewport
-    //             end: "80% bottom", // end after scrolling 500px beyond the start
-    //             scrub: 1, // smooth scrubbing, takes 1 second to "catch up" to the scrollbar
-    //         }
+            scrollTrigger: {
+                trigger: '[data-step="explicação inicial"]',
+                markers: false,
+                pin: false,   // pin the trigger element while active
+                start: "80% bottom", // when the top of the trigger hits the top of the viewport
+                end: "100% bottom", // end after scrolling 500px beyond the start
+                scrub: 1, // smooth scrubbing, takes 1 second to "catch up" to the scrollbar
+            }
             
-    //     })
-    //                 .to('.quadradinho-explicacao', {
-    //                     scale : 1
-    //                 })
+        })
+            .to(vis.refs.container, {
+                opacity : 1,
+                duration: 1
+            })
 
-    // },
+    },
 
     estoque_inicial : {
             
@@ -1058,10 +1059,6 @@ const anims = {
             }
             
         })
-                    .to(vis.refs.container, {
-                        opacity : 1,
-                        duration: 1
-                    })
                     // .to('.quadradinho-explicacao', {
                     //     opacity: 0,
                     //     scale: 0
