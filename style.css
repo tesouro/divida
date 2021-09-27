@@ -76,8 +76,8 @@ h1 {
 
 h2, h3 {
 
-    font-family: var(--font-title);
-    font-weight: 400;
+    font-family: var(--font-text);
+    /*font-weight: 400;*/
     color: var(--title-color);
     /*text-align: center;*/
 
@@ -351,7 +351,7 @@ rect.estoque {
 
 .espaco-superior {
 
-    margin-top: 25vh;
+    padding-top: 25vh;
 
 }
 
@@ -501,13 +501,13 @@ rect.estoque {
 
 [data-setinha-saldo-anterior]::before {
 
-    content: 'Saldo \ Anterior';
+    content: '2019';
 
 }
 
 [data-setinha-saldo-final]::before {
 
-    content: 'Saldo \ Final';
+    content: '2020';
 
 }
 
