@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        path {
+
+            stroke: 'white';
+            stroke-width: 3px;
+            transition: transform steps(5) 3s;
+
+        }
+
+        @keyframes drop {
+
+            from {
+
+                transform: translate(50%, -20%);
+
+            }
+
+            to {
+
+                transform: translate(0,0);
+
+            }
+
+        }
+    </style>
+    <title>Document</title>
+</head>
+<body>
+    <div class="container"></div>
+    <script src="./d3.min.js"></script>
+    <script>
+        fetch('abertura.json')
+          .then( response => response.json())
+          .then( data => {
+
+            console.log(data);
+
+            let cont = document.querySelector('.container');
+
+            let svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+            svg.setAttribute('viewBox', '0 0 41 20');
+
+            cont.appendChild(svg);
+
+            let svgNS = svg.namespaceURI;
+
+            data.forEach(d => {
+
+                let path = document.createElementNS(svgNS, 'path');
+                path.setAttribute('d', d.d);
+                path.setAttribute('data-transform', d.transform);
+                path.style.transform = 'translate(' + d.transform + 'px,-100%)'
+                svg.appendChild(path);
+
+
+            })
+
+            //document.querySelectorAll('path').forEach(path => path.style.transform = 'translate(0,0)')
+
+
+
+
+
+            //d3.select('svg').selectAll('path').data(data).join('path').attr('d', d => d.d);
+
+          });
+
+    </script>
+</body>
+</html>
