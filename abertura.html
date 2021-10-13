@@ -7,11 +7,20 @@
     <style>
         path {
 
-            stroke: 'white';
-            stroke-width: 3px;
-            transition: transform steps(5) 3s;
+            stroke: white;
+            stroke-width: 0.1px;
+            fill: yellow;
+            transition: transform steps(10) 3s;
+
+            --delay-base: 200ms;
 
         }
+
+        .delay1 {transition-delay: calc(1 * var(--delay-base));}
+        .delay2 {transition-delay: calc(2 * var(--delay-base));}
+        .delay3 {transition-delay: calc(3 * var(--delay-base));}
+        .delay4 {transition-delay: calc(4 * var(--delay-base));}
+        .delay5 {transition-delay: calc(5 * var(--delay-base));}
 
         @keyframes drop {
 
@@ -55,13 +64,27 @@
                 let path = document.createElementNS(svgNS, 'path');
                 path.setAttribute('d', d.d);
                 path.setAttribute('data-transform', d.transform);
-                path.style.transform = 'translate(' + d.transform + 'px,-100%)'
+
+                const rnd = Math.floor(Math.random()*10/2);
+                path.classList.add('delay' + rnd);
+                //path.style.transform = 'translate(' + d.transform + 'px,-100%)';
+                path.style.transform = 'translate(0,-100%)';
                 svg.appendChild(path);
 
 
             })
 
-            //document.querySelectorAll('path').forEach(path => path.style.transform = 'translate(0,0)')
+            console.log('will wait');
+
+            setTimeout(
+                function() {
+                    console.log('the wait is over.')
+                    document.querySelectorAll('path').forEach(path => path.style.transform = 'translate(0,0)');
+                },
+                1000
+            )
+
+            
 
 
 
