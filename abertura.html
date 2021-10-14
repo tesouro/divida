@@ -5,26 +5,52 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
+
+        svg {
+            border: 2px solid transparent;
+            /* sem essa borda de 2px ele fica com um efeito muito louco no final, um jitter bizarro */
+        }
+
+        :root {
+            --tetris-purple: #DF00FF;
+            --tetris-green: #00f000;
+            --tetris-red: #ff1200;
+            --tetris-yellow: #ffe600;
+            --tetris-orange: #ff6700;
+            --tetris-orangesemi : #f0a000;
+            --tetris-blue: #0086ff;
+            --tetris-cyan: #00fff8;
+        }
+
         path {
 
-            stroke: white;
-            stroke-width: 0.1px;
-            fill: yellow;
-            transition: transform steps(10) 3s;
+            stroke: darkgrey;
+            stroke-width: 0.05px;
+            transition: transform steps(30) 3s; 
 
-            --delay-base: 200ms;
+            --delay-base: 250ms;
 
         }
 
-        path.piece1 {
-            fill: dodgerblue;
-        }
+        path.I-block { fill: var(--tetris-cyan);}
+        path.O-block { fill: var(--tetris-yellow);}
+        path.L-block { fill: var(--tetris-orange);}
+        path.J-block { fill: var(--tetris-blue);}
+        path.S-block { fill: var(--tetris-green);}
+        path.Z-block { fill: var(--tetris-red);}
+        path.T-block { fill: var(--tetris-purple);}
 
-        .delay1 {transition-delay: calc(1 * var(--delay-base));}
-        .delay2 {transition-delay: calc(2 * var(--delay-base));}
-        .delay3 {transition-delay: calc(3 * var(--delay-base));}
-        .delay4 {transition-delay: calc(4 * var(--delay-base));}
-        .delay5 {transition-delay: calc(5 * var(--delay-base));}
+
+        .delay0 {transition-delay: calc(0 * var(--delay-base) + var(--delay-base));}
+        .delay1 {transition-delay: calc(1 * var(--delay-base) + var(--delay-base));}
+        .delay2 {transition-delay: calc(2 * var(--delay-base) + var(--delay-base));}
+        .delay3 {transition-delay: calc(3 * var(--delay-base) + var(--delay-base));}
+        .delay4 {transition-delay: calc(4 * var(--delay-base) + var(--delay-base));}
+        .delay5 {transition-delay: calc(5 * var(--delay-base) + var(--delay-base));}
+        .delay6 {transition-delay: calc(6 * var(--delay-base) + var(--delay-base));}
+        .delay7 {transition-delay: calc(7 * var(--delay-base) + var(--delay-base));}
+        .delay8 {transition-delay: calc(8 * var(--delay-base) + var(--delay-base));}
+        .delay9 {transition-delay: calc(9 * var(--delay-base) + var(--delay-base));}
 
         @keyframes drop {
 
@@ -68,10 +94,8 @@
                 let path = document.createElementNS(svgNS, 'path');
                 path.setAttribute('d', d.d);
                 path.setAttribute('data-transform', d.transform);
-
-                const rnd = Math.floor(Math.random()*10/2);
-                path.classList.add('delay' + rnd);
-                path.classList.add('piece' + d.piece);
+                path.classList.add('delay' + d.delay);
+                path.classList.add(d.tipo);
                 //path.style.transform = 'translate(' + d.transform + 'px,-100%)';
                 path.style.transform = 'translate(0,-100%)';
                 svg.appendChild(path);
