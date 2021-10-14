@@ -2,7 +2,8 @@ library(tidyverse)
 library(readxl)
 library(jsonlite)
 
-raw <- read_excel('prototipo-titulo-tetris.xlsx')
+raw <- read_excel('prototipo-titulo-tetris.xlsx', sheet = 'tetris')
+piece_info <- read_excel('prototipo-titulo-tetris.xlsx', sheet = 'tab-tipos')
 
 proc <- data.frame()
 n <- 1
@@ -39,4 +40,7 @@ proc_treated <- proc %>%
     transform = first(transform)
   )
 
-jsonlite::write_json(proc_treated, '../abertura.json')
+proc_with_piece_info <- proc_treated %>%
+  left_join(piece_info)
+
+jsonlite::write_json(proc_with_piece_info, '../abertura.json')
