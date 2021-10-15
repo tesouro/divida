@@ -150,6 +150,7 @@ td.js--text {
     transform: scale(1.5, 0.5);
     text-shadow: 0 -1rem white;
     animation: bounce 2s infinite;
+    transition: opacity 1s 2s;
 
 }
 
@@ -193,12 +194,6 @@ td.js--text {
 
     line-height: 1.4;
 
-}
-
-p.arcade {
-
-    font-family: var(--font-arcade);
-    font-size: 1.2rem;
 }
 
 a.back,
@@ -550,8 +545,36 @@ section.faq h2 {
 
 }
 
+
 /* = = = = = = = = = = = = = */
 /* = = = =  ABERTURA = = = = */
+
+p.arcade {
+
+    font-family: var(--font-arcade);
+    font-size: 1.4rem;
+}
+
+.press-start p {
+
+    margin: 0;
+    text-align: center;
+
+}
+
+.press-start p + p {
+
+    margin-top: .3rem;
+    transition: opacity 1s 2s;
+
+}
+
+.hidden {
+
+    opacity : 0;
+
+}
+
 
 .container-svg-abertura {
 
@@ -617,6 +640,7 @@ path.T-block { fill: var(--tetris-purple);}
 .delay7 {transition-delay: calc(7 * var(--delay-base) + var(--delay-base));}
 .delay8 {transition-delay: calc(8 * var(--delay-base) + var(--delay-base));}
 .delay9 {transition-delay: calc(9 * var(--delay-base) + var(--delay-base));}
+
 
 
 

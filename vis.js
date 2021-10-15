@@ -1060,7 +1060,14 @@ const vis = {
                     document.querySelector('.container-svg-abertura > svg').classList.remove('inicio');
                 },
                 1000
-            )
+            );
+
+            setTimeout(
+                function() {
+                    document.querySelectorAll('.hidden').forEach(el => el.classList.remove('hidden'));
+                },
+                6000
+            );
 
           });
 
