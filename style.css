@@ -195,6 +195,12 @@ td.js--text {
 
 }
 
+p.arcade {
+
+    font-family: var(--font-arcade);
+    font-size: 1.2rem;
+}
+
 a.back,
 a.next {
 
@@ -549,9 +555,9 @@ section.faq h2 {
 
 .container-svg-abertura {
 
+    width: 100%;
     max-width: 36rem;
     margin: 0 auto;
-    width: 36rem;
 
 }
 
