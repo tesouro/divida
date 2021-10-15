@@ -961,6 +961,8 @@ const vis = {
 
             gsap.registerPlugin(ScrollTrigger);
 
+            vis.abertura();
+
             const valor = vis.data.infos.pib;
             // dimensiona container para ficar equivalente ao tamanho do pib
 
@@ -1015,6 +1017,52 @@ const vis = {
 
 
         }*/
+
+    },
+
+    abertura : function() {
+
+        fetch('abertura.json')
+          .then( response => response.json())
+          .then( data => {
+
+            console.log(data);
+
+            let cont = document.querySelector('.container-svg-abertura');
+
+            let svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+            svg.setAttribute('viewBox', '0 0 41 20');
+            svg.classList.add('inicio');
+
+            cont.appendChild(svg);
+
+            let svgNS = svg.namespaceURI;
+
+            data.forEach(d => {
+
+                let path = document.createElementNS(svgNS, 'path');
+                path.setAttribute('d', d.d);
+                //path.setAttribute('data-transform', d.transform);
+                path.classList.add('delay' + d.delay);
+                path.classList.add(d.tipo);
+                //path.style.transform = 'translate(' + d.transform + 'px,-100%)';
+                //path.style.transform = 'translate(0,-100%)';
+                svg.appendChild(path);
+
+
+            })
+
+            console.log('will wait');
+
+            setTimeout(
+                function() {
+                    console.log('the wait is over.')
+                    document.querySelector('.container-svg-abertura > svg').classList.remove('inicio');
+                },
+                1000
+            )
+
+          });
 
     }
 
