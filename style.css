@@ -159,6 +159,10 @@ td.js--text {
 
 }
 
+.arrow-start a {
+    text-decoration: none;
+    color: inherit;
+}
 
 
 @media (max-width: 500px) {
@@ -234,6 +238,8 @@ a.next {
     left: 5px;
 
 }
+
+html, body { scroll-behavior: smooth; }
 
 .container {
 
