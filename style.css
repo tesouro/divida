@@ -144,11 +144,16 @@ td.js--text {
     }
   }
 
-.arrow-start {
+.arrow-start, .arrow-end {
 
     font-size: 3rem;
     transform: scale(1.5, 0.5);
     text-shadow: 0 -1rem white;
+
+}
+
+.arrow-start {
+
     animation: bounce 2s infinite;
     transition: opacity 1s 2s;
 
@@ -522,6 +527,17 @@ section.visualizacao {
 
 /* the FAQ */
 
+section.faq .chamada {
+
+    height: 50vh;
+
+}
+
+/*.chamada-inner {
+    margin-top: 50vh;
+    margin-bottom: 50vh;
+}*/
+
 section.faq {
 
     margin-top : 5rem;
@@ -552,7 +568,12 @@ section.faq h2 {
 p.arcade {
 
     font-family: var(--font-arcade);
+    text-transform: uppercase;
     font-size: 1.4rem;
+}
+
+.center {
+    text-align: center;
 }
 
 .press-start p {
