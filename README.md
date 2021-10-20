@@ -696,3 +696,5 @@ Os botões eram esse anchor tags dentro do markup de cada slide, assim:
 ### Coisas que ajudaram
 
 https://www.quora.com/What-are-the-different-blocks-in-Tetris-called-Is-there-a-specific-name-for-each-block
+
+https://www.sarasoueidan.com/blog/horizontal-rules/
