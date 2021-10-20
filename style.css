@@ -617,6 +617,7 @@ section.faq a {
 section.faq a:hover {
 
     border-bottom: 2px solid currentColor;
+    font-weight: bold;
 
 }
 
