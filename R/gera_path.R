@@ -48,7 +48,7 @@ jsonlite::write_json(proc_with_piece_info, '../abertura.json')
 
 # separator ---------------------------------------------------------------
 
-sep <- read_excel('prototipo-titulo-tetris.xlsx', sheet = 'separator')
+sep <- read_excel('prototipo-titulo-tetris.xlsx', sheet = 'separator2')
 
 sep_proc <- data.frame()
 n <- 1
@@ -88,6 +88,7 @@ sep_proc_treated <- sep_proc %>%
     element = paste0('<path d="',d,'"></path>')
   )
 
-sep_out <- sep_proc_treated$element %>% paste(collapse = '\n')
+# sep_out <- sep_proc_treated$element %>% paste(collapse = '\n')
+sep_out <- sep_proc_treated$d %>% paste(collapse = ' ')
 
-write_file(sep_out, file = "sep_out.html")
+write_file(sep_out, file = "sep_out.txt")
