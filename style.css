@@ -650,6 +650,12 @@ p.arcade {
     font-size: 1.4rem;
 }
 
+p.arcade.smaller {
+
+    font-size: 1rem;
+
+} 
+
 .center {
     text-align: center;
 }
