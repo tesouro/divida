@@ -442,6 +442,12 @@ rect.estoque {
 
 }
 
+[data-texto="recursos-orcamento"] {
+
+    color: var(--tetris-blue);
+
+}
+
 [data-destaque="refinanciamento"] {
 
     background-color: var(--tetris-red);

@@ -295,11 +295,11 @@ const vis = {
 
             // peguei a lista com um Array.from(document.querySelectorAll(".js--text")).map(d=>d.dataset.texto)
             
-            "estoqueanterior" : () => vis.data.infos.estoque.inicial/1000,
+            "estoqueanterior" : () => vis.textos_automaticos.formata_numeros(vis.data.infos.estoque.inicial/1000),
             
             "juros" : () => vis.data.infos.juros.total,
 
-            "vencimentos" : () => vis.data.infos.vencimentos.total/1000,
+            "vencimentos" : () => vis.textos_automaticos.formata_numeros(vis.data.infos.vencimentos.total/1000),
             
             "estoque_final" : () => vis.data.infos.estoque.final/1000,
 
@@ -329,7 +329,7 @@ const vis = {
 
         },
 
-        formata_numeros : (valor) => valor.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")
+        formata_numeros : (valor) => valor.toLocaleString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")
 
     },
 
@@ -1213,7 +1213,7 @@ const anims = {
 
         })
                     .to(vis.refs.vencimentos_outras_fontes, {
-                        backgroundColor: vis.params.colors.orangesemi,
+                        backgroundColor: vis.params.colors.blue,
                         ease: Back.easeOut,
                         stagger: {
                         grid: "auto",
