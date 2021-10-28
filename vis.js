@@ -301,7 +301,7 @@ const vis = {
 
             "vencimentos" : () => vis.textos_automaticos.formata_numeros(vis.data.infos.vencimentos.total/1000),
             
-            "estoque_final" : () => vis.data.infos.estoque.final/1000,
+            "estoque_final" : () => vis.textos_automaticos.formata_numeros(vis.data.infos.estoque.final/1000),
 
             "vazamento" : () => vis.data.infos.emissoes.vazamento,
 
