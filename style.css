@@ -709,44 +709,50 @@ p.arcade.smaller {
 
 path {
 
-    stroke: darkgrey;
-    stroke-width: 0.05px;
-    transition: transform steps(30) 3s; 
+    stroke: var(--text-color);
+    fill: transparent;
+    stroke-width: .1;
+    /*stroke-width: 0.05px;*/
+    transition: transform steps(30) 2s var(--transition-delay), stroke .5s calc(2.2s + var(--transition-delay)), fill .5s calc(2.2s + var(--transition-delay)); 
 
     --delay-base: 250ms;
+
+    --delay-cor : calc(2s + 10 * 0.25s);
 
 }
 
 svg.inicio path {
 
+    stroke: darkgrey;
     transform: translate(0,-100%);
+    
 
 }
 
-path.I-block { fill: var(--tetris-cyan);}
-path.O-block { fill: var(--tetris-yellow);}
-path.L-block { fill: var(--tetris-orange);}
-path.J-block { fill: var(--tetris-blue);}
-path.S-block { fill: var(--tetris-green);}
-path.Z-block { fill: var(--tetris-red);}
-path.T-block { fill: var(--tetris-purple);}
+svg.inicio path.I-block { fill: var(--tetris-cyan);}
+svg.inicio path.O-block { fill: var(--tetris-yellow);}
+svg.inicio path.L-block { fill: var(--tetris-orange);}
+svg.inicio path.J-block { fill: var(--tetris-blue);}
+svg.inicio path.S-block { fill: var(--tetris-green);}
+svg.inicio path.Z-block { fill: var(--tetris-red);}
+svg.inicio path.T-block { fill: var(--tetris-purple);}
 
 
-.delay0 {transition-delay: calc(0 * var(--delay-base) + var(--delay-base));}
-.delay0-1 {transition-delay: calc(0.3 * var(--delay-base) + var(--delay-base));}
-.delay0-2 {transition-delay: calc(0.6 * var(--delay-base) + var(--delay-base));}
-.delay1 {transition-delay: calc(1 * var(--delay-base) + var(--delay-base));}
-.delay1-1 {transition-delay: calc(1.5 * var(--delay-base) + var(--delay-base));}
-.delay2 {transition-delay: calc(2 * var(--delay-base) + var(--delay-base));}
-.delay3 {transition-delay: calc(3 * var(--delay-base) + var(--delay-base));}
-.delay4 {transition-delay: calc(4 * var(--delay-base) + var(--delay-base));}
-.delay5 {transition-delay: calc(5 * var(--delay-base) + var(--delay-base));}
-.delay6 {transition-delay: calc(6 * var(--delay-base) + var(--delay-base));}
-.delay7 {transition-delay: calc(7 * var(--delay-base) + var(--delay-base));}
-.delay8 {transition-delay: calc(8 * var(--delay-base) + var(--delay-base));}
-.delay9 {transition-delay: calc(9 * var(--delay-base) + var(--delay-base));}
+.delay0 {--transition-delay: calc(0 * var(--delay-base) + var(--delay-base));}
+.delay0-1 {--transition-delay: calc(0.3 * var(--delay-base) + var(--delay-base));}
+.delay0-2 {--transition-delay: calc(0.6 * var(--delay-base) + var(--delay-base));}
+.delay1 {--transition-delay: calc(1 * var(--delay-base) + var(--delay-base));}
+.delay1-1 {--transition-delay: calc(1.5 * var(--delay-base) + var(--delay-base));}
+.delay2 {--transition-delay: calc(2 * var(--delay-base) + var(--delay-base));}
+.delay3 {--transition-delay: calc(3 * var(--delay-base) + var(--delay-base));}
+.delay4 {--transition-delay: calc(4 * var(--delay-base) + var(--delay-base));}
+.delay5 {--transition-delay: calc(5 * var(--delay-base) + var(--delay-base));}
+.delay6 {--transition-delay: calc(6 * var(--delay-base) + var(--delay-base));}
+.delay7 {--transition-delay: calc(7 * var(--delay-base) + var(--delay-base));}
+.delay8 {--transition-delay: calc(8 * var(--delay-base) + var(--delay-base));}
+.delay9 {--transition-delay: calc(9 * var(--delay-base) + var(--delay-base));}
 
-
+.delay-cor {}
 
 
 
