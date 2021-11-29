@@ -554,6 +554,7 @@ section.visualizacao {
 svg[role='separator'] {
 
     width: 100%;
+    margin-bottom: 2rem;
 
 }
 
@@ -680,6 +681,18 @@ p.arcade.smaller {
 
 }
 
+footer > .svg-wrapper {
+
+    width: 80px;
+    height: 80px;
+    margin: 0 auto;
+
+}
+
+.svg-wrapper > svg {
+    /*width: 200px;
+    height: 200px;*/
+}
 
 .container-svg-abertura {
 
@@ -751,8 +764,6 @@ svg.inicio path.T-block { fill: var(--tetris-purple);}
 .delay7 {--transition-delay: calc(7 * var(--delay-base) + var(--delay-base));}
 .delay8 {--transition-delay: calc(8 * var(--delay-base) + var(--delay-base));}
 .delay9 {--transition-delay: calc(9 * var(--delay-base) + var(--delay-base));}
-
-.delay-cor {}
 
 
 
