@@ -92,3 +92,52 @@ sep_proc_treated <- sep_proc %>%
 sep_out <- sep_proc_treated$d %>% paste(collapse = ' ')
 
 write_file(sep_out, file = "sep_out.txt")
+
+
+
+# sep final ---------------------------------------------------------------
+
+sep_final <- read_excel('prototipo-titulo-tetris.xlsx', sheet = 'separator3')
+
+sep_proc <- data.frame()
+n <- 1
+
+for (i in 1:nrow(sep_final)) {
+  
+  for (j in 1:ncol(sep_final)) {
+    
+    if (!is.na(sep_final[i,j])) {
+      
+      sep_proc[n, "piece"] <- n
+      sep_proc[n, "x"] <- j-1
+      sep_proc[n, "y"] <- i-1
+      
+      n <- n+1
+      
+    }
+    
+  }
+}
+
+sep_proc_treated <- sep_proc %>%
+  arrange(piece) %>%
+  mutate(d = paste(
+    "M", x, y,
+    "H", x + 1,
+    "V", y + 1,
+    "H", x,
+    "V", y
+  )) %>%
+  group_by(piece) %>%
+  summarise(
+    d = paste(d, collapse = ' ')
+  ) %>%
+  ungroup() %>%
+  mutate(
+    element = paste0('<path d="',d,'"></path>')
+  )
+
+# sep_out <- sep_proc_treated$element %>% paste(collapse = '\n')
+sep_out <- sep_proc_treated$d %>% paste(collapse = ' ')
+
+write_file(sep_out, file = "sep_out.txt")
