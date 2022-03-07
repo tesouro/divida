@@ -105,51 +105,45 @@ const vis = {
 
             juros : {
 
-                refin       : 210,//209,
-                com_outras  : 200,//197,
-                total       : 410//406
+                // distribui os valores conforme a distribuição dos pagamentos por fonte de recursos no periodo
+                refin       : 449,//209,
+                com_outras  : 0,//197,
+                total       : 449//406
 
             },
 
             vencimentos : {
 
-                refin       :  780,//773,
-                com_outras  :  400, //394,
-                total       : 1180//1167
+                refin       :  841,
+                com_outras  :  270, 
+                total       : 1111,
+                texto       : 1560 // 1560 - juros
 
             },
-
-            vazamento : {
-
-                resultado_bacen :  30,
-                outras_despesas : 737,
-                total           : 767
-
-            },
-
-            outras_fontes : 591,
 
             emissoes : {
 
                 refin : {
 
-                    principal : 780,
-                    juros     : 210
+                    principal : 841,
+                    juros     : 449
 
                 },
 
-                vazamento : 767
+                vazamento : 114,
+
+                texto: 1660
 
             },
 
             estoque : {
 
-                inicial : 4250,//4249,
-                final   : 5010
+                inicial : 5010,
+                final   : 5660
 
             },
 
-            pib: 7.4e12
+            pib: 8.7e12
 
         },
 
@@ -299,13 +293,17 @@ const vis = {
             
             "juros" : () => vis.data.infos.juros.total,
 
-            "vencimentos" : () => vis.textos_automaticos.formata_numeros(vis.data.infos.vencimentos.total/1000),
+            "vencimentos" : () => vis.textos_automaticos.formata_numeros(vis.data.infos.vencimentos.texto/1000),
+
+            "recursos_orcamento" : () => vis.textos_automaticos.formata_numeros(vis.data.infos.vencimentos.com_outras),
             
             "estoque_final" : () => vis.textos_automaticos.formata_numeros(vis.data.infos.estoque.final/1000),
 
             "vazamento" : () => vis.data.infos.emissoes.vazamento,
 
-            "refinanciamento" : () => vis.data.infos.emissoes.refin.juros + vis.data.infos.emissoes.refin.principal,
+            "refinanciamento" : () => vis.textos_automaticos.formata_numeros((vis.data.infos.emissoes.refin.juros + vis.data.infos.emissoes.refin.principal)/1000),
+
+            "emissoes" : () => vis.textos_automaticos.formata_numeros(vis.data.infos.emissoes.texto/1000),
 
             "pib" : () => vis.data.infos.pib/1e12,
 
@@ -323,7 +321,7 @@ const vis = {
 
                 const tipo = campo.dataset.texto;
 
-                campo.innerHTML = vis.textos_automaticos.refs[tipo]()
+                campo.innerHTML = vis.textos_automaticos.refs[tipo]();
 
             })
 
@@ -1186,7 +1184,7 @@ const anims = {
             }
 
         })
-                     .to(vis.refs.vencimentos, {
+                     .to(vis.refs.vencimentos + ',' + vis.refs.juros, {
                          backgroundColor : vis.params.colors.orange,
                          stagger: {
                             grid: "auto",
@@ -1312,7 +1310,7 @@ const anims = {
                      .set(vis.refs.emissao_vazamento, {
                          scale : 1,
                          opacity : 0,
-                         backgroundColor : vis.params.colors.purple
+                         backgroundColor : vis.params.colors.red
                      })
                      .to(vis.refs.emissao_vazamento, {
                          opacity: 1

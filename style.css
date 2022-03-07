@@ -442,7 +442,7 @@ rect.estoque {
 
 }
 
-[data-texto="recursos-orcamento"] {
+[data-texto="recursos_orcamento"] {
 
     color: var(--tetris-blue);
 
@@ -460,9 +460,9 @@ rect.estoque {
 
 }
 
-[data-texto="vazamento"] {
+[data-texto="emissoes"] {
 
-    color: var(--tetris-purple);
+    color: var(--tetris-red);
 
 }
 
