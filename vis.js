@@ -66,7 +66,7 @@ const vis = {
         container : ".tetris-container",
         buttons : ".back, .next",
         estoque : "[data-tipo='estoque_inicial'], [data-tipo='vencimentos_outras_fontes'], [data-tipo='vencimentos_refin']",
-        juros : "[data-tipo='juros_outras_fontes'], [data-tipo='juros_refin']",
+        juros : "[data-tipo='juros_refin']", //"[data-tipo='juros_outras_fontes'], [data-tipo='juros_refin']",
         juros_outras_fontes : "[data-tipo='juros_outras_fontes']",
         juros_refin : "[data-tipo='juros_refin']",
         vencimentos : "[data-tipo='vencimentos_outras_fontes'], [data-tipo='vencimentos_refin']",
@@ -1226,7 +1226,7 @@ const anims = {
                     .to(vis.refs.deslocar_vencimentos, {
                     ease: SteppedEase.config(6),
                     y : vis.utils.get_data.vencimentos_outras_fontes
-                    })
+                    })/*
                     .to(vis.refs.juros_outras_fontes, {
                         backgroundColor: vis.params.colors.blue,
                         ease: Back.easeOut,
@@ -1240,7 +1240,7 @@ const anims = {
                     .to(vis.refs.juros_outras_fontes, {
                        ease: Back.easeOut,
                         scale : 0
-                    })
+                    })*/
                     .to(vis.refs.deslocar_juros, {
                         ease: SteppedEase.config(6),
                         y : vis.utils.get_data.juros_outras_fontes
