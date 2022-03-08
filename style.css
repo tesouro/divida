@@ -189,6 +189,11 @@ td.js--text {
 
     }
 
+    section.faq {
+        margin-right:  10px;
+        margin-left: 10px;
+    }
+
     
 }
 
@@ -524,19 +529,19 @@ rect.estoque {
     position: absolute;
     text-align: right;
     font-size: .6rem;
-    padding-right: .8rem;
+    padding-right: 1em;
 
 }
 
 [data-setinha-saldo-anterior]::before {
 
-    content: '2019';
+    content: '2020';
 
 }
 
 [data-setinha-saldo-final]::before {
 
-    content: '2020';
+    content: '2021';
 
 }
 

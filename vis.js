@@ -114,10 +114,10 @@ const vis = {
 
             vencimentos : {
 
-                refin       :  841,
+                refin       :  781,
                 com_outras  :  270, 
-                total       : 1111,
-                texto       : 1560 // 1560 - juros
+                total       : 1051, // 1500 - juros
+                texto       : 1500 
 
             },
 
@@ -125,12 +125,12 @@ const vis = {
 
                 refin : {
 
-                    principal : 841,
+                    principal : 781,
                     juros     : 449
 
                 },
 
-                vazamento : 114,
+                vazamento : 430, // vazamento + emissoes normais
 
                 texto: 1660
 
@@ -139,7 +139,7 @@ const vis = {
             estoque : {
 
                 inicial : 5010,
-                final   : 5660
+                final   : 5610
 
             },
 
@@ -405,6 +405,14 @@ const vis = {
             calcula_qde_unidades : function(valor) {
 
                 return Math.round(valor/vis.params.iniciais.valor_unidade);
+
+            },
+
+            calcula_qde_linhas_necessarias_para(valor) {
+
+                let qde_quadradinhos = vis.grid.helpers.calcula_qde_unidades(valor);
+
+                return Math.ceil(qde_quadradinhos / vis.params.calculados.qde_por_linha)
 
             },
 
@@ -769,6 +777,10 @@ const vis = {
     
                     // para usar na posição da setinha do saldo final
                     if (tipo == 'vazamento' & i == qde_a_completar) {
+
+                        // dependendo do valor do vazamento, ele nem chega aqui.
+
+                        console.log('Cheguei aqui.', linha_atual_preenchimento);
     
                         vis.params.calculados.linha_final_estoque_final = linha_atual_preenchimento
     
@@ -973,6 +985,8 @@ const vis = {
             vis.grid.calcula_parametros(valor); 
             vis.sizing.calcula_dimensoes_necessarias(valor);
             vis.sizing.redimensiona_container();
+
+            vis.params.calculados.linha_final_estoque_final = vis.grid.helpers.calcula_qde_linhas_necessarias_para(vis.data.infos.estoque.final * 1e9);
 
             vis.data.gera_datasets();
             vis.utils.gera_posicoes_linha_completa();
