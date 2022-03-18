@@ -143,7 +143,13 @@ const vis = {
 
             },
 
-            pib: 8.7e12
+            pib: 8.7e12,
+
+            placar : {
+                estoque:     5613655860380,
+                juros:        449141673375,
+                vencimentos: 1501636809910
+            }
 
         },
 
@@ -307,11 +313,11 @@ const vis = {
 
             "pib" : () => vis.data.infos.pib/1e12,
 
-            "placar_estoque" : () => vis.textos_automaticos.formata_numeros(vis.data.infos.estoque.final*1e9),
+            "placar_estoque" : () => vis.textos_automaticos.formata_numeros(vis.data.infos.placar.estoque),
 
-            "placar_juros" : () => vis.textos_automaticos.formata_numeros(vis.data.infos.juros.total*1e9),
+            "placar_juros" : () => vis.textos_automaticos.formata_numeros(vis.data.infos.placar.juros),
 
-            "placar_vencimentos" : () => vis.textos_automaticos.formata_numeros((vis.data.infos.juros.total + vis.data.infos.vencimentos.total)*1e9)
+            "placar_vencimentos" : () => vis.textos_automaticos.formata_numeros(vis.data.infos.placar.vencimentos)
 
         },
 
