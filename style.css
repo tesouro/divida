@@ -707,6 +707,17 @@ footer > .svg-wrapper {
 
 }
 
+/*
+.container-svg-abertura::before {
+    content: 'a dinâmica da';
+    display: block;
+    text-align: center;
+    font-size: 1.5rem;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+*/
+
 .container-svg-abertura svg {
 
     width: 100%;
