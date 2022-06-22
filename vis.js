@@ -1187,6 +1187,16 @@ const anims = {
                             amount: 1
                         }
                      })
+                     .to(vis.refs.juros, {
+                        backgroundColor: vis.params.colors.yellow,
+                        ease: Back.easeOut,
+                        stagger: {
+                            grid: "auto",
+                            from: "start",
+                            axis: "y",
+                            each: 0.1
+                        }
+                     })
 
     },
 
