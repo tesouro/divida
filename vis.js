@@ -1135,6 +1135,8 @@ const detentores = {
         
     ],
 
+    qde_quadradinhos_visiveis : null,
+
     posicoes : [],
 
     calcula_posicoes : () => {
@@ -1189,6 +1191,8 @@ const detentores = {
          + vis.data.vetores.emissao_vazamento.length
         ;
 
+        detentores.qde_quadradinhos_visiveis = qde_quadradinhos_visiveis;
+
         //console.log(qde_quadradinhos_visiveis)
 
         detentores.dados.forEach(detentor => {
@@ -1200,6 +1204,7 @@ const detentores = {
             const p = document.createElement('p');
             p.classList.add('rotulos-detentores');
             p.style.top = top + 'px';
+            p.style.paddingLeft = margem + 'px';
             p.style.height = espaco_rotulos.toFixed(2) + 'px';
             p.style.fontSize = (candidato_a_tamanho_da_fonte > 16 ? 16 : candidato_a_tamanho_da_fonte) + 'px';
             p.innerText = detentor.tipo;
@@ -1246,36 +1251,47 @@ const detentores = {
 
         })
 
-        console.log(vis.dims.tetris.h, altura_total, 'sobra entao ', vis.dims.tetris.h - altura_total, ' ou ', (vis.dims.tetris.h - altura_total)/(detentores.dados.length) );
+        console.log(vis.dims.tetris.h, altura_total, 'sobra entao ', vis.dims.tetris.h - altura_total, ' ou ', (vis.dims.tetris.h - altura_total)/(detentores.dados.length) )
 
+        /*
         const quadradinhos_visiveis = document.querySelectorAll('[data-tipo="estoque_inicial"], [data-tipo="emissao_refin"], [data-tipo="emissao_vazamento"]');
+        */
 
-        console.log(qde_quadradinhos_visiveis);
+    },
 
-        function pega_parametro_x(i) {
+    pega_parametro_x : (i) => {
 
-            let i_ = qde_quadradinhos_visiveis - i -1;
-            //console.log(i_,i)
-            return detentores.posicoes[i_].x
-        }
+        let i_ = detentores.qde_quadradinhos_visiveis - i -1;
+        //console.log(i_,i)
+        return detentores.posicoes[i_].x
 
-        function pega_parametro_y(i) {
-            let i_ = qde_quadradinhos_visiveis - i -1;
-            return detentores.posicoes[i_].y
-        }
+    },
 
-        gsap.to(quadradinhos_visiveis, {
-            top: 0,
-            left: 0,
-            x : pega_parametro_x,
-            y : pega_parametro_y
-        })
+    pega_parametro_y : (i) => {
+
+        /*
+        let top = +target.style.top.slice(0,-2);
+        let virgula = target.style.transform.indexOf(',');
+        let fecha_paren = target.style.transform.indexOf(')');
+        let translY = parseInt(target.style.transform.substr(virgula+1, fecha_paren-virgula-3))
+
+        let atual_y = top + translY;
+
+        let i_ = qde_quadradinhos_visiveis - i - 1;
+        let futuro_y = detentores.posicoes[i_].y;
+
+        let y = futuro_y - atual_y;
+        */
+
+        let i_ = detentores.qde_quadradinhos_visiveis - i - 1;
+
+        return detentores.posicoes[i_].y;
 
     }
 
-
-
 }
+
+detentores.calcula_posicoes();
 
 const anims = {
 
@@ -1562,6 +1578,45 @@ const anims = {
                         top: vis.render.components.scales.y(vis.params.calculados.linha_final_estoque_final)
 
                     }, '<')
+
+    },
+
+    detentores : {
+
+        tl : new gsap.timeline({
+
+            scrollTrigger: {
+                trigger: '[data-step="detentores"]',
+                markers: false,
+                pin: false,   // pin the trigger element while active
+                start: "top bottom", // when the top of the trigger hits the top of the viewport
+                end: "80% bottom", // end after scrolling 500px beyond the start
+                scrub: 1, // smooth scrubbing, takes 1 second to "catch up" to the scrollbar
+            }
+
+        })
+
+        .to(vis.refs.setinha_saldo_final, {
+            opacity: 0
+        }, '<')
+        .to(vis.refs.setinha_saldo_anterior, {
+            opacity: 0
+        }, '<')
+        .to('[data-tipo="estoque_inicial"], [data-tipo="emissao_refin"], [data-tipo="emissao_vazamento"]', {
+            top: 0,
+            left: 0,
+            x : detentores.pega_parametro_x,
+            y : detentores.pega_parametro_y,
+        }, '<')
+        .to(vis.refs.container, {
+            outlineWidth : 0,
+        }, '<')
+        .to('.rotulos-detentores', {
+            opacity: 1,
+            y: 0
+        })
+
+
 
     }
 
