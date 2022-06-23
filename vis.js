@@ -1095,6 +1095,130 @@ const vis = {
 
 vis.control.init();
 
+const detentores = {
+
+    dados : [
+        {
+            tipo: 'Instituições Financeiras',
+            valor: 1575.46
+        },
+
+        {
+            tipo: 'Fundos de Investimento',
+            valor: 1281.88
+        },
+
+        {
+            tipo: 'Previdência',
+            valor: 1163.01
+        },
+
+        {
+            tipo: 'Não-residentes',
+            valor: 564.97
+        },
+
+        {
+            tipo: 'Governo',
+            valor: 234.64
+        },
+
+        {
+            tipo: 'Seguradoras',
+            valor: 207.72
+        },
+
+        {
+            tipo: 'Outros',
+            valor: 321.26
+        }
+        
+    ],
+
+    posicoes : [],
+
+    calcula_posicoes : () => {
+
+        let qde_quadradinhos = vis.params.qde_quadradinhos;
+
+        function calcula_altura_bloco(valor) {
+
+            valor = valor * 1e9;
+
+            const qde_linhas_bloco = vis.grid.helpers.calcula_qde_linhas_necessarias_para(valor);
+
+            //console.log(qde_linhas_bloco)
+
+            const margem = vis.params.iniciais.margem;
+            const lado = vis.params.calculados.tamanho;
+
+            const altura_necessaria = (margem + lado) * qde_linhas_bloco + margem;
+
+            return altura_necessaria;
+
+        }
+
+        const altura_total = detentores.dados
+          .map( d => d.valor )
+          .reduce( (acum, current) => {
+            console.log(acum, current, calcula_altura_bloco(current) )
+                return acum + calcula_altura_bloco(current)
+            }, 0)
+
+        /*
+        let altura_total = 0;
+        detentores.dados.forEach(detentor => {
+
+            altura_total += calcula_altura_bloco(detentor.valor);
+
+        });*/
+
+        let altura_acum = 0;
+
+        const espaco_rotulos = (vis.dims.tetris.h - altura_total) / detentores.dados.length;
+
+        console.log(espaco_rotulos);
+
+        let qde_acumulada_quadradinhos = 0;
+        let top = 0;
+
+        detentores.dados.forEach(detentor => {
+
+            const cont = document.querySelector(vis.refs.container);
+
+            const candidato_a_tamanho_da_fonte = Math.round(espaco_rotulos * 0.8);
+
+            const p = document.createElement('p');
+            p.classList.add('rotulos-detentores');
+            p.style.top = top + 'px';
+            p.style.height = espaco_rotulos.toFixed(2) + 'px';
+            p.style.fontSize = (candidato_a_tamanho_da_fonte > 16 ? 16 : candidato_a_tamanho_da_fonte) + 'px';
+            p.innerText = detentor.tipo;
+
+            cont.appendChild(p);
+
+            altura_acum += calcula_altura_bloco(detentor.valor);
+
+            console.log(top, detentor.tipo, espaco_rotulos, calcula_altura_bloco(detentor.valor), altura_acum)
+
+            top = top + espaco_rotulos + calcula_altura_bloco(detentor.valor);
+
+        })
+
+        console.log(vis.dims.tetris.h, altura_total, 'sobra entao ', vis.dims.tetris.h - altura_total, ' ou ', (vis.dims.tetris.h - altura_total)/(detentores.dados.length) );
+
+
+
+
+
+
+
+    }
+
+
+
+}
+
 const anims = {
 
     explicacao_inicial : {
