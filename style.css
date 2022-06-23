@@ -781,6 +781,15 @@ svg.inicio path.T-block { fill: var(--tetris-purple);}
 .delay8 {--transition-delay: calc(8 * var(--delay-base) + var(--delay-base));}
 .delay9 {--transition-delay: calc(9 * var(--delay-base) + var(--delay-base));}
 
+.rotulos-detentores {
+    position: absolute;
+    margin: 0;
+    display: flex;
+    align-items: flex-end;
+    opacity: 0;
+    transform: translateY(100%);
+}
+
 
 
 

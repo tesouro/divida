@@ -1095,6 +1095,204 @@ const vis = {
 
 vis.control.init();
 
+const detentores = {
+
+    dados : [
+        {
+            tipo: 'Instituições Financeiras',
+            valor: 1575.46
+        },
+
+        {
+            tipo: 'Fundos de Investimento',
+            valor: 1281.88
+        },
+
+        {
+            tipo: 'Previdência',
+            valor: 1163.01
+        },
+
+        {
+            tipo: 'Não-residentes',
+            valor: 564.97
+        },
+
+        {
+            tipo: 'Governo',
+            valor: 234.64
+        },
+
+        {
+            tipo: 'Seguradoras',
+            valor: 207.72
+        },
+
+        {
+            tipo: 'Outros e DPFe',
+            valor: 585.98 //321.26
+        }
+        
+    ],
+
+    qde_quadradinhos_visiveis : null,
+
+    posicoes : [],
+
+    calcula_posicoes : () => {
+
+        let qde_por_linha = vis.params.calculados.qde_por_linha;
+
+        const margem = vis.params.iniciais.margem;
+        const lado = vis.params.calculados.tamanho;
+
+        function calcula_altura_bloco(valor) {
+
+            valor = valor * 1e9;
+
+            const qde_linhas_bloco = vis.grid.helpers.calcula_qde_linhas_necessarias_para(valor);
+
+            //console.log(qde_linhas_bloco)
+
+            const altura_necessaria = (margem + lado) * qde_linhas_bloco + margem;
+
+            return altura_necessaria;
+
+        }
+
+        const altura_total = detentores.dados
+          .map( d => d.valor )
+          .reduce( 
+            (acum, current) => acum + calcula_altura_bloco(current), 
+            0) // valor inicial
+
+        /*
+        let altura_total = 0;
+        detentores.dados.forEach(detentor => {
+
+            altura_total += calcula_altura_bloco(detentor.valor);
+
+        });*/
+
+        let altura_acum = 0;
+
+        const espaco_rotulos = (vis.dims.tetris.h - altura_total) / detentores.dados.length;
+
+        const candidato_a_tamanho_da_fonte = Math.round(espaco_rotulos * 0.8);
+
+        console.log(espaco_rotulos);
+
+        let qde_acumulada_quadradinhos = 0;
+        let top = 0;
+
+        let qde_quadradinhos_visiveis
+         = vis.data.vetores.estoque_inicial.length
+         + vis.data.vetores.emissao_refin.length
+         + vis.data.vetores.emissao_vazamento.length
+        ;
+
+        detentores.qde_quadradinhos_visiveis = qde_quadradinhos_visiveis;
+
+        //console.log(qde_quadradinhos_visiveis)
+
+        detentores.dados.forEach(detentor => {
+
+            // rotulo e posicao inicial
+
+            const cont = document.querySelector(vis.refs.container);
+
+            const p = document.createElement('p');
+            p.classList.add('rotulos-detentores');
+            p.style.top = top + 'px';
+            p.style.paddingLeft = margem + 'px';
+            p.style.height = espaco_rotulos.toFixed(2) + 'px';
+            p.style.fontSize = (candidato_a_tamanho_da_fonte > 16 ? 16 : candidato_a_tamanho_da_fonte) + 'px';
+            p.innerText = detentor.tipo;
+
+            cont.appendChild(p);
+
+            let qde_quadradinhos = vis.grid.helpers.calcula_qde_unidades(detentor.valor * 1e9);
+
+            qde_acumulada_quadradinhos += qde_quadradinhos;
+
+            console.log('Antes ajuste: ', qde_quadradinhos, qde_acumulada_quadradinhos);
+
+            if (detentor.tipo == 'Outros e DPFe' && (qde_quadradinhos_visiveis > qde_acumulada_quadradinhos)) {
+                qde_quadradinhos += (qde_quadradinhos_visiveis - qde_acumulada_quadradinhos)
+            }
+
+            console.log('Depois ajuste: ', qde_quadradinhos, qde_acumulada_quadradinhos);
+
+            //altura_acum += calcula_altura_bloco(detentor.valor);
+
+            console.log(top, detentor.tipo, espaco_rotulos, calcula_altura_bloco(detentor.valor), altura_acum);
+
+            // posicao dos quadradinhos
+
+            for (let i = 0; i < qde_quadradinhos ; i++) {
+
+                const indice_x = i % qde_por_linha;
+                const indice_y = Math.floor( i / qde_por_linha );
+                
+                let posicao = {
+                    indice_x,
+                    indice_y,
+                    x : margem + indice_x * (margem + lado),
+                    y : top + espaco_rotulos + margem + indice_y * (margem + lado),
+                    tipo : detentor.tipo
+                }
+
+                detentores.posicoes.push(posicao);
+
+            }
+
+            top = top + espaco_rotulos + calcula_altura_bloco(detentor.valor);
+
+
+        })
+
+        console.log(vis.dims.tetris.h, altura_total, 'sobra entao ', vis.dims.tetris.h - altura_total, ' ou ', (vis.dims.tetris.h - altura_total)/(detentores.dados.length) )
+
+        /*
+        const quadradinhos_visiveis = document.querySelectorAll('[data-tipo="estoque_inicial"], [data-tipo="emissao_refin"], [data-tipo="emissao_vazamento"]');
+        */
+
+    },
+
+    pega_parametro_x : (i) => {
+
+        let i_ = detentores.qde_quadradinhos_visiveis - i -1;
+        //console.log(i_,i)
+        return detentores.posicoes[i_].x
+
+    },
+
+    pega_parametro_y : (i) => {
+
+        /*
+        let top = +target.style.top.slice(0,-2);
+        let virgula = target.style.transform.indexOf(',');
+        let fecha_paren = target.style.transform.indexOf(')');
+        let translY = parseInt(target.style.transform.substr(virgula+1, fecha_paren-virgula-3))
+
+        let atual_y = top + translY;
+
+        let i_ = qde_quadradinhos_visiveis - i - 1;
+        let futuro_y = detentores.posicoes[i_].y;
+
+        let y = futuro_y - atual_y;
+        */
+
+        let i_ = detentores.qde_quadradinhos_visiveis - i - 1;
+
+        return detentores.posicoes[i_].y;
+
+    }
+
+}
+
+detentores.calcula_posicoes();
+
 const anims = {
 
     explicacao_inicial : {
@@ -1380,6 +1578,45 @@ const anims = {
                         top: vis.render.components.scales.y(vis.params.calculados.linha_final_estoque_final)
 
                     }, '<')
+
+    },
+
+    detentores : {
+
+        tl : new gsap.timeline({
+
+            scrollTrigger: {
+                trigger: '[data-step="detentores"]',
+                markers: false,
+                pin: false,   // pin the trigger element while active
+                start: "top bottom", // when the top of the trigger hits the top of the viewport
+                end: "80% bottom", // end after scrolling 500px beyond the start
+                scrub: 1, // smooth scrubbing, takes 1 second to "catch up" to the scrollbar
+            }
+
+        })
+
+        .to(vis.refs.setinha_saldo_final, {
+            opacity: 0
+        }, '<')
+        .to(vis.refs.setinha_saldo_anterior, {
+            opacity: 0
+        }, '<')
+        .to('[data-tipo="estoque_inicial"], [data-tipo="emissao_refin"], [data-tipo="emissao_vazamento"]', {
+            top: 0,
+            left: 0,
+            x : detentores.pega_parametro_x,
+            y : detentores.pega_parametro_y,
+        }, '<')
+        .to(vis.refs.container, {
+            outlineWidth : 0,
+        }, '<')
+        .to('.rotulos-detentores', {
+            opacity: 1,
+            y: 0
+        })
+
+
 
     }
 
