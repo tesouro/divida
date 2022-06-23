@@ -1129,8 +1129,8 @@ const detentores = {
         },
 
         {
-            tipo: 'Outros',
-            valor: 321.26
+            tipo: 'Outros e DPFe',
+            valor: 585.98 //321.26
         }
         
     ],
@@ -1139,7 +1139,10 @@ const detentores = {
 
     calcula_posicoes : () => {
 
-        let qde_quadradinhos = vis.params.qde_quadradinhos;
+        let qde_por_linha = vis.params.calculados.qde_por_linha;
+
+        const margem = vis.params.iniciais.margem;
+        const lado = vis.params.calculados.tamanho;
 
         function calcula_altura_bloco(valor) {
 
@@ -1149,9 +1152,6 @@ const detentores = {
 
             //console.log(qde_linhas_bloco)
 
-            const margem = vis.params.iniciais.margem;
-            const lado = vis.params.calculados.tamanho;
-
             const altura_necessaria = (margem + lado) * qde_linhas_bloco + margem;
 
             return altura_necessaria;
@@ -1160,10 +1160,9 @@ const detentores = {
 
         const altura_total = detentores.dados
           .map( d => d.valor )
-          .reduce( (acum, current) => {
-            console.log(acum, current, calcula_altura_bloco(current) )
-                return acum + calcula_altura_bloco(current)
-            }, 0)
+          .reduce( 
+            (acum, current) => acum + calcula_altura_bloco(current), 
+            0) // valor inicial
 
         /*
         let altura_total = 0;
@@ -1177,16 +1176,26 @@ const detentores = {
 
         const espaco_rotulos = (vis.dims.tetris.h - altura_total) / detentores.dados.length;
 
+        const candidato_a_tamanho_da_fonte = Math.round(espaco_rotulos * 0.8);
+
         console.log(espaco_rotulos);
 
         let qde_acumulada_quadradinhos = 0;
         let top = 0;
 
+        let qde_quadradinhos_visiveis
+         = vis.data.vetores.estoque_inicial.length
+         + vis.data.vetores.emissao_refin.length
+         + vis.data.vetores.emissao_vazamento.length
+        ;
+
+        //console.log(qde_quadradinhos_visiveis)
+
         detentores.dados.forEach(detentor => {
 
-            const cont = document.querySelector(vis.refs.container);
+            // rotulo e posicao inicial
 
-            const candidato_a_tamanho_da_fonte = Math.round(espaco_rotulos * 0.8);
+            const cont = document.querySelector(vis.refs.container);
 
             const p = document.createElement('p');
             p.classList.add('rotulos-detentores');
@@ -1197,21 +1206,70 @@ const detentores = {
 
             cont.appendChild(p);
 
-            altura_acum += calcula_altura_bloco(detentor.valor);
+            let qde_quadradinhos = vis.grid.helpers.calcula_qde_unidades(detentor.valor * 1e9);
 
-            console.log(top, detentor.tipo, espaco_rotulos, calcula_altura_bloco(detentor.valor), altura_acum)
+            qde_acumulada_quadradinhos += qde_quadradinhos;
+
+            console.log('Antes ajuste: ', qde_quadradinhos, qde_acumulada_quadradinhos);
+
+            if (detentor.tipo == 'Outros e DPFe' && (qde_quadradinhos_visiveis > qde_acumulada_quadradinhos)) {
+                qde_quadradinhos += (qde_quadradinhos_visiveis - qde_acumulada_quadradinhos)
+            }
+
+            console.log('Depois ajuste: ', qde_quadradinhos, qde_acumulada_quadradinhos);
+
+            //altura_acum += calcula_altura_bloco(detentor.valor);
+
+            console.log(top, detentor.tipo, espaco_rotulos, calcula_altura_bloco(detentor.valor), altura_acum);
+
+            // posicao dos quadradinhos
+
+            for (let i = 0; i < qde_quadradinhos ; i++) {
+
+                const indice_x = i % qde_por_linha;
+                const indice_y = Math.floor( i / qde_por_linha );
+                
+                let posicao = {
+                    indice_x,
+                    indice_y,
+                    x : margem + indice_x * (margem + lado),
+                    y : top + espaco_rotulos + margem + indice_y * (margem + lado),
+                    tipo : detentor.tipo
+                }
+
+                detentores.posicoes.push(posicao);
+
+            }
 
             top = top + espaco_rotulos + calcula_altura_bloco(detentor.valor);
+
 
         })
 
         console.log(vis.dims.tetris.h, altura_total, 'sobra entao ', vis.dims.tetris.h - altura_total, ' ou ', (vis.dims.tetris.h - altura_total)/(detentores.dados.length) );
 
+        const quadradinhos_visiveis = document.querySelectorAll('[data-tipo="estoque_inicial"], [data-tipo="emissao_refin"], [data-tipo="emissao_vazamento"]');
 
+        console.log(qde_quadradinhos_visiveis);
 
+        function pega_parametro_x(i) {
 
+            let i_ = qde_quadradinhos_visiveis - i -1;
+            //console.log(i_,i)
+            return detentores.posicoes[i_].x
+        }
 
+        function pega_parametro_y(i) {
+            let i_ = qde_quadradinhos_visiveis - i -1;
+            return detentores.posicoes[i_].y
+        }
 
+        gsap.to(quadradinhos_visiveis, {
+            top: 0,
+            left: 0,
+            x : pega_parametro_x,
+            y : pega_parametro_y
+        })
 
     }
 
