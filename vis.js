@@ -36,7 +36,6 @@ const vis = {
             popula : function() {
 
                 vis.params.colors.valores.forEach(color => {
-                    console.log(color);
                     vis.params.colors[color] = vis.params.colors.pega_do_css(color);
                 })
 
@@ -179,7 +178,7 @@ const vis = {
 
             const qde = vis.grid.helpers.calcula_qde_unidades(valor);
 
-            console.log("Criando array de ", qde, " retangulos"); 
+            //console.log("Criando array de ", qde, " retangulos"); 
             
             const dataset = [];
 
@@ -371,7 +370,7 @@ const vis = {
 
             vis.dims.qde_unidades       = qde_unidades;
 
-            console.log("Precisaremos de ", qde_unidades, " unidades, ", qde_linhas, " linhas, e uma largura de ", vis.dims.largura_necessaria, "px e uma altura de ", vis.dims.altura_necessaria, "px.");
+            //console.log("Precisaremos de ", qde_unidades, " unidades, ", qde_linhas, " linhas, e uma largura de ", vis.dims.largura_necessaria, "px e uma altura de ", vis.dims.altura_necessaria, "px.");
 
         },
 
@@ -491,8 +490,6 @@ const vis = {
                     campo_de_proximo = "proximo_pos_y_juros";
     
                 } else {
-    
-                    console.log("aqui");
     
                     posicao_inicial = vis.params.calculados.primeiro_vencimento_a_excluir;
                     valor = vis.data.infos.vencimentos.com_outras*1e9;
@@ -691,7 +688,6 @@ const vis = {
 
                 const valor = vis.data.infos.emissoes[tipo]*1e9;
                 const qde = vis.grid.helpers.calcula_qde_unidades(valor);
-                console.log("Vamos emitir, para o Vazamento: ", qde);
             
                 // a primeira linha a ser preenchida vai ser a acima da linha_atual, que foi a última completa.
 
@@ -714,11 +710,13 @@ const vis = {
 
                 const deslocamento = linha_topo - ultima_linha_vazamento;
 
+                /*
                 console.log(
                     'ultima linha completa ', linha_atual, 
                     '\nqde de posicoes disponiveis', qde_posicoes_disponiveis,
                     '\n qde restante', qde_a_completar,
                     '\n qde total', qde);
+                */
 
                 // 2.1 preenchendo as posicoes disponiveis nos buracos do refinanciamento
 
@@ -785,8 +783,6 @@ const vis = {
                     if (tipo == 'vazamento' & i == qde_a_completar) {
 
                         // dependendo do valor do vazamento, ele nem chega aqui.
-
-                        console.log('Cheguei aqui.', linha_atual_preenchimento);
     
                         vis.params.calculados.linha_final_estoque_final = linha_atual_preenchimento
     
@@ -1006,7 +1002,7 @@ const vis = {
             vis.render.cria_divs("fantasmas_refin", visivel = 0); // criando depois para ficarem na frente
             //vis.render.cria_quadradinho_explicacao();
 
-            console.log(vis.data.vetores.estoque_inicial[0].pos_y);
+            //console.log(vis.data.vetores.estoque_inicial[0].pos_y);
 
         },
 
@@ -1044,8 +1040,6 @@ const vis = {
           .then( response => response.json())
           .then( data => {
 
-            console.log(data);
-
             let cont = document.querySelector('.container-svg-abertura');
 
             let svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
@@ -1070,11 +1064,8 @@ const vis = {
 
             })
 
-            console.log('will wait');
-
             setTimeout(
                 function() {
-                    console.log('the wait is over.')
                     document.querySelector('.container-svg-abertura > svg').classList.remove('inicio');
                 },
                 1000
@@ -1180,8 +1171,6 @@ const detentores = {
 
         const candidato_a_tamanho_da_fonte = Math.round(espaco_rotulos * 0.8);
 
-        console.log(espaco_rotulos);
-
         let qde_acumulada_quadradinhos = 0;
         let top = 0;
 
@@ -1215,17 +1204,17 @@ const detentores = {
 
             qde_acumulada_quadradinhos += qde_quadradinhos;
 
-            console.log('Antes ajuste: ', qde_quadradinhos, qde_acumulada_quadradinhos);
+            //console.log('Antes ajuste: ', qde_quadradinhos, qde_acumulada_quadradinhos);
 
             if (detentor.tipo == 'Outros e DPFe' && (qde_quadradinhos_visiveis > qde_acumulada_quadradinhos)) {
                 qde_quadradinhos += (qde_quadradinhos_visiveis - qde_acumulada_quadradinhos)
             }
 
-            console.log('Depois ajuste: ', qde_quadradinhos, qde_acumulada_quadradinhos);
+            //console.log('Depois ajuste: ', qde_quadradinhos, qde_acumulada_quadradinhos);
 
             //altura_acum += calcula_altura_bloco(detentor.valor);
 
-            console.log(top, detentor.tipo, espaco_rotulos, calcula_altura_bloco(detentor.valor), altura_acum);
+            //console.log(top, detentor.tipo, espaco_rotulos, calcula_altura_bloco(detentor.valor), altura_acum);
 
             // posicao dos quadradinhos
 
@@ -1251,7 +1240,7 @@ const detentores = {
 
         })
 
-        console.log(vis.dims.tetris.h, altura_total, 'sobra entao ', vis.dims.tetris.h - altura_total, ' ou ', (vis.dims.tetris.h - altura_total)/(detentores.dados.length) )
+        //console.log(vis.dims.tetris.h, altura_total, 'sobra entao ', vis.dims.tetris.h - altura_total, ' ou ', (vis.dims.tetris.h - altura_total)/(detentores.dados.length) )
 
         /*
         const quadradinhos_visiveis = document.querySelectorAll('[data-tipo="estoque_inicial"], [data-tipo="emissao_refin"], [data-tipo="emissao_vazamento"]');
