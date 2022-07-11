@@ -628,7 +628,8 @@ section.faq ol > li::marker {
 
 }
 
-section.faq a {
+section.faq a,
+a.story-link {
 
     color: var(--text-color);
     text-decoration: none;
@@ -637,7 +638,8 @@ section.faq a {
 
 }
 
-section.faq a:hover {
+section.faq a:hover,
+a.story-link:hover {
 
     border-bottom: 2px solid currentColor;
     font-weight: bold;
