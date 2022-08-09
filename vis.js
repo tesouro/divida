@@ -1196,7 +1196,7 @@ const detentores = {
             p.style.paddingLeft = margem + 'px';
             p.style.height = espaco_rotulos.toFixed(2) + 'px';
             p.style.fontSize = (candidato_a_tamanho_da_fonte > 16 ? 16 : candidato_a_tamanho_da_fonte) + 'px';
-            p.innerText = detentor.tipo;
+            p.innerText = detentor.tipo == "Outros e DPFe" ? "Dívida Externa e outros" : detentor.tipo;
 
             cont.appendChild(p);
 
