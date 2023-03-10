@@ -105,18 +105,18 @@ const vis = {
             juros : {
 
                 // distribui os valores conforme a distribuição dos pagamentos por fonte de recursos no periodo
-                refin       : 449,//209,
-                com_outras  : 0,//197,
-                total       : 449//406
+                refin       : 556,//209 449
+                com_outras  : 0,//197
+                total       : 556//406 449
 
             },
 
             vencimentos : {
 
-                refin       :  781,
-                com_outras  :  270, 
-                total       : 1051, // 1500 - juros
-                texto       : 1500 
+                refin       :  781, //Não foi identificado
+                com_outras  :  228, // Fontes boas// antes: 270
+                total       : 812, // 1500 - juros //antes: 1051
+                texto       : 1368//antes: 1500 
 
             },
 
@@ -124,25 +124,25 @@ const vis = {
 
                 refin : {
 
-                    principal : 781,
-                    juros     : 449
+                    principal : 1062, //antes: 781
+                    juros     : 0 //antes: 449
 
                 },
 
-                vazamento : 430, // vazamento + emissoes normais
+                vazamento : 37, // vazamento + emissoes normais //antes: 430
 
-                texto: 1660
+                texto: 1062//antes: 1660
 
             },
 
             estoque : {
 
-                inicial : 5010,
-                final   : 5610
+                inicial : 5164, //antes: 5010
+                final   : 5951 //antes: 5610
 
             },
 
-            pib: 8.7e12,
+            pib: 9.9e12//antes: 8.7e12,
 
             placar : {
                 estoque:     5613655860380,
